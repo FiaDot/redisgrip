@@ -273,6 +273,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@hot-loader/react-dom": "^16.13.0",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "@reduxjs/toolkit": "^1.4.0",
     "connected-react-router": "^6.6.1",
     "electron-debug": "^3.1.0",
