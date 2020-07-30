@@ -11,6 +11,9 @@ import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { addServer } from './serversSlice';
+import HomeIcon from '@material-ui/icons/Home';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -74,7 +77,7 @@ export default function AddServer() {
   };
 
   return redirect ? (
-    <Redirect push to="/" />
+    <Redirect push to="/servers" />
   ) : (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -140,6 +143,7 @@ export default function AddServer() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={8}>
               <Button
+                startIcon={<AddCircleIcon />}
                 fullWidth
                 variant="contained"
                 color="primary"
@@ -152,16 +156,29 @@ export default function AddServer() {
 
             <Grid item xs={12} sm={4}>
               <Button
+                startIcon={<CancelIcon />}
                 fullWidth
                 variant="contained"
-                color="primary"
+                color="secondary"
                 className={classes.submit}
                 component={Link}
-                to="/"
+                to="/servers"
               >
                 Cancel
               </Button>
             </Grid>
+
+            <Button
+              startIcon={<HomeIcon />}
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              component={Link}
+              to="/"
+            >
+              home
+            </Button>
           </Grid>
         </form>
       </div>
