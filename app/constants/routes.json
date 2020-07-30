@@ -1,6 +1,7 @@
 {
   "HOME": "/",
   "COUNTER": "/counter",
-  "SERVERS": "/servers"
+  "SERVERS": "/servers",
+  "ADDSERVER": "/addserver"
 }
 
