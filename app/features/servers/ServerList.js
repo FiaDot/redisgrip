@@ -92,11 +92,15 @@ export default function ServerList() {
   };
 
   const onRemoveServer = (id) => {
-    console.log(`called onRemoveServer=${id}`)ㅂ;
+    console.log(`called onRemoveServer=${id}`);
   };
 
   return (
     <div className={classes.root}>
+      {/*{*/}
+      {/*  console.log(servers)*/}
+      {/*}*/}
+
       <ServerListMemo
         servers={servers}
         selected={selected.id}
