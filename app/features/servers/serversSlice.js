@@ -5,13 +5,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // 고유번호 생성용
-let nextId = 0;
+let nextId = 2;
 
 // redux-toolkit 이용
 const serversSlice = createSlice({
   name: 'servers',
   initialState: [
-    { id: 1, name: 'test', host: 'localhost', port: 6379, pwd: '' },
+    { id: 1, name: 'local', host: 'localhost', port: 6379, pwd: '' },
   ],
   reducers: {
     addServer: (state, { payload }) => {
