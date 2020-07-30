@@ -2,28 +2,27 @@ import { createSlice } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { AppThunk, RootState } from '../../store';
 import ioredis from 'ioredis';
-//const ioredis = require("ioredis");
 
 const connect_and_ping = async () => {
   console.log(`called connect and ping function`);
 
-  const test_host = "df-bforce-lgh.clafgames.com";
+  const testHost = 'df-bforce-lgh.clafgames.com';
 
   const redis = new ioredis({
     port: 6379, // Redis port
-    host: test_host, // Redis host
+    host: testHost, // Redis host
     family: 4, // 4 (IPv4) or 6 (IPv6)
-    password: "asdf1234!",
-    db: 0,
+    password: 'asdf1234!',
+    db: 0
   });
 
   redis.ping((err, res) => {
     if ( err ) {
-      console.log("err");
+      console.log('err');
       console.log(err.message);
     }
     else {
-      console.log("success");
+      console.log('success');
     }
   })
   // const value = await redis.get('test');

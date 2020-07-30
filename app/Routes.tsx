@@ -16,10 +16,22 @@ const CounterPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 
+const LazyServersPage = React.lazy(() =>
+  import(/* webpackChunkName: "ServersPage" */ './containers/ServersPage')
+);
+
+const ServersPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazyServersPage {...props} />
+  </React.Suspense>
+);
+
+
 export default function Routes() {
   return (
     <App>
       <Switch>
+        <Route path={routes.SERVERS} component={ServersPage} />
         <Route path={routes.COUNTER} component={CounterPage} />
         <Route path={routes.HOME} component={HomePage} />
       </Switch>
