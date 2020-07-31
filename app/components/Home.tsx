@@ -30,13 +30,20 @@ export default function Home(): JSX.Element {
 
         <ListItem button>
           <Link to={routes.SERVERS}>
-            <ListItemText primary="to Server" />
+            <ListItemText primary="Server List" />
           </Link>
         </ListItem>
 
         <ListItem button>
           <Link to={routes.ADDSERVER}>
             <ListItemText primary="Add Server" />
+          </Link>
+        </ListItem>
+
+
+        <ListItem button>
+          <Link to={routes.KEYS}>
+            <ListItemText primary="Keys" />
           </Link>
         </ListItem>
 

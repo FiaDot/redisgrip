@@ -29,7 +29,7 @@ const ServerListMemo = React.memo(function serverList({
   return (
     <div>
       <List component="nav" aria-label="main mailbox folders">
-        {servers.length == 0
+        {servers.length === 0
           ? '--- TODO : show empty message ---'
           : servers.map((server) => (
               <Grid container spacing={2} key={server.id}>
@@ -82,6 +82,7 @@ export default function ServerList() {
 
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
+
 
   const onConnectServer = (id) => {
     // TODO : electron 연동시 redis 연결 시도!

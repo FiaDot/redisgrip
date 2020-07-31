@@ -5,6 +5,7 @@ import { History } from 'history';
 import counterReducer from './features/counter/counterSlice';
 import serversReducer from './features/servers/serversSlice';
 import selectedReducer from './features/servers/selectedSlice';
+import keysReducer from './features/keys/keysSlice';
 
 export default function createRootReducer(history: History) {
   return combineReducers({
@@ -12,5 +13,6 @@ export default function createRootReducer(history: History) {
     counter: counterReducer,
     servers: serversReducer,
     selected: selectedReducer,
+    keys: keysReducer,
   });
 }

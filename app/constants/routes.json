@@ -2,6 +2,7 @@
   "HOME": "/",
   "COUNTER": "/counter",
   "SERVERS": "/servers",
-  "ADDSERVER": "/addserver"
+  "ADDSERVER": "/addserver",
+  "KEYS": "/keys"
 }
 
