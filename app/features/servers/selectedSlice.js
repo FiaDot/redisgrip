@@ -10,6 +10,8 @@ const selectedSlice = createSlice({
   initialState: {
     id: -1,
     // checked: false,
+    // 키 이름, 타입, tll 등 있어야 함!
+    selectKey: null,
   },
   reducers: {
     selectServer: (state, action) => {
@@ -17,8 +19,12 @@ const selectedSlice = createSlice({
       state.id = action.payload;
       // state.checked = !state.checked;
     },
+    selectKey: (state, action) => {
+      state.selectKey = action.payload;
+      console.log(`called selectKey=${action.payload}`);
+    }
   }
 });
 
-export const { selectServer } = selectedSlice.actions;
+export const { selectServer, selectKey } = selectedSlice.actions;
 export default selectedSlice.reducer;
