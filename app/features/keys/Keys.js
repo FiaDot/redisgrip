@@ -10,6 +10,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import { Link } from 'react-router-dom';
 import Redis from 'ioredis';
 import { addKey, addKeys } from './keysSlice';
+import { addString } from '../values/stringContentSlice';
+import StringContent from '../values/StringContent';
 
 const ioredis = require('ioredis');
 
@@ -58,6 +60,8 @@ export default function Keys() {
   const onAddKey = (key) => dispatch(addKey(key));
   const onAddKeys = (keys) => dispatch(addKeys(keys));
 
+  const onAddString = (value) => dispatch(addString({keyName:value}));
+
   const onAddTest = () => {
     onAddKey('1');
   };
@@ -70,6 +74,7 @@ export default function Keys() {
       case 'string': {
         const value = await redis.get(key);
         console.log(`called onSelectKey ${key}=${value}`);
+        onAddString(value);
         break;
       }
       case 'zset': {
@@ -212,6 +217,8 @@ export default function Keys() {
           add test
         </Button>
       </div>
+
+      <StringContent/>
 
       <KeysMemo keys={keys} onSelectKey={onSelectKey} />
     </div>
