@@ -12,6 +12,8 @@ import Redis from 'ioredis';
 import { addKey, addKeys } from './keysSlice';
 import { addString } from '../values/stringContentSlice';
 import StringContent from '../values/StringContent';
+import HashContent from '../values/HashContent';
+import { addHash } from '../values/hashContentSlice';
 
 const ioredis = require('ioredis');
 
@@ -62,13 +64,25 @@ export default function Keys() {
 
   const onAddString = (value) => dispatch(addString({keyName:value}));
 
+  const onAddHas = (key, kv) => dispatch(addHash({keyName:key, content:kv}))
+
   const onAddTest = () => {
     onAddKey('1');
   };
 
+
+  const make_kv_from_hash = async (raw) => {
+    let kv = [];
+
+    for(let n=0;n<raw.length/2;n+=1) {
+      kv.push({'key':raw[n*2], 'value':raw[n*2 + 1]});
+    }
+    return kv;
+  }
+
   const onSelectKey = async (key) => {
     const type = await redis.type(key);
-    console.log(`called onSelectKey ${key}=${type}`);
+    // console.log(`called onSelectKey ${key}=${type}`);
 
     switch (type) {
       case 'string': {
@@ -98,9 +112,10 @@ export default function Keys() {
       }
       case 'hash': {
         const len = await redis.hlen(key);
-        console.log(`called onSelectKey ${key}, len=${len}`);
         const data = await redis.hscan(key, 0, 'COUNT', 10000);
         console.log(`called onSelectKey ${key}=${data}`);
+        const kv = await make_kv_from_hash(data[1]);
+        onAddHas(key, kv);
         break;
       }
       default:
@@ -172,12 +187,8 @@ export default function Keys() {
       // }
     });
 
-    const monitor = await redis.monitor();
-    monitor.on('monitor', console.log);
-
-    //redis.monitor(function ())
-    // const value = await redis.get('test');
-    // console.log(value);
+    // const monitor = await redis.monitor();
+    // monitor.on('monitor', console.log);
   };
 
   return (
@@ -222,7 +233,8 @@ export default function Keys() {
         </Button>
       </div>
 
-      <StringContent/>
+      <StringContent />
+      <HashContent />
 
       <KeysMemo keys={keys} onSelectKey={onSelectKey} />
     </div>

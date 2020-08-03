@@ -8,7 +8,10 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import HomeIcon from '@material-ui/icons/Home';
 import { Link } from 'react-router-dom';
-import { addString, updateString } from './stringContentSlice';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { addHash } from './hashContentSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,15 +27,16 @@ const useStyles = makeStyles((theme) => ({
 export default function Keys() {
   const classes = useStyles();
 
-  const stringContent = useSelector((state) => state.stringContent);
-
-  const dispatch = useDispatch();
-  const onAddString = (value) => dispatch(addString(value));
+  const hashContent = useSelector((state) => state.hashContent);
 
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="value">
-        {stringContent.keyName === null ? 'empty string value' : stringContent.keyName}
+        {hashContent.keyName === null
+          ? 'empty hash value'
+          : hashContent.content.map((kv) =>
+            <ListItemText key={kv.key} primary={kv.key} secondary={kv.value} />
+          )}
       </List>
     </div>
   );
