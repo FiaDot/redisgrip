@@ -13,6 +13,8 @@ import { addKey, addKeys } from './keysSlice';
 
 const ioredis = require('ioredis');
 
+let redis;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -33,11 +35,11 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey }) {
         : keys.map((key) => (
           <Grid container spacing={2} key={key}>
               <Grid item xs={12} sm={12}>
-                <ListItem
-                    button
-                    key={key}
-                    onClick={(event) => onSelectKey(key)}
-                  >
+              <ListItem
+                  button
+                  key={key}
+                  onClick={(event) => onSelectKey(key)}
+                >
                   <ListItemText primary={key} />
                 </ListItem>
             </Grid>
@@ -60,8 +62,45 @@ export default function Keys() {
     onAddKey('1');
   };
 
-  const onSelectKey = (key) => {
-    console.log(`called onSelectKey=${key}`);
+  const onSelectKey = async (key) => {
+    const type = await redis.type(key);
+    console.log(`called onSelectKey ${key}=${type}`);
+
+    switch (type) {
+      case 'string': {
+        const value = await redis.get(key);
+        console.log(`called onSelectKey ${key}=${value}`);
+        break;
+      }
+      case 'zset': {
+        const count = await redis.zcard(key);
+        console.log(`called onSelectKey ${key}=${count}`);
+        const data = await redis.zrange(key, 0, count, 'WITHSCORES');
+        console.log(`zset len=${data.length},data=${data} `);
+        break;
+      }
+      case 'list': {
+        const len = await redis.llen(key);
+        const data = await redis.lrange(key, 0, len);
+        console.log(`called onSelectKey ${key}=${data}`);
+        break;
+      }
+      case 'set': {
+        const len = await redis.scard(key);
+        const data = await redis.sscan(key, 0, 'count', 10000);
+        console.log(`called onSelectKey ${key}=${data}`);
+        break;
+      }
+      case 'hash': {
+        const len = await redis.hlen(key);
+        console.log(`called onSelectKey ${key}, len=${len}`);
+        const data = await redis.hscan(key, 0, 'COUNT', 10000);
+        console.log(`called onSelectKey ${key}=${data}`);
+        break;
+      }
+      default:
+        console.log('not matched type');
+    }
   };
 
   const onRemoveServer = (id) => {
@@ -73,13 +112,27 @@ export default function Keys() {
 
     const testHost = '52.78.184.2';
 
-    const redis = new ioredis({
+    redis = new ioredis({
       port: 6379, // Redis port
       host: testHost, // Redis host
       family: 4, // 4 (IPv4) or 6 (IPv6)
       password: 'asdf1234!',
       db: 0,
+      // This is the default value of `retryStrategy`
+      retryStrategy: function (times) {
+        var delay = Math.min(times * 50, 2000);
+        return delay;
+      },
+      reconnectOnError: function (err) {
+        console.log(`redis error=${err}`);
+        var targetError = "READONLY";
+        if (err.message.includes(targetError)) {
+          // Only reconnect when the error contains "READONLY"
+          return true; // or `return 1;`
+        }
+      },
     });
+
 
     redis.ping((err, res) => {
       if (err) {
