@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
@@ -9,6 +9,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { selectServer } from './selectedSlice';
+import { addServer } from './serversSlice';
+const storage = require('electron-json-storage');
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,6 +84,32 @@ export default function ServerList() {
 
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
+  const onAddServer = (config) => dispatch(addServer(config));
+
+  // TODO : 서버 목록 불러오기
+  //
+  // useEffect(() => {
+  //   console.log('loaded ServerList');
+  //
+  //   // storage.clear();
+  //
+  //   storage.getAll(function(error, data) {
+  //     if (error) throw error;
+  //
+  //     console.log(data);
+  //     const keys = Object.keys(data);
+  //
+  //     keys.map((key) => {
+  //         console.log(`useEffect id=${key} data=${JSON.stringify(data[key])}`);
+  //         //onAddServer(data[key]);
+  //         dispatch(addServer(data[key]));
+  //     });
+  //   });
+  //
+  //   return () => {
+  //     console.log('unloaded ServerList');
+  //   };
+  // }, []);
 
 
   const onConnectServer = (id) => {
