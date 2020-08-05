@@ -3,19 +3,20 @@
  */
 
 import { createSlice } from '@reduxjs/toolkit';
+const storage = require('electron-json-storage');
 
 // 고유번호 생성용
 let nextId = 2;
+
 
 // redux-toolkit 이용
 const serversSlice = createSlice({
   name: 'servers',
   initialState: [
-    { id: 1, name: 'local', host: 'localhost', port: 6379, pwd: '' },
   ],
   reducers: {
     addServer: (state, { payload }) => {
-      payload.id = nextId;
+      payload.id = payload.id || nextId;
       nextId += 1;
       return [...state, payload];
     },
@@ -24,6 +25,10 @@ const serversSlice = createSlice({
       return state;
     },
     editServer: (state, { payload }) => {
+      storage.set(payload.id.toString(), payload, function(error) {
+        if (error) throw error;
+      });
+
       return state.map((server) =>
         server.id === payload.id ? { ...server, payload } : server
       );
