@@ -289,7 +289,8 @@
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "source-map-support": "^0.5.19"
+    "source-map-support": "^0.5.19",
+    "ssh2": "^0.8.9"
   },
   "devEngines": {
     "node": ">=7.x",

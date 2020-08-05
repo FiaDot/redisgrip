@@ -15,7 +15,12 @@ import StringContent from '../values/StringContent';
 import HashContent from '../values/HashContent';
 import { addHash } from '../values/hashContentSlice';
 
+import {Client} from 'ssh2';
+import net from 'net';
+// import { remote } from 'electron';
+
 const ioredis = require('ioredis');
+const fs = require('fs');
 
 let redis;
 
@@ -71,11 +76,11 @@ export default function Keys() {
   };
 
 
-  const make_kv_from_hash = async (raw) => {
+  const makeKeyValueFromHash = async (raw) => {
     let kv = [];
 
     for(let n=0;n<raw.length/2;n+=1) {
-      kv.push({'key':raw[n*2], 'value':raw[n*2 + 1]});
+      kv.push({ key: raw[n * 2], value: raw[n * 2 + 1] });
     }
     return kv;
   }
@@ -114,7 +119,7 @@ export default function Keys() {
         const len = await redis.hlen(key);
         const data = await redis.hscan(key, 0, 'COUNT', 10000);
         console.log(`called onSelectKey ${key}=${data}`);
-        const kv = await make_kv_from_hash(data[1]);
+        const kv = await makeKeyValueFromHash(data[1]);
         onAddHas(key, kv);
         break;
       }
@@ -127,32 +132,129 @@ export default function Keys() {
     console.log(`called onRemoveServer=${id}`);
   };
 
+
+
+
+
+
+
+  function connectToSSH(options) {
+    return new Promise((resolve, reject) => {
+      const connection = new Client();
+
+      connection.once('ready', () => resolve(connection));
+      connection.once('error', reject);
+
+      connection.connect(options);
+    });
+  }
+
+  function connectToRedis(options) {
+    // console.log(`connectToRedis=${JSON.stringify(options)}`);
+
+    const redisInst = new Redis(options);
+    return new Promise((resolve, reject) => {
+      redisInst.once('error', reject);
+      redisInst.once('ready', () => resolve(redisInst));
+    });
+  }
+
+  function createIntermediateServer(connectionListener) {
+    return new Promise((resolve, reject) => {
+      const server = net.createServer(connectionListener);
+      server.once('error', reject);
+      server.listen(0, () => resolve(server));
+    });
+  }
+
+  async function connectToRedisViaSSH(options = {
+    ssh: {
+      host: 'localhost',
+      port: 22
+    },
+    redis: {
+      host: 'localhost',
+      port: 6379
+    }
+  }) {
+    const sshConnection = await connectToSSH({
+      host: options.ssh.host,
+      port: options.ssh.port,
+      username: options.ssh.username,
+      privateKey: options.ssh.privateKey,
+      passphrase: options.ssh.passphrase
+    });
+
+    const server = await createIntermediateServer(socket => {
+      sshConnection.forwardOut(
+        socket.remoteAddress,
+        socket.remotePort,
+        options.redis.host,
+        options.redis.port,
+        (error, stream) => {
+          if (error) {
+            socket.end();
+          } else {
+            socket.pipe(stream).pipe(socket);
+          }
+        }
+      );
+    });
+
+    const redisInst = await connectToRedis({
+      host: server.address().address,
+      port: server.address().port,
+      password: options.redis.password
+    });
+
+    return redisInst;
+  };
+
+
+
   const connect = async () => {
     console.log(`called connect and ping function`);
 
-    const testHost = '52.79.75.250';//'52.78.184.2';
+    const pemFilePath = '/Users/newtrocode/Project/redisgrip/app/aws.pem';
 
-    redis = new ioredis({
-      port: 6379, // Redis port
-      host: testHost, // Redis host
-      family: 4, // 4 (IPv4) or 6 (IPv6)
-      password: 'asdf1234!',
-      db: 0,
-      // This is the default value of `retryStrategy`
-      retryStrategy: function (times) {
-        var delay = Math.min(times * 50, 2000);
-        return delay;
+    redis = await connectToRedisViaSSH({
+      ssh: {
+        host: '52.79.75.250',
+        port: 22,
+        username: 'ubuntu',
+        privateKey: fs.readFileSync(pemFilePath),
+        passphrase: null,
       },
-      reconnectOnError: function (err) {
-        console.log(`redis error=${err}`);
-        var targetError = "READONLY";
-        if (err.message.includes(targetError)) {
-          // Only reconnect when the error contains "READONLY"
-          return true; // or `return 1;`
-        }
-      },
+      redis: {
+        host: '127.0.0.1',
+        port: 6379,
+        password: 'asdf1234!',
+      }
     });
 
+    // const testHost = '52.79.75.250';//'52.78.184.2';
+    //
+    // redis = new ioredis({
+    //   port: 6379, // Redis port
+    //   host: testHost, // Redis host
+    //   family: 4, // 4 (IPv4) or 6 (IPv6)
+    //   password: 'asdf1234!',
+    //   db: 0,
+    //   // This is the default value of `retryStrategy`
+    //   retryStrategy: function (times) {
+    //     var delay = Math.min(times * 50, 2000);
+    //     return delay;
+    //   },
+    //   reconnectOnError: function (err) {
+    //     console.log(`redis error=${err}`);
+    //     var targetError = "READONLY";
+    //     if (err.message.includes(targetError)) {
+    //       // Only reconnect when the error contains "READONLY"
+    //       return true; // or `return 1;`
+    //     }
+    //   },
+    // });
+    //
 
     redis.ping((err, res) => {
       if (err) {
@@ -168,23 +270,8 @@ export default function Keys() {
       count: 10000,
     });
 
-    // onAddKey('123');
-
-    // eslint-disable-next-line func-names
     stream.on('data', function (keys) {
-      // console.log(keys[0]);
-      // onAddKey(keys[0]);
-
       onAddKeys(keys);
-
-      // keys.map((key) => {
-      //   //console.log(key);
-      //   onAddKey(key);
-      // });
-
-      // forEach(key in keys) {
-      //   onAddKey(key);
-      // }
     });
 
     // const monitor = await redis.monitor();
