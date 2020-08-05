@@ -10,7 +10,9 @@ import Grid from '@material-ui/core/Grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { selectServer } from './selectedSlice';
 import { addServer } from './serversSlice';
+
 const storage = require('electron-json-storage');
+const { dialog, remote } = require('electron');
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,6 +124,32 @@ export default function ServerList() {
 
   const onRemoveServer = (id) => {
     console.log(`called onRemoveServer=${id}`);
+
+    // // 경로
+    // console.log(remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] }));
+    //
+    // // 다양한 옵
+    // const options = {
+    //   type: 'question',
+    //   buttons: ['Cancel', 'Yes, please', 'No, thanks'],
+    //   defaultId: 2,
+    //   title: 'Question',
+    //   message: 'Do you want to do this?',
+    //   detail: 'It does not really matter',
+    //   checkboxLabel: 'Remember my answer',
+    //   checkboxChecked: true,
+    // };
+    //
+    // remote.dialog.showMessageBox(null, options, (response, checkboxChecked) => {
+    //   console.log(response);
+    //   console.log(checkboxChecked);
+    // });
+    //
+    // // 단순 알림
+    // const selectedPaths = remote.dialog.showErrorBox('test', 'aasd');
+    // // eslint-disable-next-line no-console
+    // console.log(selectedPaths);
+
   };
 
   return (
