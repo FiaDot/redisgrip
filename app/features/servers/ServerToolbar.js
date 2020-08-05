@@ -17,6 +17,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: '#eeeeee',
+  },
   button: {
     margin: theme.spacing(0),
     // backgroundColor: '#0000cc',
@@ -30,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(32),
       height: theme.spacing(6),
       minWidth: 250,
+      backgroundColor: '#eeeeee',
     },
   },
   title: {
@@ -65,9 +69,9 @@ export default function ServerToolbar() {
   };
 
   return (
-    <div>
+    <div className={classes.root}>
 
-      <Typography className={classes.title} color="textSecondary" gutterBottom>
+      <Typography className={classes.title} color="textSecondary" gutterBottom align="center">
         Connections
       </Typography>
 
