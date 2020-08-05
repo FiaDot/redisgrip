@@ -15,6 +15,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,10 +49,6 @@ export default function ServerToolbar() {
   const selectedId = useSelector((state) => state.selected.id);
   const selected = selectedId >= 0;
 
-  const add = () => {
-    console.log('called addServer');
-  };
-
   const del = () => {
     console.log('called delServer');
   };
@@ -83,8 +80,10 @@ export default function ServerToolbar() {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={add}
-            >
+              // onClick={add}
+              component={Link}
+              to="/AddServer"
+            > 
               <AddBoxOutlinedIcon color="primary" />
             </IconButton>
           </Tooltip>
