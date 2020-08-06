@@ -13,6 +13,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import SearchIcon from '@material-ui/icons/Search';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import { addServer } from './serversSlice';
+const generate = require('project-name-generator');
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,7 +47,7 @@ export default function AddServer() {
   // local
   const [inputs, setInputs] = useState({
     redirect: false,
-    alias: 'local',
+    alias: generate({ words: 2, number: true }).dashed,
     host: 'localhost',
     port: 6379,
     pwd: 'pwd',
