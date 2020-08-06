@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,12 +10,10 @@ import LinkOutlinedIcon from '@material-ui/icons/LinkOutlined';
 import LinkOffOutlinedIcon from '@material-ui/icons/LinkOffOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import { addServer, delServer } from './serversSlice';
+import { deselectServer, isSelectedServer } from './selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,16 +43,17 @@ const useStyles = makeStyles((theme) => ({
 export default function ServerToolbar() {
   const classes = useStyles();
 
-  // TODO : 선택된 서버가 있다면 활성화
   const selectedId = useSelector((state) => state.selected.id);
-  const selected = selectedId !== null;
+  const isSelected = useSelector(isSelectedServer);
 
   const dispatch = useDispatch();
   const onDelServer = (id) => dispatch(delServer(id));
+  const onDeselectServer = () => dispatch(deselectServer());
 
   const del = () => {
-    console.log(`called delServer=${selectedId}`);
+    //console.log(`called delServer=${selectedId}`);
     onDelServer(selectedId);
+    onDeselectServer();
   };
 
   const edit = () => {
@@ -101,10 +99,10 @@ export default function ServerToolbar() {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={selected ? del : null}
+              onClick={isSelected ? del : null}
             >
               <IndeterminateCheckBoxOutlinedIcon
-                color={selected ? 'primary' : 'disabled'}
+                color={isSelected ? 'primary' : 'disabled'}
               />
             </IconButton>
           </Tooltip>
@@ -114,9 +112,9 @@ export default function ServerToolbar() {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={selected ? edit : null}
+              onClick={isSelected ? edit : null}
             >
-              <EditOutlinedIcon color={selected ? 'primary' : 'disabled'} />
+              <EditOutlinedIcon color={isSelected ? 'primary' : 'disabled'} />
             </IconButton>
           </Tooltip>
 
@@ -125,9 +123,9 @@ export default function ServerToolbar() {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={selected ? connect : null}
+              onClick={isSelected ? connect : null}
             >
-              <LinkOutlinedIcon color={selected ? 'primary' : 'disabled'} />
+              <LinkOutlinedIcon color={isSelected ? 'primary' : 'disabled'} />
             </IconButton>
           </Tooltip>
 
@@ -136,9 +134,9 @@ export default function ServerToolbar() {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={selected ? disconnect : null}
+              onClick={isSelected ? disconnect : null}
             >
-              <LinkOffOutlinedIcon color={selected ? 'primary' : 'disabled'} />
+              <LinkOffOutlinedIcon color={isSelected ? 'primary' : 'disabled'} />
             </IconButton>
           </Tooltip>
         </Paper>
