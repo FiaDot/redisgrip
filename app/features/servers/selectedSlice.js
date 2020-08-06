@@ -8,7 +8,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const selectedSlice = createSlice({
   name: 'selected',
   initialState: {
-    id: -1,
+    id: null,
     // checked: false,
     // 키 이름, 타입, tll 등 있어야 함!
     selectKey: null,

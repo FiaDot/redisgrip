@@ -9,13 +9,14 @@ import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateC
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import LinkOutlinedIcon from '@material-ui/icons/LinkOutlined';
 import LinkOffOutlinedIcon from '@material-ui/icons/LinkOffOutlined';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
+import { addServer, delServer } from './serversSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,10 +48,14 @@ export default function ServerToolbar() {
 
   // TODO : 선택된 서버가 있다면 활성화
   const selectedId = useSelector((state) => state.selected.id);
-  const selected = selectedId >= 0;
+  const selected = selectedId !== null;
+
+  const dispatch = useDispatch();
+  const onDelServer = (id) => dispatch(delServer(id));
 
   const del = () => {
-    console.log('called delServer');
+    console.log(`called delServer=${selectedId}`);
+    onDelServer(selectedId);
   };
 
   const edit = () => {
@@ -67,13 +72,16 @@ export default function ServerToolbar() {
 
   return (
     <div className={classes.root}>
-
-      <Typography className={classes.title} color="textSecondary" gutterBottom align="center">
+      <Typography
+        className={classes.title}
+        color="textSecondary"
+        gutterBottom
+        align="center"
+      >
         Connections
       </Typography>
 
       <div className={classes.paper}>
-
         <Paper elevation={3}>
           {/* Add */}
           <Tooltip TransitionComponent={Zoom} title="Add">
@@ -83,7 +91,7 @@ export default function ServerToolbar() {
               // onClick={add}
               component={Link}
               to="/AddServer"
-            > 
+            >
               <AddBoxOutlinedIcon color="primary" />
             </IconButton>
           </Tooltip>
