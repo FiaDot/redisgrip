@@ -8,12 +8,11 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { addServer } from './serversSlice';
-import HomeIcon from '@material-ui/icons/Home';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import SearchIcon from '@material-ui/icons/Search';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
+import { addServer } from './serversSlice';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -42,27 +41,26 @@ export default function AddServer() {
 
   // redux
   const dispatch = useDispatch();
-  const onAddServer = (name, host, port, pwd) =>
-    dispatch(addServer({ name, host, port, pwd }));
+  const onAddServer = (server) => dispatch(addServer(server));
 
   // local
   const [inputs, setInputs] = useState({
     redirect: false,
-    name: 'local',
+    alias: 'local',
     host: 'localhost',
     port: 6379,
-    pwd: '',
-    sshHost: '',
-    sshPort: '',
-    sshUsername: '',
-    sshPassword: '',
-    pemFilePath: '',
-    pemPassphrase: '',
+    pwd: 'pwd',
+    sshHost: 'sshlocalhost',
+    sshPort: '22',
+    sshUsername: 'ubuntu',
+    sshPassword: '1',
+    pemFilePath: '2',
+    pemPassphrase: '3',
   });
 
   const {
     redirect,
-    name,
+    alias,
     host,
     port,
     pwd,
@@ -85,8 +83,19 @@ export default function AddServer() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // call redux action!
-    onAddServer(name, host, port, pwd);
+
+    onAddServer({
+      alias,
+      host,
+      port,
+      pwd,
+      sshHost,
+      sshPort,
+      sshUsername,
+      sshPassword,
+      pemFilePath,
+      pemPassphrase,
+    });
 
     // 저장 하고 나서 첫화면으로 이동
     setInputs({
@@ -105,8 +114,7 @@ export default function AddServer() {
       ...inputs,
       pemFilePath: e.target.files[0].path,
     });
-
-  }
+  };
 
   return redirect ? (
     <Redirect push to="/servers" />
@@ -114,7 +122,6 @@ export default function AddServer() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-
         <form className={classes.form} noValidate>
           <TextField
             size="small"
@@ -123,9 +130,9 @@ export default function AddServer() {
             required
             fullWidth
             autoFocus
-            label="Name"
-            name="name"
-            value={name}
+            label="Alias"
+            name="alias"
+            value={alias}
             onChange={onChange}
           />
 
@@ -176,7 +183,6 @@ export default function AddServer() {
 
           <Grid container spacing={1}>
             <Grid item xs={12} sm={9}>
-
               <TextField
                 size="small"
                 variant="outlined"
@@ -184,13 +190,12 @@ export default function AddServer() {
                 fullWidth
                 label="SSH Host"
                 name="sshHost"
+                value={sshHost}
                 onChange={onChange}
               />
-
             </Grid>
 
             <Grid item xs={12} sm={3}>
-
               <TextField
                 size="small"
                 variant="outlined"
@@ -198,17 +203,14 @@ export default function AddServer() {
                 fullWidth
                 label="SSH Port"
                 name="sshPort"
+                value={sshPort}
                 onChange={onChange}
               />
-
             </Grid>
           </Grid>
 
-
-
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
-
               <TextField
                 size="small"
                 variant="outlined"
@@ -216,13 +218,12 @@ export default function AddServer() {
                 fullWidth
                 label="SSH Username"
                 name="sshUsername"
+                value={sshUsername}
                 onChange={onChange}
               />
-
             </Grid>
 
             <Grid item xs={12} sm={6}>
-
               <TextField
                 size="small"
                 variant="outlined"
@@ -230,15 +231,14 @@ export default function AddServer() {
                 fullWidth
                 label="SSH Pasword"
                 name="sshPassword"
+                value={sshPassword}
                 onChange={onChange}
               />
             </Grid>
-
           </Grid>
 
           <Grid container spacing={1}>
             <Grid item xs={12} sm={10}>
-
               <TextField
                 size="small"
                 variant="outlined"
@@ -252,7 +252,6 @@ export default function AddServer() {
             </Grid>
 
             <Grid item xs={12} sm={2}>
-
               <Button
                 startIcon={<SearchIcon />}
                 variant="contained"
@@ -263,16 +262,13 @@ export default function AddServer() {
                 <input
                   type="file"
                   accept=".pem"
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                   name="pemFilePath"
                   onChange={onAddPemFile}
                 />
               </Button>
-
             </Grid>
-
           </Grid>
-
 
           <TextField
             size="small"
@@ -281,6 +277,7 @@ export default function AddServer() {
             fullWidth
             label="Pem Passphrase"
             name="pemPassphrase"
+            value={pemPassphrase}
             onChange={onChange}
           />
 
@@ -296,9 +293,7 @@ export default function AddServer() {
             Test
           </Button>
 
-
           <Grid container spacing={2}>
-
             <Grid item xs={12} sm={8}>
               <Button
                 startIcon={<AddCircleIcon />}
@@ -325,7 +320,6 @@ export default function AddServer() {
                 Cancel
               </Button>
             </Grid>
-
           </Grid>
         </form>
       </div>

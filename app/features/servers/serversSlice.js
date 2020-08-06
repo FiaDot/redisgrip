@@ -15,22 +15,22 @@ const serversSlice = createSlice({
   initialState: [
   ],
   reducers: {
-    addServer: (state, { payload }) => {
-      payload.id = payload.id || nextId;
+    addServer: (state, action) => {
+      action.payload.id = action.payload.id || nextId;
       nextId += 1;
-      return [...state, payload];
+      return [...state, action.payload];
     },
     delServer: (state, action) => {
-      state.filter((server) => server.id !== action.payload);
+      state.filter((server) => server.id !== action.payload.id);
       return state;
     },
-    editServer: (state, { payload }) => {
-      storage.set(payload.id.toString(), payload, function(error) {
-        if (error) throw error;
-      });
+    editServer: (state, action) => {
+      // storage.set(payload.id.toString(), payload, function(error) {
+      //   if (error) throw error;
+      // });
 
       return state.map((server) =>
-        server.id === payload.id ? { ...server, payload } : server
+        server.id === action.payload.id ? action.payload : server
       );
     },
   },

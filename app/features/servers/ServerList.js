@@ -47,7 +47,7 @@ const ServerListMemo = React.memo(function serverList({
                       onDoubleClick={(event) => onConnectServer(server.id)}
                     >
                       <StorageOutlinedIcon color="primary" style={{paddingRight: 10}} />
-                      <ListItemText primary={server.name} />
+                      <ListItemText primary={server.alias} />
                     </ListItem>
                   </Grid>
 
