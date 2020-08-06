@@ -1,12 +1,13 @@
 import React, { Fragment, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectServer } from './selectedSlice';
+import { addServer } from './serversSlice';
+import { connected } from './connectionSlice';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
-import { selectServer } from './selectedSlice';
-import { addServer } from './serversSlice';
 import Paper from '@material-ui/core/Paper';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 const storage = require('electron-json-storage');
@@ -63,9 +64,12 @@ export default function ServerList() {
   const servers = useSelector((state) => state.servers);
   const selected = useSelector((state) => state.selected);
 
+
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
   const onAddServer = (config) => dispatch(addServer(config));
+
+  const onConnected = (id, redis) => dispatch(connected({id, redis}));
 
   // TODO : 서버 목록 불러오기
   //
@@ -94,7 +98,8 @@ export default function ServerList() {
 
 
   const onConnectServer = (id) => {
-    // TODO : electron 연동시 redis 연결 시도!
+    console.log(`called onConnectServer=${id}`);
+    // TODO : 실제 접속
   };
 
   const onEditServer = (id) => {
@@ -133,10 +138,6 @@ export default function ServerList() {
 
   return (
     <div className={classes.root}>
-      {/*{*/}
-      {/*  console.log(servers)*/}
-      {/*}*/}
-
       <ServerListMemo
         servers={servers}
         selected={selected.id}
