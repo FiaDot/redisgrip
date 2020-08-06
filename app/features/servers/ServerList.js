@@ -4,13 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { selectServer } from './selectedSlice';
 import { addServer } from './serversSlice';
-
+import Paper from '@material-ui/core/Paper';
+import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 const storage = require('electron-json-storage');
 const { dialog, remote } = require('electron');
 
@@ -18,7 +16,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    //backgroundColor: theme.palette.background.paper,
+    overflowY: 'scroll',
+    backgroundColor: '#eeeeee',
   },
 }));
 
@@ -31,50 +31,29 @@ const ServerListMemo = React.memo(function serverList({
   onRemoveServer,
 }) {
   return (
-    <div>
-      <List component="nav" aria-label="main mailbox folders">
-        {servers.length === 0
-          ? '--- TODO : show empty message ---'
-          : servers.map((server) => (
-              <Grid container spacing={2} key={server.id}>
-                <Grid item xs={12} sm={8}>
-                  <ListItem
-                    button
-                    selected={selected === server.id}
-                    key={server.id}
-                    onClick={(event) => onSelectServer(server.id)}
-                    onDoubleClick={(event) => onConnectServer(server.id)}
-                  >
-                    <ListItemText primary={server.name} />
-                  </ListItem>
-                </Grid>
-                <Grid item xs={12} sm={2}>
-                  <IconButton
-                    fontSize="large"
-                    color="primary"
-                    aria-label="edit"
-                    key={server.id}
-                    onClick={(event) => onEditServer(server.id)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Grid>
+      <Paper style={{maxHeight: 500, overflowY: 'scroll'}}>
+        <List component="nav" aria-label="servers">
+          {servers.length === 0
+            ? ''
+            : servers.map((server) => (
+                <Grid container spacing={0} key={server.id}>
+                  <Grid item xs={12}>
+                    <ListItem
+                      button
+                      selected={selected === server.id}
+                      key={server.id}
+                      onClick={(event) => onSelectServer(server.id)}
+                      onDoubleClick={(event) => onConnectServer(server.id)}
+                    >
+                      <StorageOutlinedIcon color="primary" style={{paddingRight: 10}} />
+                      <ListItemText primary={server.name} />
+                    </ListItem>
+                  </Grid>
 
-                <Grid item xs={12} sm={2}>
-                  <IconButton
-                    fontSize="large"
-                    color="secondary"
-                    aria-label="delete"
-                    key={server.id}
-                    onClick={(event) => onRemoveServer(server.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
                 </Grid>
-              </Grid>
-            ))}
-      </List>
-    </div>
+              ))}
+        </List>
+      </Paper>
   );
 });
 
