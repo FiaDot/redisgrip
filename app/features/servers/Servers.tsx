@@ -1,7 +1,7 @@
 import React from 'react';
+import { Grid } from '@material-ui/core';
 import ServersToolbar from './ServerToolbar';
 import ServerList from './ServerList';
-import { Grid } from '@material-ui/core';
 import Keys from '../keys/Keys';
 
 export default function Servers() {

@@ -51,7 +51,6 @@ export default function ServerToolbar() {
   const onDeselectServer = () => dispatch(deselectServer());
 
   const del = () => {
-    //console.log(`called delServer=${selectedId}`);
     onDelServer(selectedId);
     onDeselectServer();
   };
@@ -62,6 +61,7 @@ export default function ServerToolbar() {
 
   const connect = () => {
     console.log('called connect');
+
   };
 
   const disconnect = () => {
