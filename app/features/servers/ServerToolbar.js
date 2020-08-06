@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import { addServer, delServer } from './serversSlice';
 import { deselectServer, isSelectedServer } from './selectedSlice';
+import { connectToServer } from './connectionSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +62,7 @@ export default function ServerToolbar() {
 
   const connect = () => {
     console.log('called connect');
-
+    dispatch(connectToServer());
   };
 
   const disconnect = () => {
@@ -69,6 +70,7 @@ export default function ServerToolbar() {
   };
 
   return (
+
     <div className={classes.root}>
       <Typography
         className={classes.title}
