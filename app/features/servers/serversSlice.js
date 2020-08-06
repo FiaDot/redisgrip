@@ -3,11 +3,8 @@
  */
 
 import { createSlice } from '@reduxjs/toolkit';
+import uuid from 'uuid';
 const storage = require('electron-json-storage');
-
-// 고유번호 생성용
-let nextId = 2;
-
 
 // redux-toolkit 이용
 const serversSlice = createSlice({
@@ -15,22 +12,21 @@ const serversSlice = createSlice({
   initialState: [
   ],
   reducers: {
-    addServer: (state, { payload }) => {
-      payload.id = payload.id || nextId;
-      nextId += 1;
-      return [...state, payload];
+    addServer: (state, action) => {
+      action.payload.id = action.payload.id || uuid.v4();
+      console.log(`addServer id=${action.payload.id}`);
+      return [...state, action.payload];
     },
     delServer: (state, action) => {
-      state.filter((server) => server.id !== action.payload);
-      return state;
+      return state.filter((server) => server.id !== action.payload);
     },
-    editServer: (state, { payload }) => {
-      storage.set(payload.id.toString(), payload, function(error) {
-        if (error) throw error;
-      });
+    editServer: (state, action) => {
+      // storage.set(payload.id.toString(), payload, function(error) {
+      //   if (error) throw error;
+      // });
 
       return state.map((server) =>
-        server.id === payload.id ? { ...server, payload } : server
+        server.id === action.payload.id ? action.payload : server
       );
     },
   },
