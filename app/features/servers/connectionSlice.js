@@ -108,47 +108,66 @@ const connect = async () => {
     });
 
     const pingReply = await redis.ping();
-    console.log(pingReply);
-    return true;
+    return 'PONG' === pingReply;
   } catch (err) {
-    console.log('error!');
-    return false;
+    console.log(err);
+    throw err;
   }
 };
 
 const connectionSlice = createSlice({
   name: 'connections',
   initialState: {
-    connections: [],
+    connectResult: false,
+    instances: [],
   },
   reducers: {
     connected: (state, action) => {
-      [...state.connections, action.payload];
+      [...state.instances, action.payload];
       return state;
     },
     disconnected: (state, action) => {
-      state.connections.filter((server) => server.id !== action.payload.id);
+      state.instances.filter((server) => server.id !== action.payload.id);
       return state;
     },
-    connectToServer: (state, action) => {
-      const result = connect()
-        .then((ret) => {
-          if (ret) {
-            console.log('connectToServer success');
-          } else {
-            console.log('connectToServer failed');
-          }
-        })
-        .catch(console.log);
+    connectSuccess: (state, action) => {
+      console.log('called connectSuccess');
+      state.connectResult = true;
+    },
+    connectFailed: (state, action) => {
+      console.log('called connectFailed');
+      // state.connectResult = false;
+    },
 
-      return state;
-    },
   },
 });
 
 export const {
   connected,
   disconnected,
-  connectToServer,
+  connectSuccess,
+  connectFailed,
 } = connectionSlice.actions;
+
 export default connectionSlice.reducer;
+
+// async 형태
+export const connectToServer = (connectionInfo) => {
+  return (dispatch, getState) => {
+    // const state = getState();
+    console.log(`called connectToServer in connectionSlice=${JSON.stringify(connectionInfo)}`);
+
+    const result = connect()
+      .then((ret) => {
+        if (ret) {
+          dispatch(connectSuccess());
+        } else {
+          dispatch(connectFailed());
+        }
+      })
+      .catch((err) => {
+        console.log('catch!!');
+        dispatch(connectFailed);
+      });
+  };
+};

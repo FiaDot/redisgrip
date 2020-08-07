@@ -13,6 +13,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import SearchIcon from '@material-ui/icons/Search';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import { addServer } from './serversSlice';
+import { connectToServer } from './connectionSlice';
 const generate = require('project-name-generator');
 
 const useStyles = makeStyles((theme) => ({
@@ -116,6 +117,21 @@ export default function AddServer() {
       pemFilePath: e.target.files[0].path,
     });
   };
+
+  const onTestConnection = () => {
+    dispatch(connectToServer({
+      alias,
+      host,
+      port,
+      pwd,
+      sshHost,
+      sshPort,
+      sshUsername,
+      sshPassword,
+      pemFilePath,
+      pemPassphrase,
+    }));
+  }
 
   return redirect ? (
     <Redirect push to="/servers" />
@@ -287,9 +303,7 @@ export default function AddServer() {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
-            component={Link}
-            to="/"
+            onClick={onTestConnection}
           >
             Test
           </Button>
