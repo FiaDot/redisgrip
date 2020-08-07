@@ -118,8 +118,13 @@ const connect = async () => {
 const connectionSlice = createSlice({
   name: 'connections',
   initialState: {
+    // 결과 보여줘야 하나?
+    showResult: false,
+    // 접속 성공 여부
     connectResult: false,
+    // 접속 시도중 인가?
     isConnecting: false,
+    // 접속된 redis instance들
     instances: [],
   },
   reducers: {
@@ -134,17 +139,21 @@ const connectionSlice = createSlice({
     startConnecting: (state, action) => {
       state.isConnecting = true;
     },
+    stopConnecting: (state, action) => {
+      state.isConnecting = false;
+    },
     connectSuccess: (state, action) => {
       console.log('called connectSuccess');
-      state.isConnecting = false;
       state.connectResult = true;
     },
     connectFailed: (state, action) => {
       console.log('called connectFailed');
-      state.isConnecting = false;
       state.connectResult = false;
     },
-
+    setShowResult: (state, action) => {
+      state.showResult = action.payload;
+      return state;
+    },
   },
 });
 
@@ -152,8 +161,10 @@ export const {
   connected,
   disconnected,
   startConnecting,
+  stopConnecting,
   connectSuccess,
   connectFailed,
+  setShowResult,
 } = connectionSlice.actions;
 
 export default connectionSlice.reducer;
@@ -169,15 +180,19 @@ export const connectToServer = (connectionInfo) => {
     setTimeout(function() {
       const result = connect()
         .then((ret) => {
+          dispatch(stopConnecting());
           if (ret) {
             dispatch(connectSuccess());
           } else {
             dispatch(connectFailed());
           }
+          dispatch(setShowResult(true));
         })
         .catch((err) => {
           console.log('catch!!');
-          dispatch(connectFailed);
+          dispatch(stopConnecting());
+          dispatch(connectFailed());
+          dispatch(setShowResult(true));
         });
     }, 3000);
   };

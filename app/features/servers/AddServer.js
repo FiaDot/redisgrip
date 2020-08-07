@@ -15,7 +15,8 @@ import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { addServer } from './serversSlice';
-import { connectToServer } from './connectionSlice';
+import { connectToServer, setShowResult } from './connectionSlice';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const generate = require('project-name-generator');
 
@@ -50,6 +51,7 @@ export default function AddServer() {
 
   const disabled = useSelector((state) => state.connections.isConnecting);
   const connectResult = useSelector((state) => state.connections.connectResult);
+  const showResult = useSelector((state) => state.connections.showResult);
 
   // local
   const [inputs, setInputs] = useState({
@@ -141,6 +143,10 @@ export default function AddServer() {
     );
   };
 
+  const onAlertClose = () => {
+    dispatch(setShowResult(false));
+  };
+
   return redirect ? (
     <Redirect push to="/servers" />
   ) : (
@@ -148,6 +154,15 @@ export default function AddServer() {
       <Backdrop className={classes.backdrop} open={disabled}>
         <CircularProgress color="inherit" />
       </Backdrop>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={showResult}
+        onClose={onAlertClose}
+        autoHideDuration={3000}
+        message={connectResult ? 'Success' : 'Failed'}
+        key="bottom center"
+      />
 
       <CssBaseline />
       <div className={classes.paper}>
