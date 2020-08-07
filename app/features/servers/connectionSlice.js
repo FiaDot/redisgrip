@@ -119,6 +119,7 @@ const connectionSlice = createSlice({
   name: 'connections',
   initialState: {
     connectResult: false,
+    isConnecting: false,
     instances: [],
   },
   reducers: {
@@ -130,13 +131,18 @@ const connectionSlice = createSlice({
       state.instances.filter((server) => server.id !== action.payload.id);
       return state;
     },
+    startConnecting: (state, action) => {
+      state.isConnecting = true;
+    },
     connectSuccess: (state, action) => {
       console.log('called connectSuccess');
+      state.isConnecting = false;
       state.connectResult = true;
     },
     connectFailed: (state, action) => {
       console.log('called connectFailed');
-      // state.connectResult = false;
+      state.isConnecting = false;
+      state.connectResult = false;
     },
 
   },
@@ -145,6 +151,7 @@ const connectionSlice = createSlice({
 export const {
   connected,
   disconnected,
+  startConnecting,
   connectSuccess,
   connectFailed,
 } = connectionSlice.actions;
@@ -156,18 +163,22 @@ export const connectToServer = (connectionInfo) => {
   return (dispatch, getState) => {
     // const state = getState();
     console.log(`called connectToServer in connectionSlice=${JSON.stringify(connectionInfo)}`);
+    dispatch(startConnecting());
 
-    const result = connect()
-      .then((ret) => {
-        if (ret) {
-          dispatch(connectSuccess());
-        } else {
-          dispatch(connectFailed());
-        }
-      })
-      .catch((err) => {
-        console.log('catch!!');
-        dispatch(connectFailed);
-      });
+    // 강제 지연
+    setTimeout(function() {
+      const result = connect()
+        .then((ret) => {
+          if (ret) {
+            dispatch(connectSuccess());
+          } else {
+            dispatch(connectFailed());
+          }
+        })
+        .catch((err) => {
+          console.log('catch!!');
+          dispatch(connectFailed);
+        });
+    }, 3000);
   };
 };
