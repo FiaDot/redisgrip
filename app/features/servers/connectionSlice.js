@@ -17,10 +17,13 @@ function connectToSSH(options) {
 }
 
 function connectToRedis(options) {
-  // console.log(`connectToRedis=${JSON.stringify(options)}`);
+  console.log(`connectToRedis=${JSON.stringify(options)}`);
   const redisInst = new Redis(options);
   return new Promise((resolve, reject) => {
-    redisInst.once('error', reject);
+    redisInst.once('error', (err) => {
+      redisInst.disconnect();
+      reject(err);
+    });
     redisInst.once('ready', () => resolve(redisInst));
   });
 }
@@ -48,10 +51,14 @@ async function connectToRedisViaSSH(
   console.log(`called connectToRedisViaSSH options=${JSON.stringify(options)}`);
 
   if (!options.ssh) {
+    console.log('direct access connectToRedis');
+
     const redisInst = await connectToRedis({
       host: options.redis.host,
       port: options.redis.port,
       password: options.redis.password,
+      connectTimeout: 10000,
+      maxRetriesPerRequest: null,
     });
     return redisInst;
   }
@@ -83,12 +90,14 @@ async function connectToRedisViaSSH(
     host: server.address().address,
     port: server.address().port,
     password: options.redis.password,
+    connectTimeout: 10000,
+    maxRetriesPerRequest: 0,
   });
 
   return redisInst;
 }
 
-const connect = async () => {
+const connect = async (config) => {
   console.log(`called connect and ping function`);
 
   try {
@@ -101,14 +110,14 @@ const connect = async () => {
       //   passphrase: null,
       // },
       redis: {
-        host: '52.79.194.253',
-        port: 6379,
-        password: 'asdf1234!',
+        host: config.host, // '52.79.194.253',
+        port: config.port, // 6379,
+        password: config.pwd, // 'asdf1234!',
       },
     });
 
     const pingReply = await redis.ping();
-    return 'PONG' === pingReply;
+    return pingReply === 'PONG';
   } catch (err) {
     console.log(err);
     throw err;
@@ -170,15 +179,18 @@ export const {
 export default connectionSlice.reducer;
 
 // async 형태
-export const connectToServer = (connectionInfo) => {
+export const connectToServer = (config) => {
   return (dispatch, getState) => {
     // const state = getState();
-    console.log(`called connectToServer in connectionSlice=${JSON.stringify(connectionInfo)}`);
+    console.log(
+      `called connectToServer in connectionSlice=${JSON.stringify(config)}`
+    );
+    dispatch(setShowResult(false));
     dispatch(startConnecting());
 
     // 강제 지연
-    setTimeout(function() {
-      const result = connect()
+    setTimeout(function () {
+      const result = connect(config)
         .then((ret) => {
           dispatch(stopConnecting());
           if (ret) {

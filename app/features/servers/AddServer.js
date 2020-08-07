@@ -64,6 +64,7 @@ export default function AddServer() {
     alias: generate({ words: 2, number: true }).dashed,
     host: 'localhost',
     port: 6379,
+    // TODO : password로 변경 필요!
     pwd: 'pwd',
     sshHost: 'sshlocalhost',
     sshPort: '22',
@@ -136,8 +137,6 @@ export default function AddServer() {
   };
 
   const onTestConnection = () => {
-    onAlertClose();
-
     dispatch(
       connectToServer({
         alias,
