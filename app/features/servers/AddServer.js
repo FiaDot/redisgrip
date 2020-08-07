@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -12,8 +12,11 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import SearchIcon from '@material-ui/icons/Search';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { addServer } from './serversSlice';
 import { connectToServer } from './connectionSlice';
+
 const generate = require('project-name-generator');
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +47,9 @@ export default function AddServer() {
   // redux
   const dispatch = useDispatch();
   const onAddServer = (server) => dispatch(addServer(server));
+
+  const disabled = useSelector((state) => state.connections.isConnecting);
+  const connectResult = useSelector((state) => state.connections.connectResult);
 
   // local
   const [inputs, setInputs] = useState({
@@ -119,24 +125,30 @@ export default function AddServer() {
   };
 
   const onTestConnection = () => {
-    dispatch(connectToServer({
-      alias,
-      host,
-      port,
-      pwd,
-      sshHost,
-      sshPort,
-      sshUsername,
-      sshPassword,
-      pemFilePath,
-      pemPassphrase,
-    }));
-  }
+    dispatch(
+      connectToServer({
+        alias,
+        host,
+        port,
+        pwd,
+        sshHost,
+        sshPort,
+        sshUsername,
+        sshPassword,
+        pemFilePath,
+        pemPassphrase,
+      })
+    );
+  };
 
   return redirect ? (
     <Redirect push to="/servers" />
   ) : (
     <Container component="main" maxWidth="xs">
+      <Backdrop className={classes.backdrop} open={disabled}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       <CssBaseline />
       <div className={classes.paper}>
         <form className={classes.form} noValidate>
@@ -151,6 +163,7 @@ export default function AddServer() {
             name="alias"
             value={alias}
             onChange={onChange}
+            disabled={disabled}
           />
 
           <Grid container spacing={1}>
@@ -275,6 +288,7 @@ export default function AddServer() {
                 color="primary"
                 component="label"
                 className={classes.submit}
+                disabled={disabled}
               >
                 <input
                   type="file"
@@ -304,6 +318,7 @@ export default function AddServer() {
             variant="contained"
             color="primary"
             onClick={onTestConnection}
+            disabled={disabled}
           >
             Test
           </Button>
@@ -317,6 +332,7 @@ export default function AddServer() {
                 color="primary"
                 className={classes.submit}
                 onClick={onSubmit}
+                disabled={disabled}
               >
                 Add
               </Button>
@@ -331,6 +347,7 @@ export default function AddServer() {
                 className={classes.submit}
                 component={Link}
                 to="/servers"
+                disabled={disabled}
               >
                 Cancel
               </Button>
