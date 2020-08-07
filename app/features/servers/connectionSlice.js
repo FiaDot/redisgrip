@@ -194,6 +194,6 @@ export const connectToServer = (connectionInfo) => {
           dispatch(connectFailed());
           dispatch(setShowResult(true));
         });
-    }, 3000);
+    }, 500);
   };
 };

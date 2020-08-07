@@ -14,9 +14,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import { addServer } from './serversSlice';
 import { connectToServer, setShowResult } from './connectionSlice';
-import Snackbar from '@material-ui/core/Snackbar';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const generate = require('project-name-generator');
 
@@ -126,7 +131,13 @@ export default function AddServer() {
     });
   };
 
+  const onAlertClose = () => {
+    dispatch(setShowResult(false));
+  };
+
   const onTestConnection = () => {
+    onAlertClose();
+
     dispatch(
       connectToServer({
         alias,
@@ -143,10 +154,6 @@ export default function AddServer() {
     );
   };
 
-  const onAlertClose = () => {
-    dispatch(setShowResult(false));
-  };
-
   return redirect ? (
     <Redirect push to="/servers" />
   ) : (
@@ -160,9 +167,16 @@ export default function AddServer() {
         open={showResult}
         onClose={onAlertClose}
         autoHideDuration={3000}
-        message={connectResult ? 'Success' : 'Failed'}
+        // message={connectResult ? 'Success' : 'Failed'}
         key="bottom center"
-      />
+      >
+        <Alert
+          onClose={onAlertClose}
+          severity={connectResult ? 'success' : 'error'}
+        >
+          Connection {connectResult ? 'Success' : 'Failed'}
+        </Alert>
+      </Snackbar>
 
       <CssBaseline />
       <div className={classes.paper}>
