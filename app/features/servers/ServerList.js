@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectServer } from './selectedSlice';
 import { addServer } from './serversSlice';
-import { connected } from './connectionSlice';
+import { connected, connectToServer } from './connectionSlice';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -100,6 +100,7 @@ export default function ServerList() {
   const onConnectServer = (id) => {
     console.log(`called onConnectServer=${id}`);
     // TODO : 실제 접속
+    dispatch(connectToServer());
   };
 
   const onEditServer = (id) => {

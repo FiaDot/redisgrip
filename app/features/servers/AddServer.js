@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -12,7 +12,17 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import SearchIcon from '@material-ui/icons/Search';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import { addServer } from './serversSlice';
+import { connectToServer, setShowResult } from './connectionSlice';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const generate = require('project-name-generator');
 
 const useStyles = makeStyles((theme) => ({
@@ -44,12 +54,17 @@ export default function AddServer() {
   const dispatch = useDispatch();
   const onAddServer = (server) => dispatch(addServer(server));
 
+  const disabled = useSelector((state) => state.connections.isConnecting);
+  const connectResult = useSelector((state) => state.connections.connectResult);
+  const showResult = useSelector((state) => state.connections.showResult);
+
   // local
   const [inputs, setInputs] = useState({
     redirect: false,
     alias: generate({ words: 2, number: true }).dashed,
     host: 'localhost',
     port: 6379,
+    // TODO : password로 변경 필요!
     pwd: 'pwd',
     sshHost: 'sshlocalhost',
     sshPort: '22',
@@ -117,10 +132,51 @@ export default function AddServer() {
     });
   };
 
+  const onAlertClose = () => {
+    dispatch(setShowResult(false));
+  };
+
+  const onTestConnection = () => {
+    dispatch(
+      connectToServer({
+        alias,
+        host,
+        port,
+        pwd,
+        sshHost,
+        sshPort,
+        sshUsername,
+        sshPassword,
+        pemFilePath,
+        pemPassphrase,
+      })
+    );
+  };
+
   return redirect ? (
     <Redirect push to="/servers" />
   ) : (
     <Container component="main" maxWidth="xs">
+      <Backdrop className={classes.backdrop} open={disabled}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={showResult}
+        onClose={onAlertClose}
+        autoHideDuration={3000}
+        // message={connectResult ? 'Success' : 'Failed'}
+        key="bottom center"
+      >
+        <Alert
+          onClose={onAlertClose}
+          severity={connectResult ? 'success' : 'error'}
+        >
+          Connection {connectResult ? 'Success' : 'Failed'}
+        </Alert>
+      </Snackbar>
+
       <CssBaseline />
       <div className={classes.paper}>
         <form className={classes.form} noValidate>
@@ -135,6 +191,7 @@ export default function AddServer() {
             name="alias"
             value={alias}
             onChange={onChange}
+            disabled={disabled}
           />
 
           <Grid container spacing={1}>
@@ -259,6 +316,7 @@ export default function AddServer() {
                 color="primary"
                 component="label"
                 className={classes.submit}
+                disabled={disabled}
               >
                 <input
                   type="file"
@@ -287,9 +345,8 @@ export default function AddServer() {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
-            component={Link}
-            to="/"
+            onClick={onTestConnection}
+            disabled={disabled}
           >
             Test
           </Button>
@@ -303,6 +360,7 @@ export default function AddServer() {
                 color="primary"
                 className={classes.submit}
                 onClick={onSubmit}
+                disabled={disabled}
               >
                 Add
               </Button>
@@ -317,6 +375,7 @@ export default function AddServer() {
                 className={classes.submit}
                 component={Link}
                 to="/servers"
+                disabled={disabled}
               >
                 Cancel
               </Button>
