@@ -31,7 +31,7 @@ const RedisMiddleware = () => {
   }
 
   function connectToRedis(options) {
-    console.log(`connectToRedis=${JSON.stringify(options)}`);
+    // console.log(`connectToRedis=${JSON.stringify(options)}`);
     const redisInst = new Redis(options);
     return new Promise((resolve, reject) => {
       redisInst.once('error', (err) => {
@@ -114,11 +114,10 @@ const RedisMiddleware = () => {
   }
 
   const connect = async (config) => {
-    console.log(`called connect and ping function`);
 
     try {
       if (redis != null) {
-        redis.close();
+        redis.disconnect();
       }
 
       redis = await connectToRedisViaSSH({
@@ -145,15 +144,19 @@ const RedisMiddleware = () => {
   };
 
   return (store) => (next) => (action) => {
-    console.log(
-      `RedisMiddleware type=${action.type} payload=${JSON.stringify(
-        action.payload
-      )}`
-    );
+    // console.log(
+    //   `RedisMiddleware type=${action.type} payload=${JSON.stringify(
+    //     action.payload
+    //   )}`
+    // );
+    console.log(`RedisMiddleware type=${action.type}`);
 
     switch (action.type) {
       case 'connections/connectToServer':
-        const result = connect(action.payload).then((ret) => {
+        next(action);
+
+        const result = connect(action.payload)
+          .then((ret) => {
           store.dispatch(stopConnecting());
           if (ret) {
             store.dispatch(connectSuccess());
@@ -162,18 +165,6 @@ const RedisMiddleware = () => {
           }
           store.dispatch(setShowResult(true));
         });
-        // if ( null != redis ) {
-        //   redis.close();
-        // }
-        //
-        // redis = new Redis(action.payload);
-        // return new Promise((resolve, reject) => {
-        //   redis.once('error', (err) => {
-        //     redis.disconnect();
-        //     reject(err);
-        //   });
-        //   redis.once('ready', () => resolve(redis));
-        // });
         break;
       default:
         next(action);

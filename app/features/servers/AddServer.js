@@ -18,6 +18,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { addServer } from './serversSlice';
 import { connectToServer, setShowResult } from './connectionSlice';
+import RedisMiddleware from '../../middleware/RedisMiddleware';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -57,6 +58,8 @@ export default function AddServer() {
   const disabled = useSelector((state) => state.connections.isConnecting);
   const connectResult = useSelector((state) => state.connections.connectResult);
   const showResult = useSelector((state) => state.connections.showResult);
+  const instance = useSelector((state) => state.connections.instance);
+
 
   // local
   const [inputs, setInputs] = useState({
@@ -151,6 +154,19 @@ export default function AddServer() {
         pemPassphrase,
       })
     );
+  };
+
+
+  const onFetchRedisInstance = async () => {
+    console.log(`called onFetchRedisInstance instance=${typeof instance}`);
+
+    if ( !instance ) {
+      console.log('instance is null');
+      return;
+    }
+
+    const pong = await instance.ping();
+    console.log(`pong=${pong}`);
   };
 
   return redirect ? (
@@ -340,16 +356,33 @@ export default function AddServer() {
             onChange={onChange}
           />
 
-          <Button
-            startIcon={<ReplayOutlinedIcon />}
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={onTestConnection}
-            disabled={disabled}
-          >
-            Test
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+              <Button
+                startIcon={<ReplayOutlinedIcon />}
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={onTestConnection}
+                disabled={disabled}
+              >
+                Test
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <Button
+                startIcon={<ReplayOutlinedIcon />}
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={onFetchRedisInstance}
+                disabled={disabled}
+              >
+                Fetch Redis Instance
+              </Button>
+            </Grid>
+          </Grid>
 
           <Grid container spacing={2}>
             <Grid item xs={12} sm={8}>

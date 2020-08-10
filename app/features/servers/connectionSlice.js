@@ -14,39 +14,40 @@ const connectionSlice = createSlice({
     // 접속 시도중 인가?
     isConnecting: false,
     // 접속된 redis instance들
-    instances: [],
+    instance: null,
     config: {},
   },
   reducers: {
     connectToServer: (state, action) => {
-      state.config = action.payload;
-      return state;
+      console.log('called connectToServer');
+      return { ...state, config: action.payload};
     },
     connected: (state, action) => {
-      [...state.instances, action.payload];
-      return state;
+      // console.log('connected');
+      // console.log(action);
+      // state.instance = action.payload.redis;
+      //return {...state};
     },
     disconnected: (state, action) => {
       state.instances.filter((server) => server.id !== action.payload.id);
       return state;
     },
     startConnecting: (state, action) => {
-      state.isConnecting = true;
+      return { ...state, isConnecting: true};
     },
     stopConnecting: (state, action) => {
-      state.isConnecting = false;
+      return { ...state, isConnecting: false};
     },
     connectSuccess: (state, action) => {
       console.log('called connectSuccess');
-      state.connectResult = true;
+      return { ...state, connectResult: true, instance: action.payload };
     },
     connectFailed: (state, action) => {
       console.log('called connectFailed');
-      state.connectResult = false;
+      return { ...state, connectResult: false, instance: null };
     },
     setShowResult: (state, action) => {
-      state.showResult = action.payload;
-      return state;
+      return { ...state, showResult: action.payload};
     },
   },
 });

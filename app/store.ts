@@ -8,9 +8,9 @@ import createRootReducer from './rootReducer';
 import RedisMiddleware from './middleware/RedisMiddleware';
 
 // redis instance를 redux 에 저장하기 위해 추가
-// const customizedMiddleware = getDefaultMiddleware({
-//   serializableCheck: false
-// });
+const customizedMiddleware = getDefaultMiddleware({
+  serializableCheck: false
+});
 
 export const history = createHashHistory();
 const rootReducer = createRootReducer(history);
@@ -18,7 +18,8 @@ export type RootState = ReturnType<typeof rootReducer>;
 
 const router = routerMiddleware(history);
 
-const middleware = [...getDefaultMiddleware(), router, RedisMiddleware];
+//const middleware = [...getDefaultMiddleware(), router, RedisMiddleware];
+const middleware = [...customizedMiddleware, router, RedisMiddleware];
 
 const excludeLoggerEnvs = ['test', 'production'];
 const shouldIncludeLogger = !excludeLoggerEnvs.includes(
