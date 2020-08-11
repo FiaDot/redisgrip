@@ -1,39 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import HomeIcon from '@material-ui/icons/Home';
-import { Link } from 'react-router-dom';
-import { addString, updateString } from './stringContentSlice';
+import TextField from '@material-ui/core/TextField';
+import { addString } from './stringContentSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#eeeeee',
+    // backgroundColor: theme.palette.background.paper,
   },
-  buttons: {
-    padding: 5,
+  button: {
+    margin: theme.spacing(0),
+    // backgroundColor: '#0000cc',
+    // borderColor: '#005cbf',
+  },
+  paper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(1),
+      // width: theme.spacing(32),
+      // height: theme.spacing(26),
+      minWidth: 250,
+      backgroundColor: '#eeeeee',
+    },
+  },
+  title: {
+    fontSize: 14,
   },
 }));
 
-export default function Keys() {
+export default function StringContent() {
   const classes = useStyles();
 
-  const stringContent = useSelector((state) => state.stringContent);
+  const stringContent = useSelector((state) => state.stringContent.content);
 
   const dispatch = useDispatch();
   const onAddString = (value) => dispatch(addString(value));
 
+  const [val, setVal] = useState(stringContent.content);
+
+  const onChangeValue = (newVal) => {
+    setVal(newVal);
+  };
+
   return (
-    <div className={classes.root}>
-      <List component="nav" aria-label="value">
-        {stringContent.keyName === null ? 'empty string value' : stringContent.keyName}
-      </List>
+    <div>
+      <TextField
+        id="outlined-multiline-static"
+        label="String"
+        multiline
+        rows={4}
+        variant="outlined"
+        value={stringContent}
+        // onChange={(e) => {
+        //   onChangeValue(e.target.value);
+        // }}
+      />
     </div>
   );
 }

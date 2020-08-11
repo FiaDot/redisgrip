@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Keys() {
+export default function HashContent() {
   const classes = useStyles();
 
   const hashContent = useSelector((state) => state.hashContent);
@@ -33,7 +33,7 @@ export default function Keys() {
     <div className={classes.root}>
       <List component="nav" aria-label="value">
         {hashContent.keyName === null
-          ? 'empty hash value'
+          ? ''
           : hashContent.content.map((kv) =>
             <ListItemText key={kv.key} primary={kv.key} secondary={kv.value} />
           )}

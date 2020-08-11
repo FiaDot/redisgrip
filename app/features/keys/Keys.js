@@ -22,6 +22,7 @@ import { addHash } from '../values/hashContentSlice';
 import { addString } from '../values/stringContentSlice';
 import { addKey, addKeys, clearKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
+import Divider from '@material-ui/core/Divider';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
@@ -77,6 +78,7 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
               />
               <ListItemText primary={key} />
             </ListItem>
+            <Divider variant="middle" component="li" />
           </Grid>
         </Grid>
       ))}
@@ -123,7 +125,8 @@ export default function Keys(props) {
       case 'string': {
         const value = await redis.get(key);
         console.log(`called onSelectKey ${key}=${value}`);
-        onAddString(value);
+        // onAddString(value);
+        dispatch(addString({ keyName: key, content: value }))
         break;
       }
       case 'zset': {
