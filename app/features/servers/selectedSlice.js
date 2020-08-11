@@ -3,7 +3,6 @@
  */
 
 import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
 
 // redux-toolkit 이용
 const selectedSlice = createSlice({
@@ -17,16 +16,15 @@ const selectedSlice = createSlice({
   reducers: {
     selectServer: (state, action) => {
       console.log(action);
-      state.id = action.payload;
-      // state.checked = !state.checked;
+      return { ...state, id: action.payload};
     },
     deselectServer: (state, action) => {
       console.log('called deselectServer in slice');
-      state.id = null;
+      return { ...state, id: null};
     },
     selectKey: (state, action) => {
-      state.selectKey = action.payload;
       console.log(`called selectKey=${action.payload}`);
+      return { ...state, selectKey: action.payload};
     },
   },
 });
@@ -35,7 +33,5 @@ export const { selectServer, deselectServer, selectKey } = selectedSlice.actions
 export default selectedSlice.reducer;
 
 export const isSelectedServer = (state) => {
-  const ret = state.selected.id ? true : false;
-  console.log(`isSelectedServer=${ret} id=${state.selected.id}`)
-  return ret;
+  return !!state.selected.id;
 };
