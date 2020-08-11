@@ -7,10 +7,14 @@ import Values from '../values/Values';
 import { Client } from 'ssh2';
 import Redis from 'ioredis';
 import net from 'net';
+import { addKeys, clearKeys } from '../keys/keysSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ServerSheet() {
+  const dispatch = useDispatch();
 
   const [redis, setRedis] = useState(null);
+
 
   function connectToRedis(options) {
     // console.log(`connectToRedis=${JSON.stringify(options)}`);
@@ -33,24 +37,50 @@ export default function ServerSheet() {
         redis.disconnect();
       }
 
-      const redisInst = await connectToRedis({
+      const options = {
         host: '52.79.194.253',
         port: 6379,
         password: 'asdf1234!',
         connectTimeout: 10000,
         maxRetriesPerRequest: null,
-      });
+      };
 
-      setRedis(redisInst);
+      const redisInst = await connectToRedis(options);
+
+      // TODO : INFO 요청
 
       const pingReply = await redisInst.ping();
       console.log(pingReply);
-      return pingReply === 'PONG';
+
+      if ( pingReply !== 'PONG' ) {
+        console.log('errr!!!');
+      }
+      setRedis(redisInst);
+
+      const stream = await redisInst.scanStream({
+        match: '*',
+        count: 10000,
+      });
+
+      dispatch(clearKeys());
+
+      stream.on('data', function (keys) {
+        dispatch(addKeys(keys));
+      });
+
+      dispatch(connected(options));
+      // return pingReply === 'PONG';
     } catch (err) {
       console.log(err);
       throw err;
     }
   };
+
+  const onMonitor = async () => {
+    // const monitor = await redis.monitor();
+    // monitor.on('monitor', console.log);
+  };
+
   //
   // const stream = await redis.scanStream({
   //     match: '*',

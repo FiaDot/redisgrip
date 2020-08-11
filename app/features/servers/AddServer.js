@@ -157,17 +157,6 @@ export default function AddServer() {
   };
 
 
-  const onFetchRedisInstance = async () => {
-    console.log(`called onFetchRedisInstance instance=${typeof instance}`);
-
-    if ( !instance ) {
-      console.log('instance is null');
-      return;
-    }
-
-    const pong = await instance.ping();
-    console.log(`pong=${pong}`);
-  };
 
   return redirect ? (
     <Redirect push to="/servers" />
@@ -370,18 +359,6 @@ export default function AddServer() {
               </Button>
             </Grid>
 
-            <Grid item xs={12} sm={12}>
-              <Button
-                startIcon={<ReplayOutlinedIcon />}
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={onFetchRedisInstance}
-                disabled={disabled}
-              >
-                Fetch Redis Instance
-              </Button>
-            </Grid>
           </Grid>
 
           <Grid container spacing={2}>

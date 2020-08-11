@@ -13,8 +13,7 @@ const connectionSlice = createSlice({
     connectResult: false,
     // 접속 시도중 인가?
     isConnecting: false,
-    // 접속된 redis instance들
-    instance: null,
+    // 접속 정보
     config: {},
   },
   reducers: {
@@ -23,13 +22,10 @@ const connectionSlice = createSlice({
       return { ...state, config: action.payload};
     },
     connected: (state, action) => {
-      // console.log('connected');
-      // console.log(action);
-      // state.instance = action.payload.redis;
-      //return {...state};
+      return { ...state, config: action.payload};
     },
     disconnected: (state, action) => {
-      state.instances.filter((server) => server.id !== action.payload.id);
+      // state.instances.filter((server) => server.id !== action.payload.id);
       return state;
     },
     startConnecting: (state, action) => {

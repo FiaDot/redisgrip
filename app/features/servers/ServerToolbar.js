@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { addServer, delServer } from './serversSlice';
 import { deselectServer, isSelectedServer } from './selectedSlice';
 import { connectToServer } from './connectionSlice';
+import { clearKeys } from '../keys/keysSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,6 +70,9 @@ export default function ServerToolbar(props) {
 
   const disconnect = () => {
     console.log('called disconnect');
+
+    // key, value 삭제
+    dispatch(clearKeys());
   };
 
   return (
