@@ -143,6 +143,7 @@ const RedisMiddleware = () => {
     }
   };
 
+
   return (store) => (next) => (action) => {
     // console.log(
     //   `RedisMiddleware type=${action.type} payload=${JSON.stringify(
@@ -166,6 +167,20 @@ const RedisMiddleware = () => {
           store.dispatch(setShowResult(true));
         });
         break;
+      //
+      // case 'keys/scan':
+      //   const scanStream = async () => {
+      //     const stream = await redis.scanStream({
+      //       match: '*',
+      //       count: 10000,
+      //     });
+      //
+      //     stream.on('data', function (keys) {
+      //       action.payload = keys;
+      //       next(action);
+      //     });
+      //   };
+      //   break;
       default:
         next(action);
     }

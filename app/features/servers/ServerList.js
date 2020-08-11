@@ -58,7 +58,7 @@ const ServerListMemo = React.memo(function serverList({
   );
 });
 
-export default function ServerList() {
+export default function ServerList(props) {
   const classes = useStyles();
 
   const servers = useSelector((state) => state.servers);
@@ -100,7 +100,8 @@ export default function ServerList() {
   const onConnectServer = (id) => {
     console.log(`called onConnectServer=${id}`);
     // TODO : 실제 접속
-    dispatch(connectToServer());
+    //dispatch(connectToServer());
+    props.connect();
   };
 
   const onEditServer = (id) => {

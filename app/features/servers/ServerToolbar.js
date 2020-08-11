@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ServerToolbar() {
+export default function ServerToolbar(props) {
   const classes = useStyles();
 
   const selectedId = useSelector((state) => state.selected.id);
@@ -62,7 +62,9 @@ export default function ServerToolbar() {
 
   const connect = () => {
     console.log('called connect');
-    dispatch(connectToServer());
+    //dispatch(connectToServer());
+
+    //props.connect();
   };
 
   const disconnect = () => {
@@ -125,7 +127,8 @@ export default function ServerToolbar() {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={isSelected ? connect : null}
+              // onClick={isSelected ? connect : null}
+              onClick={(event) => props.connect()}
             >
               <LinkOutlinedIcon color={isSelected ? 'primary' : 'disabled'} />
             </IconButton>
