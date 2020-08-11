@@ -1,9 +1,18 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
-import StringContent from './StringContent';
+import Paper from '@material-ui/core/Paper';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
+import IconButton from '@material-ui/core/IconButton';
+import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import HashContent from './HashContent';
+import StringContent from './StringContent';
 
 // import { remote } from 'electron';
 
@@ -11,11 +20,27 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#eeeeee',
+    // backgroundColor: theme.palette.background.paper,
   },
-
-  buttons: {
-    padding: 5,
+  button: {
+    margin: theme.spacing(0),
+    // backgroundColor: '#0000cc',
+    // borderColor: '#005cbf',
+  },
+  paper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(1),
+      // width: theme.spacing(32),
+      // height: theme.spacing(26),
+      minWidth: 250,
+      backgroundColor: '#eeeeee',
+    },
+  },
+  title: {
+    fontSize: 14,
   },
 }));
 
@@ -24,9 +49,74 @@ export default function Values() {
   const dispatch = useDispatch();
 
   return (
-    <div className={classes.root}>
-       <StringContent />
-       <HashContent />
+    <div>
+      <div className={classes.root}>
+        <Typography
+          className={classes.title}
+          color="textSecondary"
+          gutterBottom
+          align="center"
+        >
+          Value
+        </Typography>
+
+        <div className={classes.paper}>
+          <Paper elevation={3}>
+            <Tooltip TransitionComponent={Zoom} title="Reload">
+              <IconButton
+                variant="contained"
+                className={classes.button}
+                onClick={null}
+              >
+                <RefreshOutlinedIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip TransitionComponent={Zoom} title="Save">
+              <IconButton
+                variant="contained"
+                className={classes.button}
+                onClick={null}
+              >
+                <SaveOutlinedIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip TransitionComponent={Zoom} title="Edit">
+              <IconButton
+                variant="contained"
+                className={classes.button}
+                onClick={null}
+              >
+                <EditOutlinedIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip TransitionComponent={Zoom} title="Set TTL">
+              <IconButton
+                variant="contained"
+                className={classes.button}
+                onClick={null}
+              >
+                <AccessTimeOutlinedIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip TransitionComponent={Zoom} title="Delete">
+              <IconButton
+                variant="contained"
+                className={classes.button}
+                onClick={null}
+              >
+                <DeleteOutlineOutlinedIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+          </Paper>
+        </div>
+      </div>
+
+      <StringContent />
+      <HashContent />
     </div>
   );
 }
