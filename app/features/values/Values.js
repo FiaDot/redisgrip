@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: '#eeeeee',
-    // backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
   },
   button: {
     margin: theme.spacing(0),
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
       // width: theme.spacing(32),
       // height: theme.spacing(26),
       minWidth: 250,
-      backgroundColor: '#eeeeee',
+      backgroundColor: theme.palette.background.paper,
     },
   },
   title: {

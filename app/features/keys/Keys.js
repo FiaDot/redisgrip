@@ -27,17 +27,11 @@ import Divider from '@material-ui/core/Divider';
 // const ioredis = require('ioredis');
 
 const useStyles = makeStyles((theme) => ({
-  // root: {
-  //   width: '100%',
-  //   maxWidth: 360,
-  //   backgroundColor: theme.palette.background.paper,
-  // },
   root: {
     width: '100%',
     maxWidth: 360,
-    // backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
     overflowY: 'scroll',
-    backgroundColor: '#eeeeee',
   },
   button: {
     margin: theme.spacing(0),
@@ -52,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(32),
       height: theme.spacing(6),
       minWidth: 250,
-      backgroundColor: '#eeeeee',
+      backgroundColor: theme.palette.background.paper,
     },
   },
   title: {

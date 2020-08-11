@@ -16,15 +16,14 @@ import { addServer, delServer } from './serversSlice';
 import { deselectServer, isSelectedServer } from './selectedSlice';
 import { connectToServer } from './connectionSlice';
 import { clearKeys } from '../keys/keysSlice';
+import red from '@material-ui/core/colors/red';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: '#eeeeee',
+    backgroundColor: theme.palette.background.default,
   },
   button: {
     margin: theme.spacing(0),
-    // backgroundColor: '#0000cc',
-    // borderColor: '#005cbf',
   },
   paper: {
     display: 'flex',
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(32),
       height: theme.spacing(6),
       minWidth: 250,
-      backgroundColor: '#eeeeee',
+      backgroundColor: theme.palette.background.paper,
     },
   },
   title: {
