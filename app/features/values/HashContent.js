@@ -1,17 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import HomeIcon from '@material-ui/icons/Home';
-import { Link } from 'react-router-dom';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { addHash } from './hashContentSlice';
+import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,22 +18,43 @@ const useStyles = makeStyles((theme) => ({
   buttons: {
     padding: 5,
   },
+  table: {
+    minWidth: 200,
+  },
 }));
 
 export default function HashContent() {
   const classes = useStyles();
 
-  const hashContent = useSelector((state) => state.hashContent);
+  const keyName = useSelector((state) => state.hashContent.keyName);
+  const contents = useSelector((state) => state.hashContent.contents);
 
   return (
     <div className={classes.root}>
-      <List component="nav" aria-label="value">
-        {hashContent.keyName === null
-          ? ''
-          : hashContent.content.map((kv) =>
-            <ListItemText key={kv.key} primary={kv.key} secondary={kv.value} />
-          )}
-      </List>
+
+      <TableContainer component={Paper}>
+        <Table stickyHeader className={classes.table} size="small" aria-label="a dense table">
+
+          <TableHead>
+            <TableRow>
+              <TableCell>Key</TableCell>
+              <TableCell align="left">Value</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {contents.map((kv) => (
+              <TableRow key={kv.key}>
+                <TableCell component="th" scope="row">
+                  {kv.key}
+                </TableCell>
+                <TableCell align="left">{kv.value}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
     </div>
   );
 }

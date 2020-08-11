@@ -94,13 +94,7 @@ export default function Keys(props) {
   const selectedKey = useSelector((state) => state.selected.selectKey);
 
   const dispatch = useDispatch();
-  const onAddKey = (key) => dispatch(addKey(key));
   const onAddKeys = (keys) => dispatch(addKeys(keys));
-
-  const onAddString = (value) => dispatch(addString({ keyName: value }));
-
-  const onAddHas = (key, kv) =>
-    dispatch(addHash({ keyName: key, content: kv }));
 
   // const onAddTest = () => {
   //   onAddKey('1');
@@ -153,7 +147,7 @@ export default function Keys(props) {
         const data = await redis.hscan(key, 0, 'COUNT', 10000);
         console.log(`called onSelectKey ${key}=${data}`);
         const kv = await makeKeyValueFromHash(data[1]);
-        onAddHas(key, kv);
+        dispatch(addHash({ keyName: key, contents: kv }));
         break;
       }
       default:
