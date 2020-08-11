@@ -7,14 +7,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import HomeIcon from '@material-ui/icons/Home';
-import { Link } from 'react-router-dom';
-import Redis from 'ioredis';
-import { Client } from 'ssh2';
-import net from 'net';
 import { addKey, addKeys, clearKeys } from './keysSlice';
 import { addString } from '../values/stringContentSlice';
-import StringContent from '../values/StringContent';
-import HashContent from '../values/HashContent';
 import { addHash } from '../values/hashContentSlice';
 
 import Values from '../values/Values';
@@ -31,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
-
   buttons: {
     padding: 5,
   },
@@ -43,17 +36,17 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey }) {
       {keys.length === 0
         ? 'empty'
         : keys.map((key) => (
-          <Grid container spacing={2} key={key}>
+            <Grid container spacing={2} key={key}>
               <Grid item xs={12} sm={12}>
-              <ListItem
-                  button
+                  <ListItem
                   key={key}
                   onClick={(event) => onSelectKey(key)}
+                  button
                 >
                   <ListItemText primary={key} />
                 </ListItem>
-            </Grid>
-            </Grid>
+              </Grid>
+          </Grid>
           ))}
     </List>
   );
@@ -62,7 +55,7 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey }) {
 export default function Keys(props) {
   const classes = useStyles();
 
-  const {redis} = props;
+  const { redis } = props;
   const keys = useSelector((state) => state.keys);
 
   const dispatch = useDispatch();
@@ -128,10 +121,6 @@ export default function Keys(props) {
       default:
         console.log('not matched type');
     }
-  };
-
-  const onRemoveServer = (id) => {
-    console.log(`called onRemoveServer=${id}`);
   };
 
   const scan = async () => {
