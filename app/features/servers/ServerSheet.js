@@ -73,12 +73,10 @@ export default function ServerSheet() {
       </Grid>
 
       <Grid item xs={4}>
-        Key list
         <Keys redis={redis} />
       </Grid>
 
       <Grid item>
-        Value List
         <Values />
       </Grid>
     </Grid>

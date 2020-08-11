@@ -12,8 +12,7 @@ const keysSlice = createSlice({
       return [...state, action.payload];
     },
     clearKeys: (state, action) => {
-      state = [];
-      return state;
+      return [];
     },
     addKey: (state, action) => {
       return [...state, action.payload];

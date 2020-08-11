@@ -4,6 +4,7 @@ import { History } from 'history';
 // eslint-disable-next-line import/no-cycle
 import counterReducer from './features/counter/counterSlice';
 import serversReducer from './features/servers/serversSlice';
+// eslint-disable-next-line import/no-cycle
 import selectedReducer from './features/servers/selectedSlice';
 import keysReducer from './features/keys/keysSlice';
 import stringContentReducer from './features/values/stringContentSlice';
