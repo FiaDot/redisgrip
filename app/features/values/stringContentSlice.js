@@ -9,7 +9,11 @@ const stringContentSlice = createSlice({
   },
   reducers: {
     addString: (state, action) => {
-      return { ...state, keyName: action.payload.keyName, content: action.payload.content };
+      return {
+        ...state,
+        keyName: action.payload.keyName,
+        content: action.payload.content,
+      };
     },
     updateString: (state, action) => {
       return { ...state, content: action.payload };
