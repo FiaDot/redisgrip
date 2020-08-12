@@ -16,7 +16,7 @@ const stringContentSlice = createSlice({
     },
     clearString: (state, action) => {
       return { ...state, keyName: null, content: null };
-    }
+    },
   },
 });
 

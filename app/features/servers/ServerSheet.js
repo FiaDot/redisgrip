@@ -49,6 +49,7 @@ export default function ServerSheet() {
     });
   }
 
+
   const connect = async () => {
     console.log('ServerSheet:connect()');
     try {
@@ -90,17 +91,22 @@ export default function ServerSheet() {
 
       dispatch(connected(options));
       // return pingReply === 'PONG';
+
+      const monitor = await redisInst.monitor();
+      monitor.on('monitor', monitoring);
+
     } catch (err) {
       console.log(err);
       throw err;
     }
   };
 
-  const onMonitor = async () => {
-    // TODO : call by button...
-    // const monitor = await redis.monitor();
-    // monitor.on('monitor', console.log);
+  const monitoring = (time, args, source, database) => {
+    console.log(`${time} / ${args} / ${source} / ${database}`);
+    // 1597213410.710730/SSCAN,set_test,0,COUNT,10000/59.10.191.65:61924/0
+
   };
+
 
   return (
     // <ThemeProvider theme={theme}>
