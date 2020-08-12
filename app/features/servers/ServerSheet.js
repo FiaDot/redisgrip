@@ -12,6 +12,7 @@ import { addKeys, clearKeys } from '../keys/keysSlice';
 import { connected } from './connectionSlice';
 import { makeStyles } from '@material-ui/core/styles';
 
+import moment from 'moment';
 // const theme = createMuiTheme({
 //   status: {
 //     danger: orange[500],
@@ -102,7 +103,8 @@ export default function ServerSheet() {
   };
 
   const monitoring = (time, args, source, database) => {
-    console.log(`${time} / ${args} / ${source} / ${database}`);
+    const fmtTime = moment.unix(time).format('YYYY-MM-DD HH:mm:ss:SSS').toString();
+    console.log(`${fmtTime} / ${args} / ${source} / ${database}`);
     // 1597213410.710730/SSCAN,set_test,0,COUNT,10000/59.10.191.65:61924/0
 
   };
