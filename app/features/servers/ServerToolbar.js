@@ -22,18 +22,25 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
   },
   button: {
-    margin: theme.spacing(0),
+    // width: 32,
+    // height: 32,
+    // padding: theme.spacing(1),
+  },
+  buttonIcon: {
+    fontSize: '', // small, large
   },
   paper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-      width: theme.spacing(32),
-      height: theme.spacing(6),
-      minWidth: 300,
-      backgroundColor: theme.palette.background.paper,
-    },
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.background.paper,
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // '& > *': {
+    //   margin: theme.spacing(1),
+    //   width: theme.spacing(32),
+    //   height: theme.spacing(6),
+    //   minWidth: 300,
+    //   backgroundColor: theme.palette.background.paper,
+    // },
   },
   title: {
     fontSize: 14,
@@ -93,13 +100,16 @@ export default function ServerToolbar(props) {
           {/* Add */}
           <Tooltip TransitionComponent={Zoom} title="Add">
             <IconButton
-              variant="contained"
+              // variant="contained"
               className={classes.button}
               // onClick={add}
               component={Link}
               to="/AddServer"
             >
-              <AddBoxOutlinedIcon color="primary" />
+              <AddBoxOutlinedIcon
+                className={classes.buttonIcon}
+                color="primary"
+              />
             </IconButton>
           </Tooltip>
 
@@ -111,6 +121,7 @@ export default function ServerToolbar(props) {
               onClick={isSelected ? del : null}
             >
               <IndeterminateCheckBoxOutlinedIcon
+                className={classes.buttonIcon}
                 color={isSelected ? 'primary' : 'disabled'}
               />
             </IconButton>
@@ -123,7 +134,10 @@ export default function ServerToolbar(props) {
               className={classes.button}
               onClick={isSelected ? edit : null}
             >
-              <EditOutlinedIcon color={isSelected ? 'primary' : 'disabled'} />
+              <EditOutlinedIcon
+                className={classes.buttonIcon}
+                color={isSelected ? 'primary' : 'disabled'}
+              />
             </IconButton>
           </Tooltip>
 
@@ -135,7 +149,10 @@ export default function ServerToolbar(props) {
               // onClick={isSelected ? connect : null}
               onClick={(event) => props.connect()}
             >
-              <LinkOutlinedIcon color={isSelected ? 'primary' : 'disabled'} />
+              <LinkOutlinedIcon
+                className={classes.buttonIcon}
+                color={isSelected ? 'primary' : 'disabled'}
+              />
             </IconButton>
           </Tooltip>
 
@@ -147,19 +164,24 @@ export default function ServerToolbar(props) {
               onClick={isSelected ? disconnect : null}
             >
               <LinkOffOutlinedIcon
+                className={classes.buttonIcon}
                 color={isSelected ? 'primary' : 'disabled'}
               />
             </IconButton>
           </Tooltip>
 
           {/* Clear */}
-          <Tooltip TransitionComponent={Zoom} title="Clear">
+          <Tooltip
+            className={classes.tooltip}
+            TransitionComponent={Zoom}
+            title="Clear"
+          >
             <IconButton
               variant="contained"
               className={classes.button}
               onClick={clear}
             >
-              <ClearAllIcon color="secondary" />
+              <ClearAllIcon className={classes.buttonIcon} color="secondary" />
             </IconButton>
           </Tooltip>
         </Paper>
