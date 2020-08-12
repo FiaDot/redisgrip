@@ -12,11 +12,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { addServer, delServer } from './serversSlice';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
+import { clearStorage, delServer } from './serversSlice';
 import { deselectServer, isSelectedServer } from './selectedSlice';
-import { connectToServer } from './connectionSlice';
 import { clearKeys } from '../keys/keysSlice';
-import red from '@material-ui/core/colors/red';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       width: theme.spacing(32),
       height: theme.spacing(6),
-      minWidth: 250,
+      minWidth: 300,
       backgroundColor: theme.palette.background.paper,
     },
   },
@@ -62,9 +61,9 @@ export default function ServerToolbar(props) {
 
   const connect = () => {
     console.log('called connect');
-    //dispatch(connectToServer());
+    // dispatch(connectToServer());
 
-    //props.connect();
+    // props.connect();
   };
 
   const disconnect = () => {
@@ -74,8 +73,11 @@ export default function ServerToolbar(props) {
     dispatch(clearKeys());
   };
 
-  return (
+  const clear = () => {
+    dispatch(clearStorage());
+  };
 
+  return (
     <div className={classes.root}>
       <Typography
         className={classes.title}
@@ -144,7 +146,20 @@ export default function ServerToolbar(props) {
               className={classes.button}
               onClick={isSelected ? disconnect : null}
             >
-              <LinkOffOutlinedIcon color={isSelected ? 'primary' : 'disabled'} />
+              <LinkOffOutlinedIcon
+                color={isSelected ? 'primary' : 'disabled'}
+              />
+            </IconButton>
+          </Tooltip>
+
+          {/* Clear */}
+          <Tooltip TransitionComponent={Zoom} title="Clear">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={clear}
+            >
+              <ClearAllIcon color="secondary" />
             </IconButton>
           </Tooltip>
         </Paper>
