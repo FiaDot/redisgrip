@@ -1,16 +1,17 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectServer } from './selectedSlice';
-import { addServer } from './serversSlice';
-import { connected, connectToServer } from './connectionSlice';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
-const storage = require('electron-json-storage');
+import {
+  loadStorage
+} from './serversSlice';
+import { selectServer } from './selectedSlice';
+
 const { dialog, remote } = require('electron');
 
 const useStyles = makeStyles((theme) => ({
@@ -31,29 +32,31 @@ const ServerListMemo = React.memo(function serverList({
   onRemoveServer,
 }) {
   return (
-      <Paper style={{maxHeight: 500, overflowY: 'scroll'}}>
-        <List component="nav" aria-label="servers">
-          {servers.length === 0
-            ? ''
-            : servers.map((server) => (
-                <Grid container spacing={0} key={server.id}>
-                  <Grid item xs={12}>
-                    <ListItem
-                      button
-                      selected={selected === server.id}
-                      key={server.id}
-                      onClick={(event) => onSelectServer(server.id)}
-                      onDoubleClick={(event) => onConnectServer(server.id)}
-                    >
-                      <StorageOutlinedIcon color="primary" style={{paddingRight: 10}} />
-                      <ListItemText primary={server.alias} />
-                    </ListItem>
-                  </Grid>
-
-                </Grid>
-              ))}
-        </List>
-      </Paper>
+    <Paper style={{ maxHeight: 500, overflowY: 'scroll' }}>
+      <List component="nav" aria-label="servers">
+        {servers.length === 0
+          ? ''
+          : servers.map((server) => (
+            <Grid container spacing={0} key={server.id}>
+                <Grid item xs={12}>
+                <ListItem
+                    button
+                    selected={selected === server.id}
+                    key={server.id}
+                    onClick={(event) => onSelectServer(server.id)}
+                    onDoubleClick={(event) => onConnectServer(server.id)}
+                  >
+                    <StorageOutlinedIcon
+                    color="primary"
+                    style={{ paddingRight: 10 }}
+                  />
+                    <ListItemText primary={server.alias} />
+                  </ListItem>
+              </Grid>
+              </Grid>
+            ))}
+      </List>
+    </Paper>
   );
 });
 
@@ -63,43 +66,25 @@ export default function ServerList(props) {
   const servers = useSelector((state) => state.servers);
   const selected = useSelector((state) => state.selected);
 
-
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
-  const onAddServer = (config) => dispatch(addServer(config));
 
-  const onConnected = (id, redis) => dispatch(connected({id, redis}));
 
-  // TODO : 서버 목록 불러오기
-  //
-  // useEffect(() => {
-  //   console.log('loaded ServerList');
-  //
-  //   // storage.clear();
-  //
-  //   storage.getAll(function(error, data) {
-  //     if (error) throw error;
-  //
-  //     console.log(data);
-  //     const keys = Object.keys(data);
-  //
-  //     keys.map((key) => {
-  //         console.log(`useEffect id=${key} data=${JSON.stringify(data[key])}`);
-  //         //onAddServer(data[key]);
-  //         dispatch(addServer(data[key]));
-  //     });
-  //   });
-  //
-  //   return () => {
-  //     console.log('unloaded ServerList');
-  //   };
-  // }, []);
+  useEffect(() => {
+    console.log('loaded ServerList');
 
+    // 서버 목록 불러오기
+    dispatch(loadStorage());
+
+    return () => {
+      console.log('unloaded ServerList');
+    };
+  }, []);
 
   const onConnectServer = (id) => {
     console.log(`called onConnectServer=${id}`);
     // TODO : 실제 접속
-    //dispatch(connectToServer());
+    // dispatch(connectToServer());
     props.connect();
   };
 
@@ -134,7 +119,6 @@ export default function ServerList(props) {
     // const selectedPaths = remote.dialog.showErrorBox('test', 'aasd');
     // // eslint-disable-next-line no-console
     // console.log(selectedPaths);
-
   };
 
   return (

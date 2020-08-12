@@ -16,7 +16,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { addServer } from './serversSlice';
+import { createServer } from './serversSlice';
 import { connectToServer, setShowResult } from './connectionSlice';
 import RedisMiddleware from '../../middleware/RedisMiddleware';
 
@@ -54,13 +54,11 @@ export default function AddServer() {
 
   // redux
   const dispatch = useDispatch();
-  const onAddServer = (server) => dispatch(addServer(server));
 
   const disabled = useSelector((state) => state.connections.isConnecting);
   const connectResult = useSelector((state) => state.connections.connectResult);
   const showResult = useSelector((state) => state.connections.showResult);
   const instance = useSelector((state) => state.connections.instance);
-
 
   // local
   const [inputs, setInputs] = useState({
@@ -104,18 +102,20 @@ export default function AddServer() {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    onAddServer({
-      alias,
-      host,
-      port,
-      pwd,
-      sshHost,
-      sshPort,
-      sshUsername,
-      sshPassword,
-      pemFilePath,
-      pemPassphrase,
-    });
+    dispatch(
+      createServer({
+        alias,
+        host,
+        port,
+        pwd,
+        sshHost,
+        sshPort,
+        sshUsername,
+        sshPassword,
+        pemFilePath,
+        pemPassphrase,
+      })
+    );
 
     // 저장 하고 나서 첫화면으로 이동
     setInputs({
@@ -156,8 +156,6 @@ export default function AddServer() {
       })
     );
   };
-
-
 
   return redirect ? (
     <Redirect push to="/servers" />
@@ -359,7 +357,6 @@ export default function AddServer() {
                 Test
               </Button>
             </Grid>
-
           </Grid>
 
           <Grid container spacing={2}>
