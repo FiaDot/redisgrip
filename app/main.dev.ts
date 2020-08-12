@@ -56,7 +56,7 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1280,
+    width: 1380,
     height: 800,
     webPreferences:
       (process.env.NODE_ENV === 'development' ||

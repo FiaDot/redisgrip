@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// NOTE : 사용안함
 export default function Home(): JSX.Element {
   const classes = useStyles();
 
