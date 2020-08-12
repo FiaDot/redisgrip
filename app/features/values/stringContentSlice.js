@@ -14,8 +14,11 @@ const stringContentSlice = createSlice({
     updateString: (state, action) => {
       return { ...state, content: action.payload };
     },
+    clearString: (state, action) => {
+      return { ...state, keyName: null, content: null };
+    }
   },
 });
 
-export const { addString, updateString } = stringContentSlice.actions;
+export const { addString, updateString, clearString } = stringContentSlice.actions;
 export default stringContentSlice.reducer;

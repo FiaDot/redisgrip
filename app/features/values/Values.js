@@ -11,8 +11,12 @@ import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
 import HashContent from './HashContent';
 import StringContent from './StringContent';
+import { clearStorage } from '../servers/serversSlice';
+import { clearString } from './stringContentSlice';
+import Divider from '@material-ui/core/Divider';
 
 // import { remote } from 'electron';
 
@@ -38,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.paper,
     },
   },
+  divider: {
+    margin: theme.spacing(1),
+  },
   title: {
     fontSize: 14,
   },
@@ -46,6 +53,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Values() {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+
+  const clear = () => {
+    dispatch(clearString());
+  }
+
 
   return (
     <div>
@@ -110,12 +123,27 @@ export default function Values() {
                 <DeleteOutlineOutlinedIcon color="primary" />
               </IconButton>
             </Tooltip>
+
+            <Tooltip TransitionComponent={Zoom} title="Clear">
+              <IconButton
+                variant="contained"
+                className={classes.button}
+                onClick={clear}
+              >
+                <ClearAllIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+
           </Paper>
         </div>
+
       </div>
 
+      <Divider className={classes.divider} />
       <StringContent />
+      <Divider className={classes.divider} />
       <HashContent />
+      <Divider className={classes.divider} />
     </div>
   );
 }
