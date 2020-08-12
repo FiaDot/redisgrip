@@ -14,7 +14,6 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import HashContent from './HashContent';
 import StringContent from './StringContent';
-import { clearStorage } from '../servers/serversSlice';
 import { clearString } from './stringContentSlice';
 import Divider from '@material-ui/core/Divider';
 
