@@ -7,7 +7,7 @@ import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import Typography from '@material-ui/core/Typography';
-import { addString } from './stringContentSlice';
+import { addString, clearAllString, clearString } from './stringContentSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +36,8 @@ export default function StringContent() {
   const classes = useStyles();
 
   const selectKey = useSelector((state) => state.selected.selectKey);
+  const selectType = useSelector((state) => state.selected.selectType);
+
   const stringRecords = useSelector((state) => state.stringContent.records);
 
   const dispatch = useDispatch();
@@ -51,6 +53,7 @@ export default function StringContent() {
     dispatch(addString({ key, value }));
   };
 
+
   const showValues = (key, history) => (
     // TODO : key가 들어가야 에러가 안난다... 넣었을때 고유번호 같은걸 하나 넣어야 할듯!!
     <Typography
@@ -65,34 +68,36 @@ export default function StringContent() {
 
   return (
     <div>
-      {/* <Typography variant="h6" component="h1"> */}
-      {/*  Type : String */}
-      {/* </Typography> */}
-      {/* <Typography>Because this is the life you love!</Typography> */}
 
-      <IconButton
-        variant="contained"
-        className={classes.button}
-        onClick={(e) => addStringTest('ab', 'ff1')}
-      >
-        <ClearAllIcon className={classes.buttonIcon} color="secondary" />
-      </IconButton>
+      <Tooltip TransitionComponent={Zoom} title="clearAllString">
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={(e) => dispatch(clearAllString())}
+        >
+          <ClearAllIcon className={classes.buttonIcon} color="secondary" />
+        </IconButton>
+      </Tooltip>
 
-      <IconButton
-        variant="contained"
-        className={classes.button}
-        onClick={(e) => addStringTest('a', 'ee2')}
-      >
-        <ClearAllIcon className={classes.buttonIcon} color="secondary" />
-      </IconButton>
+      <Tooltip TransitionComponent={Zoom} title="clearString">
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={(e) => dispatch(clearString('string_test'))}
+        >
+          <ClearAllIcon className={classes.buttonIcon} color="secondary" />
+        </IconButton>
+      </Tooltip>
 
-      <IconButton
-        variant="contained"
-        className={classes.button}
-        onClick={(e) => addStringTest('string_test', 'ww3')}
-      >
-        <ClearAllIcon className={classes.buttonIcon} color="secondary" />
-      </IconButton>
+      <Tooltip TransitionComponent={Zoom} title="addString">
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={(e) => addStringTest('string_test', 'ww3')}
+        >
+          <ClearAllIcon className={classes.buttonIcon} color="secondary" />
+        </IconButton>
+      </Tooltip>
 
       {
         stringRecords.map((record) => (

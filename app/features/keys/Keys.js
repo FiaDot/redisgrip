@@ -104,17 +104,16 @@ export default function Keys(props) {
   };
 
   const onSelectKey = async (key) => {
-    dispatch(selectKey(key));
-
     const type = await redis.type(key);
     // console.log(`called onSelectKey ${key}=${type}`);
+
+    dispatch(selectKey({key, type}));
 
     switch (type) {
       case 'string': {
         const value = await redis.get(key);
         console.log(`called onSelectKey ${key}=${value}`);
-        // onAddString(value);
-        dispatch(addString({ keyName: key, content: value }))
+        dispatch(addString({ key, value }))
         break;
       }
       case 'zset': {

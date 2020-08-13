@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -53,11 +53,12 @@ export default function Values() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const selectKey = useSelector((state) => state.selected.selectKey);
+  const selectType = useSelector((state) => state.selected.selectType);
 
   const clear = () => {
     dispatch(clearString());
-  }
-
+  };
 
   return (
     <div>
@@ -137,6 +138,10 @@ export default function Values() {
         </div>
 
       </div>
+
+      <Typography key="title">
+        {selectType} {selectKey? ':' : ' '} {selectKey}
+      </Typography>
 
       <Divider className={classes.divider} />
       <StringContent />
