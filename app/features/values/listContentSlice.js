@@ -1,15 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import moment from 'moment';
 
-const zsetContentSlice = createSlice({
-  name: 'zsetContent',
+const listContentSlice = createSlice({
+  name: 'listContent',
   initialState: {
     records: [
-      // {key, values:[{no, time, table:[{key, score}]}]
+      // {key, values:[{no, time, table:[{value, index}]}]
     ],
   },
   reducers: {
-    addZset: (state, action) => {
+    addList: (state, action) => {
       const time = moment().format('YYYY-MM-DD HH:mm:ss SSS');
 
       const item = state.records.find(
@@ -54,5 +54,5 @@ const zsetContentSlice = createSlice({
   },
 });
 
-export const { addZset } = zsetContentSlice.actions;
-export default zsetContentSlice.reducer;
+export const { addList } = listContentSlice.actions;
+export default listContentSlice.reducer;

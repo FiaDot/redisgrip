@@ -17,6 +17,7 @@ import Divider from '@material-ui/core/Divider';
 import HashContent from './HashContent';
 import StringContent from './StringContent';
 import ZsetContent from './ZsetContent';
+import ListContent from './ListContent';
 
 // import { remote } from 'electron';
 
@@ -145,11 +146,17 @@ export default function Values() {
       </Typography>
 
       <Divider className={classes.divider} />
+
       <StringContent />
       <Divider className={classes.divider} />
+
       <HashContent />
       <Divider className={classes.divider} />
+
       <ZsetContent />
+      <Divider className={classes.divider} />
+
+      <ListContent />
       <Divider className={classes.divider} />
     </div>
   );

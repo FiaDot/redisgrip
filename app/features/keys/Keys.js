@@ -24,6 +24,7 @@ import { addKey, addKeys, clearKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
 import Divider from '@material-ui/core/Divider';
 import { addZset } from '../values/zsetContentSlice';
+import { addList } from '../values/listContentSlice';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
@@ -132,6 +133,12 @@ export default function Keys(props) {
         const len = await redis.llen(key);
         const data = await redis.lrange(key, 0, len);
         console.log(`called onSelectKey ${key}=${data}`);
+
+        const values = data.map((value, index) => {
+          return { value, index };
+        });
+
+        dispatch(addList({ key, values }));
         break;
       }
       case 'set': {

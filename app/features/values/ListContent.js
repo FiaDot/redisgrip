@@ -36,21 +36,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ZsetContent() {
+export default function ListContent() {
   const classes = useStyles();
 
   const selectKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
 
-  const records = useSelector((state) => state.zsetContent.records);
+  const records = useSelector((state) => state.listContent.records);
 
   // {key, values:[{no, time, hash:[{key,value}]}]
-  const showRecord = (key, value) => (
-
-    <TableRow key={`${key}_${value}`}>
+  const showRecord = (index, value) => (
+    <TableRow key={`${index}_${value}`}>
 
       <TableCell component="th" scope="row">
-        {key}
+        {index}
       </TableCell>
 
       <TableCell align="left">
@@ -71,16 +70,16 @@ export default function ZsetContent() {
           {value.no} / {value.time}
         </Typography>
 
-        <Table stickyHeader className={classes.table} size="small" aria-label="zset table">
+        <Table stickyHeader className={classes.table} size="small" aria-label="list table">
           <TableHead>
             <TableRow>
-              <TableCell>Key</TableCell>
-              <TableCell align="left">Score</TableCell>
+              <TableCell>No</TableCell>
+              <TableCell align="left">Value</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            { value.table.map((kv) => showRecord(kv.key, kv.value)) }
+            { value.table.map((kv, index) => showRecord(index, kv.value)) }
           </TableBody>
         </Table>
       </TableContainer>
