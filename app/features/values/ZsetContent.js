@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function HashContent() {
+export default function ZsetContent() {
   const classes = useStyles();
 
   const selectKey = useSelector((state) => state.selected.selectKey);
@@ -45,7 +45,7 @@ export default function HashContent() {
   const records = useSelector((state) => state.zsetContent.records);
 
   // {key, values:[{no, time, hash:[{key,value}]}]
-  const showHash = (key, value) => (
+  const showRecord = (key, value) => (
 
     <TableRow key={`${key}_${value}`}>
 
@@ -71,7 +71,7 @@ export default function HashContent() {
           {value.no} / {value.time}
         </Typography>
 
-        <Table stickyHeader className={classes.table} size="small" aria-label="a dense table">
+        <Table stickyHeader className={classes.table} size="small" aria-label="zset table">
           <TableHead>
             <TableRow>
               <TableCell>Key</TableCell>
@@ -80,7 +80,7 @@ export default function HashContent() {
           </TableHead>
 
           <TableBody>
-            { value.table.map((kv) => showHash(kv.key, kv.value)) }
+            { value.table.map((kv) => showRecord(kv.key, kv.value)) }
           </TableBody>
         </Table>
       </TableContainer>

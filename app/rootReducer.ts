@@ -7,9 +7,9 @@ import serversReducer from './features/servers/serversSlice';
 // eslint-disable-next-line import/no-cycle
 import selectedReducer from './features/servers/selectedSlice';
 import keysReducer from './features/keys/keysSlice';
+import connectionReducer from './features/servers/connectionSlice';
 import stringContentReducer from './features/values/stringContentSlice';
 import hashContentReducer from './features/values/hashContentSlice';
-import connectionReducer from './features/servers/connectionSlice';
 import zsetContentReducer from './features/values/zsetContentSlice';
 
 export default function createRootReducer(history: History) {
