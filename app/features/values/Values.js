@@ -141,8 +141,8 @@ export default function Values() {
       <Divider className={classes.divider} />
       <StringContent />
       <Divider className={classes.divider} />
-      <HashContent />
-      <Divider className={classes.divider} />
+      {/*<HashContent />*/}
+      {/*<Divider className={classes.divider} />*/}
     </div>
   );
 }

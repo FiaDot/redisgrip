@@ -113,7 +113,7 @@ export default function ServerSheet() {
       case 'SET':
         // op[1] // key
         // op[2] // value
-        dispatch(addString({ keyName: op[1], content: op[2] }));
+        dispatch(addString({ key: op[1], value: op[2] }));
         break;
       default:
         break;
