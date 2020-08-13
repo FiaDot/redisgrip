@@ -20,11 +20,11 @@ const hashContentSlice = createSlice({
         // console.log(`old=${JSON.stringify(item.values[0].hash)}`);
         // console.log(`new=${JSON.stringify(action.payload.values)}`);
 
-        // if ( JSON.stringify(item.values[0].hash) == JSON.stringify(action.payload.values) ) {
-        //   // console.log('eq');
-        //   // 최근 추가한 value가 같다면 시간만 업데이트
-        //   item.values[0].time = time;
-        // } else {
+        if ( JSON.stringify(item.values[0].hash) == JSON.stringify(action.payload.values) ) {
+          // console.log('eq');
+          // 최근 추가한 value가 같다면 시간만 업데이트
+          item.values[0].time = time;
+        } else {
           // console.log('not eq');
           // 최근 추가된 정보 앞에 노출을 위해 unshift 사용
           item.values.unshift({
@@ -34,7 +34,7 @@ const hashContentSlice = createSlice({
           });
 
           // TODO : 최대 갯수 체크 할 필요 있지 않을까?
-        //}
+        }
       } else {
         // 신규 키
         state.records.push({
