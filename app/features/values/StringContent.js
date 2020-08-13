@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
+import IconButton from '@material-ui/core/IconButton';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
 import { addString } from './stringContentSlice';
-import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 export default function StringContent() {
   const classes = useStyles();
 
-  const stringContent = useSelector((state) => state.stringContent.content);
+  // const stringContent = useSelector((state) => state.stringContent.content);
 
   const dispatch = useDispatch();
   const onAddString = (value) => dispatch(addString(value));
@@ -42,6 +45,10 @@ export default function StringContent() {
   //   setVal(newVal);
   // };
 
+  const addStringTest = (key, value) => {
+      dispatch(addString({key, value}));
+  };
+
   return (
     <div>
 
@@ -50,20 +57,44 @@ export default function StringContent() {
       {/*</Typography>*/}
       {/*<Typography>Because this is the life you love!</Typography>*/}
 
-      {!stringContent ? '' :
-        <TextField
-          className={classes.textField}
-          id="outlined-multiline-static"
-          label="String"
-          multiline
-          rows={4}
-          variant="outlined"
-          value={stringContent}
-          // onChange={(e) => {
-          //   onChangeValue(e.target.value);
-          // }}
-        />
-      }
+      <IconButton
+        variant="contained"
+        className={classes.button}
+        onClick={(e) => addStringTest('ab','ff1')}
+      >
+        <ClearAllIcon className={classes.buttonIcon} color="secondary" />
+      </IconButton>
+
+      <IconButton
+        variant="contained"
+        className={classes.button}
+        onClick={(e) => addStringTest('a','ee2')}
+      >
+        <ClearAllIcon className={classes.buttonIcon} color="secondary" />
+      </IconButton>
+
+      <IconButton
+        variant="contained"
+        className={classes.button}
+        onClick={(e) => addStringTest('b','ww3')}
+      >
+        <ClearAllIcon className={classes.buttonIcon} color="secondary" />
+      </IconButton>
+
+      {/*{!stringContent ? '' :*/}
+      {/*  <TextField*/}
+      {/*    className={classes.textField}*/}
+      {/*    id="outlined-multiline-static"*/}
+      {/*    label="String"*/}
+      {/*    multiline*/}
+      {/*    rows={4}*/}
+      {/*    variant="outlined"*/}
+      {/*    value={stringContent}*/}
+      {/*    // onChange={(e) => {*/}
+      {/*    //   onChangeValue(e.target.value);*/}
+      {/*    // }}*/}
+      {/*  />*/}
+      {/*}*/}
     </div>
   );
 }

@@ -3,23 +3,18 @@ import { createSlice } from '@reduxjs/toolkit';
 const stringContentSlice = createSlice({
   name: 'stringContent',
   initialState: {
-    keyName: 'test_key',
-    content: 'test_value',
-    // ttl: -1,
+    records: [],
   },
   reducers: {
     addString: (state, action) => {
-      return {
-        ...state,
-        keyName: action.payload.keyName,
-        content: action.payload.content,
-      };
+      // success
+      return { ...state, records: [...state.records, action.payload] };
     },
-    updateString: (state, action) => {
-      return { ...state, content: action.payload };
-    },
+    // updateString: (state, action) => {
+    //   return { ...state, content: action.payload };
+    // },
     clearString: (state, action) => {
-      return { ...state, keyName: null, content: null };
+      //return { ...state, keyName: null, content: null };
     },
   },
 });
