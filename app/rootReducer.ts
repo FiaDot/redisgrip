@@ -11,6 +11,7 @@ import connectionReducer from './features/servers/connectionSlice';
 import stringContentReducer from './features/values/stringContentSlice';
 import hashContentReducer from './features/values/hashContentSlice';
 import zsetContentReducer from './features/values/zsetContentSlice';
+import listContentReducer from './features/values/listContentSlice';
 
 export default function createRootReducer(history: History) {
   return combineReducers({
@@ -23,5 +24,6 @@ export default function createRootReducer(history: History) {
     stringContent: stringContentReducer,
     hashContent: hashContentReducer,
     zsetContent: zsetContentReducer,
+    listContent: listContentReducer,
   });
 }
