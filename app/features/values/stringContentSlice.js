@@ -4,7 +4,9 @@ import moment from 'moment';
 const stringContentSlice = createSlice({
   name: 'stringContent',
   initialState: {
-    records: [],
+    records: [
+      // {key, values:[{no, value, date}]
+    ],
   },
   reducers: {
     addString: (state, action) => {

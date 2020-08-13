@@ -132,12 +132,12 @@ export default function ServerSheet() {
     // <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <Grid container spacing={1}>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <ServersToolbar connect={connect} />
             <ServerList connect={connect} />
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Keys redis={redis} />
           </Grid>
 

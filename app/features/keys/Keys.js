@@ -140,7 +140,8 @@ export default function Keys(props) {
         const data = await redis.hscan(key, 0, 'COUNT', 10000);
         console.log(`called onSelectKey ${key}=${data}`);
         const kv = await makeKeyValueFromHash(data[1]);
-        dispatch(addHash({ keyName: key, contents: kv }));
+        // console.log(kv);
+        dispatch(addHash({ key: key, values: kv }));
         break;
       }
       default:
