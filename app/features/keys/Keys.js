@@ -18,13 +18,14 @@ import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
 import TrackChangesOutlinedIcon from '@material-ui/icons/TrackChangesOutlined';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
 import { addHash } from '../values/hashContentSlice';
 import { addString } from '../values/stringContentSlice';
-import { addKey, addKeys, clearKeys } from './keysSlice';
+import { addKeys, clearKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
-import Divider from '@material-ui/core/Divider';
 import { addZset } from '../values/zsetContentSlice';
 import { addList } from '../values/listContentSlice';
+import { addSet } from '../values/setContentSlice';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
@@ -92,9 +93,6 @@ export default function Keys(props) {
   const dispatch = useDispatch();
   const onAddKeys = (keys) => dispatch(addKeys(keys));
 
-  // const onAddTest = () => {
-  //   onAddKey('1');
-  // };
 
   const makeKeyValueFromHash = async (raw) => {
     const kv = [];
@@ -103,6 +101,12 @@ export default function Keys(props) {
       kv.push({ key: raw[n * 2], value: raw[n * 2 + 1] });
     }
     return kv;
+  };
+
+  const makeValuePairArray = async (raw) => {
+    return raw.map((value, index) => {
+      return { value, index };
+    });
   };
 
   const onSelectKey = async (key) => {
@@ -133,18 +137,14 @@ export default function Keys(props) {
         const len = await redis.llen(key);
         const data = await redis.lrange(key, 0, len);
         console.log(`called onSelectKey ${key}=${data}`);
-
-        const values = data.map((value, index) => {
-          return { value, index };
-        });
-
-        dispatch(addList({ key, values }));
+        dispatch(addList({ key, values: await makeValuePairArray(data) }));
         break;
       }
       case 'set': {
         const len = await redis.scard(key);
         const data = await redis.sscan(key, 0, 'count', 10000);
         console.log(`called onSelectKey ${key}=${data}`);
+        dispatch(addSet({ key, values: await makeValuePairArray(data[1]) }));
         break;
       }
       case 'hash': {

@@ -18,6 +18,7 @@ import HashContent from './HashContent';
 import StringContent from './StringContent';
 import ZsetContent from './ZsetContent';
 import ListContent from './ListContent';
+import SetContent from './SetContent';
 
 // import { remote } from 'electron';
 
@@ -158,6 +159,10 @@ export default function Values() {
 
       <ListContent />
       <Divider className={classes.divider} />
+
+      <SetContent />
+      <Divider className={classes.divider} />
+
     </div>
   );
 }
