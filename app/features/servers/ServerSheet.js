@@ -132,7 +132,7 @@ export default function ServerSheet() {
     // <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <Grid container spacing={1}>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <ServersToolbar connect={connect} />
             <ServerList connect={connect} />
           </Grid>
