@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -14,7 +14,6 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import HashContent from './HashContent';
 import StringContent from './StringContent';
-import { clearStorage } from '../servers/serversSlice';
 import { clearString } from './stringContentSlice';
 import Divider from '@material-ui/core/Divider';
 
@@ -54,11 +53,12 @@ export default function Values() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const selectKey = useSelector((state) => state.selected.selectKey);
+  const selectType = useSelector((state) => state.selected.selectType);
 
   const clear = () => {
     dispatch(clearString());
-  }
-
+  };
 
   return (
     <div>
@@ -139,11 +139,15 @@ export default function Values() {
 
       </div>
 
+      <Typography key="title">
+        {selectType} {selectKey? ':' : ' '} {selectKey}
+      </Typography>
+
       <Divider className={classes.divider} />
       <StringContent />
       <Divider className={classes.divider} />
-      <HashContent />
-      <Divider className={classes.divider} />
+      {/*<HashContent />*/}
+      {/*<Divider className={classes.divider} />*/}
     </div>
   );
 }

@@ -13,19 +13,18 @@ const selectedSlice = createSlice({
     // checked: false,
     // 키 이름, 타입, tll 등 있어야 함!
     selectKey: null,
+    selectType: null,
   },
   reducers: {
     selectServer: (state, action) => {
-      console.log(action);
       return { ...state, id: action.payload};
     },
     deselectServer: (state, action) => {
-      console.log('called deselectServer in slice');
       return { ...state, id: null};
     },
     selectKey: (state, action) => {
-      console.log(`called selectKey=${action.payload}`);
-      return { ...state, selectKey: action.payload};
+      state.selectKey = action.payload.key;
+      state.selectType = action.payload.type;
     },
   },
 });

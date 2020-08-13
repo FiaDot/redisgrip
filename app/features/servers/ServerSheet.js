@@ -12,6 +12,8 @@ import { addKeys, clearKeys } from '../keys/keysSlice';
 import { connected } from './connectionSlice';
 import { makeStyles } from '@material-ui/core/styles';
 
+import moment from 'moment';
+import { addString } from '../values/stringContentSlice';
 // const theme = createMuiTheme({
 //   status: {
 //     danger: orange[500],
@@ -48,6 +50,7 @@ export default function ServerSheet() {
       redisInst.once('ready', () => resolve(redisInst));
     });
   }
+
 
   const connect = async () => {
     console.log('ServerSheet:connect()');
@@ -90,16 +93,39 @@ export default function ServerSheet() {
 
       dispatch(connected(options));
       // return pingReply === 'PONG';
+
+      const monitor = await redisInst.monitor();
+      monitor.on('monitor', monitoring);
+
     } catch (err) {
       console.log(err);
       throw err;
     }
   };
 
-  const onMonitor = async () => {
-    // TODO : call by button...
-    // const monitor = await redis.monitor();
-    // monitor.on('monitor', console.log);
+
+  const reduceRedisOp = async (args) => {
+    // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
+
+    const op = args.split(',');
+
+    switch (op[0]) {
+      case 'SET':
+        // op[1] // key
+        // op[2] // value
+        dispatch(addString({ key: op[1], value: op[2] }));
+        break;
+      default:
+        break;
+    }
+  };
+
+  const monitoring = (time, args, source, database) => {
+    const fmtTime = moment.unix(time).format('YYYY-MM-DD HH:mm:ss:SSS').toString();
+    console.log(`${fmtTime} / ${args} / ${source} / ${database}`);
+    // 1597213410.710730/SSCAN,set_test,0,COUNT,10000/59.10.191.65:61924/0
+
+    reduceRedisOp(args.toString());
   };
 
   return (
