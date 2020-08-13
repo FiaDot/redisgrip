@@ -10,6 +10,7 @@ import keysReducer from './features/keys/keysSlice';
 import stringContentReducer from './features/values/stringContentSlice';
 import hashContentReducer from './features/values/hashContentSlice';
 import connectionReducer from './features/servers/connectionSlice';
+import zsetContentReducer from './features/values/zsetContentSlice';
 
 export default function createRootReducer(history: History) {
   return combineReducers({
@@ -18,8 +19,9 @@ export default function createRootReducer(history: History) {
     servers: serversReducer,
     selected: selectedReducer,
     keys: keysReducer,
+    connections: connectionReducer,
     stringContent: stringContentReducer,
     hashContent: hashContentReducer,
-    connections: connectionReducer,
+    zsetContent: zsetContentReducer,
   });
 }

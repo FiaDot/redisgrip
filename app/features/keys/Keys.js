@@ -23,6 +23,7 @@ import { addString } from '../values/stringContentSlice';
 import { addKey, addKeys, clearKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
 import Divider from '@material-ui/core/Divider';
+import { addZset } from '../values/zsetContentSlice';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
@@ -121,6 +122,10 @@ export default function Keys(props) {
         console.log(`called onSelectKey ${key}=${count}`);
         const data = await redis.zrange(key, 0, count, 'WITHSCORES');
         console.log(`zset len=${data.length},data=${data} `);
+
+        const kv = await makeKeyValueFromHash(data);
+        console.log(kv);
+        dispatch(addZset({ key, values: kv }));
         break;
       }
       case 'list': {

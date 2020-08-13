@@ -12,10 +12,11 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
-import HashContent from './HashContent';
-import StringContent from './StringContent';
 import { clearString } from './stringContentSlice';
 import Divider from '@material-ui/core/Divider';
+import HashContent from './HashContent';
+import StringContent from './StringContent';
+import ZsetContent from './ZsetContent';
 
 // import { remote } from 'electron';
 
@@ -147,6 +148,8 @@ export default function Values() {
       <StringContent />
       <Divider className={classes.divider} />
       <HashContent />
+      <Divider className={classes.divider} />
+      <ZsetContent />
       <Divider className={classes.divider} />
     </div>
   );
