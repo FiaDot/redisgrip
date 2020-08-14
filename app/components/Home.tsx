@@ -1,54 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
-import { List, ListItem, ListItemText } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Redirect } from 'react-router-dom/esm/react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
-
-// NOTE : 사용안함
 export default function Home(): JSX.Element {
-  const classes = useStyles();
+
+  /*
+   TODO : react-router-dom 에 대한 이해도를 높일 때 까지 HomePage에서 Home을 부르고
+      Redirect로 Servers페이지를 부르는 형태를 유지 한다.
+      변경시 packaging 성공 후 실행시 제대로 동작 하지 않는 부분이 있다.
+   */
 
   return (
-    <div className={classes.root}>
-
-      <h4>Home - Debug</h4>
-
-      <List component="nav" aria-label="secondary mailbox folders">
-
-        <ListItem button>
-          <Link to={routes.COUNTER}>
-            <ListItemText primary="to Counter" />
-          </Link>
-        </ListItem>
-
-        <ListItem button>
-          <Link to={routes.SERVERS}>
-            <ListItemText primary="Server List" />
-          </Link>
-        </ListItem>
-
-        <ListItem button>
-          <Link to={routes.ADDSERVER}>
-            <ListItemText primary="Add Server" />
-          </Link>
-        </ListItem>
-
-
-        <ListItem button>
-          <Link to={routes.KEYS}>
-            <ListItemText primary="Keys" />
-          </Link>
-        </ListItem>
-
-      </List>
-    </div>
+    <Redirect push to="/redisgrip" />
   );
 }
