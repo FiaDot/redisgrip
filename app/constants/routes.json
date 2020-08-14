@@ -1,6 +1,7 @@
 {
   "HOME": "/",
   "COUNTER": "/counter",
+  "REDISGRIP": "/redisgrip",
   "ADDSERVER": "/addserver"
 }
 
