@@ -1,6 +1,6 @@
 import React from 'react';
-import Servers from '../features/servers/Servers';
+import Home from '../components/Home';
 
 export default function HomePage() {
-  return <Servers />;
+  return <Home />;
 }
