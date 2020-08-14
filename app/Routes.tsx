@@ -17,7 +17,7 @@ const CounterPage = (props: Record<string, any>) => (
 );
 
 const LazyRedisGripPage = React.lazy(() =>
-  import(/* webpackChunkName: "CounterPage" */ './containers/RedisGripPage')
+  import(/* webpackChunkName: "RedisGripPage" */ './containers/RedisGripPage')
 );
 
 const RedisGripPage = (props: Record<string, any>) => (
@@ -26,12 +26,27 @@ const RedisGripPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 
+
+
+const LazyAddServerPage = React.lazy(() =>
+  import(/* webpackChunkName: "AddServerPage" */ './containers/AddServerPage')
+);
+
+const AddServerPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazyAddServerPage {...props} />
+  </React.Suspense>
+);
+
+
+
 export default function Routes() {
   return (
     <App>
       <Switch>
         <Route path={routes.COUNTER} component={CounterPage} />
         <Route path={routes.REDISGRIP} component={RedisGripPage} />
+        <Route path={routes.ADDSERVER} component={AddServerPage} />
         <Route path={routes.HOME} component={HomePage} />
       </Switch>
     </App>

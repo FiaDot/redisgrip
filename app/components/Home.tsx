@@ -8,6 +8,7 @@ export default function Home(): JSX.Element {
     <div>
       <h2>Home</h2>
       <Link to={routes.COUNTER}> to Counter</Link>
+      <Link to={routes.ADDSERVER}> to Add Servers</Link>
       <Link to={routes.REDISGRIP}> to Servers</Link>
     </div>
   );
