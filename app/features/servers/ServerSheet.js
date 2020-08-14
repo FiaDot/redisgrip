@@ -16,7 +16,7 @@ import { connected } from './connectionSlice';
 import { addString } from '../values/stringContentSlice';
 
 const drawerLeftWidth = 320;
-const drawerRightWidth = 650;
+const drawerRightWidth = 450;
 
 const useStyles = makeStyles((theme) => ({
   root: {
