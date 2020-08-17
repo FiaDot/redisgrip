@@ -142,27 +142,17 @@ export default function Values() {
 
       </div>
 
+      {/* key 타입에 따른 value 출력 */}
+
       <Typography key="title">
         {selectType} {selectKey? ':' : ' '} {selectKey}
       </Typography>
 
-      <Divider className={classes.divider} />
-
-      <StringContent />
-      <Divider className={classes.divider} />
-
-      <HashContent />
-      <Divider className={classes.divider} />
-
-      <ZsetContent />
-      <Divider className={classes.divider} />
-
-      <ListContent />
-      <Divider className={classes.divider} />
-
-      <SetContent />
-      <Divider className={classes.divider} />
-
+      {selectType === 'string' ? <StringContent /> : ''}
+      {selectType === 'hash' ? <HashContent /> : ''}
+      {selectType === 'list' ? <ListContent /> : ''}
+      {selectType === 'zset' ? <ZsetContent /> : ''}
+      {selectType === 'set' ? <SetContent /> : ''}
     </div>
   );
 }
