@@ -16,8 +16,6 @@ import { Link } from 'react-router-dom';
 import PostAddOutlinedIcon from '@material-ui/icons/PostAddOutlined';
 import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
 import TrackChangesOutlinedIcon from '@material-ui/icons/TrackChangesOutlined';
-import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
-import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import { addHash } from '../values/hashContentSlice';
 import { addString } from '../values/stringContentSlice';
@@ -26,7 +24,9 @@ import { selectKey } from '../servers/selectedSlice';
 import { addZset } from '../values/zsetContentSlice';
 import { addList } from '../values/listContentSlice';
 import { addSet } from '../values/setContentSlice';
+
 import yellow from '@material-ui/core/colors/yellow';
+import SearchKey from './SearchKey';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
@@ -254,34 +254,7 @@ export default function Keys(props) {
       </div>
 
       {/* Search bar */}
-      <div className={classes.paper}>
-        <Grid container spacing={0}>
-          <Grid item xs={8}>
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              label="Search..."
-              name="search"
-              // value={search}
-              // onChange={onChange}
-              // disabled={disabled}
-            />
-          </Grid>
-
-          <Grid item>
-            <Tooltip TransitionComponent={Zoom} title="Search">
-              <IconButton
-                variant="contained"
-                className={classes.button}
-                onClick={null}
-              >
-                <SearchOutlinedIcon color={'primary'} />
-              </IconButton>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      </div>
+      <SearchKey />
 
       {/* Key List */}
       {keys.length <= 0 ? '' :
