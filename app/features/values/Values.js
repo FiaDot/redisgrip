@@ -144,9 +144,12 @@ export default function Values() {
 
       {/* key 타입에 따른 value 출력 */}
 
-      <Typography key="title">
-        {selectType} {selectKey? ':' : ' '} {selectKey}
-      </Typography>
+      {selectKey ?
+        <Typography key="title">
+          {selectType} : {selectKey}
+        </Typography>
+        : ''
+      }
 
       {selectType === 'string' ? <StringContent /> : ''}
       {selectType === 'hash' ? <HashContent /> : ''}
