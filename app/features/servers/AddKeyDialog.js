@@ -13,18 +13,23 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { Link } from 'react-router-dom';
 import Zoom from '@material-ui/core/Zoom';
-import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const useStyles = makeStyles((theme) => ({
   form: {
     minWidth: 300,
     marginTop: theme.spacing(1),
+  },
+  formSpecing: {
+    marginBottom: theme.spacing(4),
   },
   submit: {
     margin: theme.spacing(2, 0, 1),
@@ -34,28 +39,44 @@ const useStyles = makeStyles((theme) => ({
 export default function AddKeyDialog(props) {
   const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
+  const [inputs, setInputs] = useState({
+    open: false,
+    type: 'String',
+    key: '',
+  });
 
-  const [type, setType] = React.useState('String');
+  const { open, type, key } = inputs;
 
-  const handleChangeType = (event) => {
-    setType(event.target.value);
+  const onChange = (e) => {
+    const { name, value } = e.target;
+
+    setInputs({
+      ...inputs,
+      [name]: value,
+    });
   };
 
+  // const [open, setOpen] = React.useState(false);
+  // const [type, setType] = React.useState('String');
+
+  // const handleChange = (event) => {
+  //   setType(event.target.value);
+  // };
+
   const handleClickOpen = () => {
-    setOpen(true);
+    setInputs({ ...inputs, open: true });
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setInputs({ ...inputs, open: false });
   };
 
-  const onAddKey = () => {
-
-  }
+  const onSubmit = () => {
+    console.log(`TODO : add key ${type} ${key}`);
+  };
 
   return (
-    <Fragment>
+    <>
       <Tooltip TransitionComponent={Zoom} title="Add Key">
         <IconButton
           variant="contained"
@@ -65,69 +86,98 @@ export default function AddKeyDialog(props) {
           <PostAddOutlinedIcon color="primary" />
         </IconButton>
       </Tooltip>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-addkey">
-          <DialogTitle id="form-dialog-addkey">Add Key</DialogTitle>
-          <DialogContent className={classes.form}>
-            <DialogContentText>
-              {/*New Key...*/}
-            </DialogContentText>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-addkey"
+      >
+        <DialogTitle id="form-dialog-addkey">Add Key</DialogTitle>
+        <DialogContent className={classes.form}>
+          <DialogContentText>{/* New Key... */}</DialogContentText>
 
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Name"
-              type="name"
-              fullWidth
-            />
 
-            <InputLabel id="add-key-type">Type</InputLabel>
-            <Select
-              labelId="add-key-type"
-              id="add-key-type"
+          <TextField
+            autoFocus
+            size="small"
+            variant="outlined"
+            margin="normal"
+            label="Name"
+            name="key"
+            value={key}
+            onChange={onChange}
+            fullWidth
+            className={classes.formSpecing}
+          />
+
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Type</FormLabel>
+            <RadioGroup
+              aria-label="type"
+              name="type"
               value={type}
-              onChange={handleChangeType}
-              fullWidth
+              onChange={onChange}
             >
-              <MenuItem value={'String'}>String</MenuItem>
-              <MenuItem value={'Hash'}>Hash</MenuItem>
-              <MenuItem value={'List'}>List</MenuItem>
-              <MenuItem value={'Set'}>Set</MenuItem>
-              <MenuItem value={'Sorted Set'}>Sorted Set</MenuItem>
-            </Select>
+              <FormControlLabel
+                value="String"
+                control={<Radio />}
+                label="String"
+              />
+              <FormControlLabel value="Hash" control={<Radio />} label="Hash" />
+              <FormControlLabel value="List" control={<Radio />} label="List" />
+              <FormControlLabel value="Set" control={<Radio />} label="Set" />
+              <FormControlLabel
+                value="Sorted Set"
+                control={<Radio />}
+                label="Sorted Set"
+              />
+            </RadioGroup>
+          </FormControl>
 
-          </DialogContent>
-          <DialogActions>
-
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Button
-                  startIcon={<AddCircleIcon />}
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={onAddKey}
-                >
-                  Add
-                </Button>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Button
-                  startIcon={<CancelIcon />}
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  className={classes.submit}
-                  onClick={handleClose}
-                >
-                  Cancel
-                </Button>
-              </Grid>
+          {/* <InputLabel id="add-key-type">Type</InputLabel> */}
+          {/* <Select */}
+          {/*  labelId="add-key-type" */}
+          {/*  id="add-key-type" */}
+          {/*  value={type} */}
+          {/*  onChange={handleChangeType} */}
+          {/*  fullWidth */}
+          {/* > */}
+          {/*  <MenuItem value={'String'}>String</MenuItem> */}
+          {/*  <MenuItem value={'Hash'}>Hash</MenuItem> */}
+          {/*  <MenuItem value={'List'}>List</MenuItem> */}
+          {/*  <MenuItem value={'Set'}>Set</MenuItem> */}
+          {/*  <MenuItem value={'Sorted Set'}>Sorted Set</MenuItem> */}
+          {/* </Select> */}
+        </DialogContent>
+        <DialogActions>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Button
+                startIcon={<AddCircleIcon />}
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={onSubmit}
+              >
+                Add
+              </Button>
             </Grid>
-          </DialogActions>
+
+            <Grid item xs={6}>
+              <Button
+                startIcon={<CancelIcon />}
+                fullWidth
+                variant="contained"
+                color="secondary"
+                className={classes.submit}
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+            </Grid>
+          </Grid>
+        </DialogActions>
       </Dialog>
-    </Fragment>
+    </>
   );
-};
+}
