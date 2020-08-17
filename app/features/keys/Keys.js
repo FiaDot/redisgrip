@@ -27,6 +27,7 @@ import { addSet } from '../values/setContentSlice';
 
 import yellow from '@material-ui/core/colors/yellow';
 import SearchKey from './SearchKey';
+import AddKeyDialog from '../servers/AddKeyDialog';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
@@ -192,6 +193,7 @@ export default function Keys(props) {
     // monitor.on('monitor', console.log);
   };
 
+
   return (
     <div className={classes.root}>
       <Typography
@@ -217,17 +219,8 @@ export default function Keys(props) {
           </Tooltip>
 
           {/* Add Key */}
-          <Tooltip TransitionComponent={Zoom} title="Add Key">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              // onClick={add}
-              component={Link}
-              to="/AddKey"
-            >
-              <PostAddOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          <AddKeyDialog redis={redis} onRefresh={scan} />
+
 
           {/* Del key */}
           <Tooltip TransitionComponent={Zoom} title="Delete Key">
