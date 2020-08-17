@@ -193,9 +193,6 @@ export default function Keys(props) {
     // monitor.on('monitor', console.log);
   };
 
-  const showAddKeyDialog = () => {
-    AddKeyDialog
-  }
 
   return (
     <div className={classes.root}>
@@ -222,7 +219,7 @@ export default function Keys(props) {
           </Tooltip>
 
           {/* Add Key */}
-          <AddKeyDialog redis={redis} />
+          <AddKeyDialog redis={redis} onRefresh={scan} />
 
 
           {/* Del key */}

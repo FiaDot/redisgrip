@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -10,9 +10,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import PostAddOutlinedIcon from '@material-ui/icons/PostAddOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -39,9 +36,11 @@ const useStyles = makeStyles((theme) => ({
 export default function AddKeyDialog(props) {
   const classes = useStyles();
 
+  const { redis, onRefresh } = props;
+
   const [inputs, setInputs] = useState({
     open: false,
-    type: 'String',
+    type: 'string',
     key: '',
   });
 
@@ -56,12 +55,6 @@ export default function AddKeyDialog(props) {
     });
   };
 
-  // const [open, setOpen] = React.useState(false);
-  // const [type, setType] = React.useState('String');
-
-  // const handleChange = (event) => {
-  //   setType(event.target.value);
-  // };
 
   const handleClickOpen = () => {
     setInputs({ ...inputs, open: true });
@@ -71,8 +64,39 @@ export default function AddKeyDialog(props) {
     setInputs({ ...inputs, open: false });
   };
 
-  const onSubmit = () => {
-    console.log(`TODO : add key ${type} ${key}`);
+
+  const onSubmit = async () => {
+    console.log(`onSubmit ${type} ${key}`);
+
+    let ret;
+
+    switch ( type )
+    {
+      case 'string':
+        ret = await redis.set(key, '');
+        break;
+      case 'list':
+        ret = await redis.lpush(key, '');
+        break;
+      case 'hash':
+        ret = await redis.hset(key, '', '');
+        break;
+      case 'set':
+        ret = await redis.sadd(key, '');
+        break;
+      case 'zset':
+        ret = await redis.zadd(key, 0, '');
+        break;
+    }
+
+    console.log(ret);
+
+    if (ret === 'OK') {
+      onRefresh();
+      handleClose();
+    } else {
+      // TODO : show error!!!
+    }
   };
 
   return (
@@ -117,36 +141,14 @@ export default function AddKeyDialog(props) {
               value={type}
               onChange={onChange}
             >
-              <FormControlLabel
-                value="String"
-                control={<Radio />}
-                label="String"
-              />
-              <FormControlLabel value="Hash" control={<Radio />} label="Hash" />
-              <FormControlLabel value="List" control={<Radio />} label="List" />
-              <FormControlLabel value="Set" control={<Radio />} label="Set" />
-              <FormControlLabel
-                value="Sorted Set"
-                control={<Radio />}
-                label="Sorted Set"
-              />
+              <FormControlLabel value="string" control={<Radio />} label="String"/>
+              <FormControlLabel value="hash" control={<Radio />} label="Hash" />
+              <FormControlLabel value="list" control={<Radio />} label="List" />
+              <FormControlLabel value="set" control={<Radio />} label="Set" />
+              <FormControlLabel value="zset" control={<Radio />} label="Sorted Set"/>
             </RadioGroup>
           </FormControl>
 
-          {/* <InputLabel id="add-key-type">Type</InputLabel> */}
-          {/* <Select */}
-          {/*  labelId="add-key-type" */}
-          {/*  id="add-key-type" */}
-          {/*  value={type} */}
-          {/*  onChange={handleChangeType} */}
-          {/*  fullWidth */}
-          {/* > */}
-          {/*  <MenuItem value={'String'}>String</MenuItem> */}
-          {/*  <MenuItem value={'Hash'}>Hash</MenuItem> */}
-          {/*  <MenuItem value={'List'}>List</MenuItem> */}
-          {/*  <MenuItem value={'Set'}>Set</MenuItem> */}
-          {/*  <MenuItem value={'Sorted Set'}>Sorted Set</MenuItem> */}
-          {/* </Select> */}
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2}>
