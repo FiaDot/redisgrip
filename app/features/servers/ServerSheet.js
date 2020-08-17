@@ -14,6 +14,8 @@ import Values from '../values/Values';
 import { addKeys, clearKeys } from '../keys/keysSlice';
 import { connected } from './connectionSlice';
 import { addString } from '../values/stringContentSlice';
+import yellow from '@material-ui/core/colors/yellow';
+import red from '@material-ui/core/colors/red';
 
 const drawerLeftWidth = 320;
 const drawerRightWidth = 450;
@@ -36,7 +38,33 @@ const useStyles = makeStyles((theme) => ({
   drawerPaperRight: {
     width: drawerRightWidth,
   },
-
+  // splitScroll: {
+  //   height: '100%',
+  //   width: '30%',
+  //   //float: left,
+  //   // border:1px solid blue,
+  //   overflowX: 'hidden',
+  //   overflowY: 'scroll',
+  //   paddingBottom: 30,
+  // },
+  divKeys: {
+    // display: 'flex',
+    position: 'relative',
+    width: 300,
+    height: '100%',
+    float: 'left',
+    // overflowY: 'scroll',
+  },
+  divValues: {
+    position: 'relative',
+    //width: '50%',
+    height: '100%',
+    float: 'right',
+    // display: 'flex',
+    //float: 'left',
+    //backgroundColor: red,
+    overflowY: 'scroll',
+  },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
@@ -155,21 +183,19 @@ export default function ServerSheet() {
         <ServerList connect={connect} />
       </Drawer>
 
-      <main className={classes.content}>
-        <Keys redis={redis} />
-      </main>
+      {/*<main className={classes.content}>*/}
+      {/*<div className={classes.splitScroll}>*/}
+        <div className={classes.divKeys}>
+          <Keys redis={redis} />
+        </div>
 
+        <Divider orientation="vertical" flexItem />
 
-      <Drawer
-        className={classes.drawerRight}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaperRight,
-        }}
-        anchor="right"
-      >
-        <Values />
-      </Drawer>
+        <div className={classes.divValues}>
+          <Values />
+        </div>
+      {/*</div>*/}
+      {/*</main>*/}
     </div>
   );
 }

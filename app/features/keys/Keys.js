@@ -26,34 +26,49 @@ import { selectKey } from '../servers/selectedSlice';
 import { addZset } from '../values/zsetContentSlice';
 import { addList } from '../values/listContentSlice';
 import { addSet } from '../values/setContentSlice';
+import yellow from '@material-ui/core/colors/yellow';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.default,
-    overflowY: 'scroll',
-  },
-  button: {
-    margin: theme.spacing(0),
-    // backgroundColor: '#0000cc',
-    // borderColor: '#005cbf',
-  },
+  // root: {
+  //   // width: '100%',
+  //   width: 500,
+  //   //maxWidth: 360,
+  //   backgroundColor: theme.palette.background.default,
+  //   overflowY: 'scroll',
+  // },
+  //button: {
+  //   margin: theme.spacing(0),
+  //   // backgroundColor: '#0000cc',
+  //   // borderColor: '#005cbf',
+  // },
+  // paper: {
+  //   display: 'flex',
+  //   flexWrap: 'wrap',
+  //   '& > *': {
+  //     margin: theme.spacing(1),
+  //     width: theme.spacing(32),
+  //     height: theme.spacing(6),
+  //     //minWidth: 250,
+  //     backgroundColor: theme.palette.background.paper,
+  //   },
+  // },
+  // title: {
+  //   fontSize: 14,
+  // },
   paper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-      width: theme.spacing(32),
-      height: theme.spacing(6),
-      minWidth: 250,
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-  title: {
-    fontSize: 14,
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.background.paper,
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // '& > *': {
+    //   margin: theme.spacing(1),
+    //   width: theme.spacing(32),
+    //   height: theme.spacing(6),
+    //   minWidth: 300,
+    //   backgroundColor: theme.palette.background.paper,
+    // },
   },
 }));
 
@@ -270,7 +285,8 @@ export default function Keys(props) {
 
       {/* Key List */}
       {keys.length <= 0 ? '' :
-        <Paper style={{ maxHeight: 500, overflowY: 'scroll' }}>
+        // <Paper style={{ maxHeight: 500, overflowY: 'scroll' }}>
+        <Paper>
           <List component="nav" aria-label="keys">
             <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />
           </List>
