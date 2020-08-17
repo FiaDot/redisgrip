@@ -27,7 +27,8 @@ import { addSet } from '../values/setContentSlice';
 
 import yellow from '@material-ui/core/colors/yellow';
 import SearchKey from './SearchKey';
-import AddKeyDialog from '../servers/AddKeyDialog';
+import AddKeyDialog from './AddKeyDialog';
+import DelKeyDialog from './DelKeyDialog';
 // import { remote } from 'electron';
 // const ioredis = require('ioredis');
 
@@ -223,15 +224,7 @@ export default function Keys(props) {
 
 
           {/* Del key */}
-          <Tooltip TransitionComponent={Zoom} title="Delete Key">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={null}
-            >
-              <DeleteSweepOutlinedIcon color={'disabled'} />
-            </IconButton>
-          </Tooltip>
+          <DelKeyDialog redis={redis} onRefresh={scan} />
 
           {/* Trace key */}
           <Tooltip TransitionComponent={Zoom} title="Trace Key">

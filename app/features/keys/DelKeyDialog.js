@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -19,6 +19,9 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
+import Paper from '@material-ui/core/Paper';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -33,18 +36,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddKeyDialog(props) {
+export default function DelKeyDialog(props) {
   const classes = useStyles();
 
   const { redis, onRefresh } = props;
 
+  const selectKey = useSelector((state) => state.selected.selectKey);
+
   const [inputs, setInputs] = useState({
     open: false,
-    type: 'string',
-    key: '',
   });
 
-  const { open, type, key } = inputs;
+  const { open } = inputs;
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -55,7 +58,6 @@ export default function AddKeyDialog(props) {
     });
   };
 
-
   const handleClickOpen = () => {
     setInputs({ ...inputs, open: true });
   };
@@ -64,34 +66,13 @@ export default function AddKeyDialog(props) {
     setInputs({ ...inputs, open: false });
   };
 
-
   const onSubmit = async () => {
-    console.log(`onSubmit ${type} ${key}`);
+    console.log(`onSubmit`);
 
-    let ret;
-
-    switch ( type )
-    {
-      case 'string':
-        ret = await redis.set(key, '');
-        break;
-      case 'list':
-        ret = await redis.lpush(key, '');
-        break;
-      case 'hash':
-        ret = await redis.hset(key, '', '');
-        break;
-      case 'set':
-        ret = await redis.sadd(key, '');
-        break;
-      case 'zset':
-        ret = await redis.zadd(key, 0, '');
-        break;
-    }
-
+    const ret = await redis.del(selectKey);
     console.log(ret);
 
-    if (ret === 'OK') {
+    if (ret === 1 ) {
       onRefresh();
       handleClose();
     } else {
@@ -100,74 +81,45 @@ export default function AddKeyDialog(props) {
   };
 
   return (
-    <>
-      <Tooltip TransitionComponent={Zoom} title="Add Key">
+    <Fragment>
+      <Tooltip TransitionComponent={Zoom} title="Delete Key">
         <IconButton
           variant="contained"
           className={classes.button}
           onClick={handleClickOpen}
         >
-          <PostAddOutlinedIcon color="primary" />
+          <DeleteSweepOutlinedIcon color={selectKey ? 'primary' : 'disabled'} />
         </IconButton>
       </Tooltip>
+
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-addkey"
+        aria-labelledby="form-dialog-del-key"
       >
-        <DialogTitle id="form-dialog-addkey">Add Key</DialogTitle>
+        <DialogTitle id="form-dialog-del-key">Delete Key</DialogTitle>
         <DialogContent className={classes.form}>
-          <DialogContentText>{/* New Key... */}</DialogContentText>
-
-
-          <TextField
-            autoFocus
-            size="small"
-            variant="outlined"
-            margin="normal"
-            label="Name"
-            name="key"
-            value={key}
-            onChange={onChange}
-            fullWidth
-            className={classes.formSpecing}
-          />
-
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Type</FormLabel>
-            <RadioGroup
-              aria-label="type"
-              name="type"
-              value={type}
-              onChange={onChange}
-            >
-              <FormControlLabel value="string" control={<Radio />} label="String"/>
-              <FormControlLabel value="hash" control={<Radio />} label="Hash" />
-              <FormControlLabel value="list" control={<Radio />} label="List" />
-              <FormControlLabel value="set" control={<Radio />} label="Set" />
-              <FormControlLabel value="zset" control={<Radio />} label="Sorted Set"/>
-            </RadioGroup>
-          </FormControl>
+          <DialogContentText>
+            Are you sure you want to delete?
+          </DialogContentText>
 
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Button
-                startIcon={<AddCircleIcon />}
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.submit}
                 onClick={onSubmit}
               >
-                Add
+                OK
               </Button>
             </Grid>
 
             <Grid item xs={6}>
               <Button
-                startIcon={<CancelIcon />}
                 fullWidth
                 variant="contained"
                 color="secondary"
@@ -180,6 +132,6 @@ export default function AddKeyDialog(props) {
           </Grid>
         </DialogActions>
       </Dialog>
-    </>
+    </Fragment>
   );
 }
