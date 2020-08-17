@@ -14,7 +14,7 @@ import Divider from '@material-ui/core/Divider';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    maxWidth: 360,
+    //maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
   buttons: {
@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
   paper: {
-    padding: 5,
     margin: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
   },
@@ -48,6 +47,7 @@ export default function HashContent() {
   // {key, values:[{no, time, hash:[{key,value}]}]
   const showHash = (key, value) => (
 
+
     <TableRow key={`${key}_${value}`}>
 
       <TableCell component="th" scope="row">
@@ -62,15 +62,16 @@ export default function HashContent() {
   );
 
   const showKey = (key, value) => (
-    <div key={value.time}>
+    <div key={value.time} className={classes.paper}>
 
       <Divider className={classes.divider} />
 
+      <Paper elevation={3} className={classes.dateTab}>
+        <Typography variant="caption">{value.time} [No.{value.no}]</Typography>
+      </Paper>
+
       <TableContainer component={Paper} key={`${key}_${value.no}`}>
 
-        <Typography key="title">
-          {value.no} / {value.time}
-        </Typography>
 
         <Table stickyHeader className={classes.table} size="small" aria-label="a dense table">
           <TableHead>

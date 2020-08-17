@@ -11,6 +11,18 @@ import { addString, clearAllString, clearString } from './stringContentSlice';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import Timeline from '@material-ui/lab/Timeline';
+import TimelineItem from '@material-ui/lab/TimelineItem';
+import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
+import TimelineConnector from '@material-ui/lab/TimelineConnector';
+import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
+import TimelineDot from '@material-ui/lab/TimelineDot';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import LaptopMacIcon from '@material-ui/icons/LaptopMac';
+import HotelIcon from '@material-ui/icons/Hotel';
+import RepeatIcon from '@material-ui/icons/Repeat';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,10 +36,14 @@ const useStyles = makeStyles((theme) => ({
     // borderColor: '#005cbf',
   },
   paper: {
+    //width: '100%',
+    //minWidth: 200,
     backgroundColor: theme.palette.background.paper,
+    margin: theme.spacing(1),
   },
-  title: {
-    fontSize: 14,
+  dateTab: {
+    width: '100',
+    // margin: theme.spacing(1),
   },
   textField: {
     width: '80%',
@@ -44,18 +60,9 @@ export default function StringContent() {
   const classes = useStyles();
 
   const selectKey = useSelector((state) => state.selected.selectKey);
-  const selectType = useSelector((state) => state.selected.selectType);
-
   const stringRecords = useSelector((state) => state.stringContent.records);
 
   const dispatch = useDispatch();
-  const onAddString = (value) => dispatch(addString(value));
-
-  // const [val, setVal] = useState();
-  //
-  // const onChangeValue = (newVal) => {
-  //   setVal(newVal);
-  // };
 
   const addStringTest = (key, value) => {
     dispatch(addString({ key, value }));
@@ -64,18 +71,49 @@ export default function StringContent() {
 
   const showValues = (key, history) => (
     // TODO : key가 들어가야 에러가 안난다... 넣었을때 고유번호 같은걸 하나 넣어야 할듯!!
-    <Typography
-      className={classes.title}
-      color="textSecondary"
-      align="center"
-      key={`${key}_${history.no}`}
-    >
-      {history.no} {history.value} {history.time}
-    </Typography>
+    // <Typography
+    //   className={classes.title}
+    //   color="textSecondary"
+    //   align="center"
+    //   key={`${key}_${history.no}`}
+    // >
+    //   {history.no} {history.value} {history.time}
+    // </Typography>
+    <div className={classes.paper} key={`${key}_${history.no}`}>
+        <Paper elevation={3} className={classes.dateTab}>
+          <Typography variant="caption">{history.time} [No.{history.no}]</Typography>
+        </Paper>
+
+        <Paper elevation={3}>
+          <Typography>{history.value}</Typography>
+        </Paper>
+    </div>
   );
 
   return (
     <div>
+
+      {
+        stringRecords.map((record) => (
+
+          record.key === selectKey ?
+            record.values.map((valueRecord) => (
+                showValues(record.key, valueRecord)
+            ))
+            : ''
+        ))
+      }
+
+
+      {/* 디버깅용 */}
+
+      <Tooltip TransitionComponent={Zoom} title="Add Key">
+      <Fab color="primary" aria-label="add" className={classes.fab}>
+          <AddIcon />
+      </Fab>
+      </Tooltip>
+
+
       <Tooltip TransitionComponent={Zoom} title="clearAllString">
         <IconButton
           variant="contained"
@@ -106,22 +144,6 @@ export default function StringContent() {
         </IconButton>
       </Tooltip>
 
-      {
-        stringRecords.map((record) => (
-
-          record.key === selectKey ?
-            record.values.map((valueRecord) => (
-                showValues(record.key, valueRecord)
-            ))
-            : ''
-        ))
-      }
-
-      <Tooltip TransitionComponent={Zoom} title="Add Key">
-      <Fab color="primary" aria-label="add" className={classes.fab}>
-          <AddIcon />
-      </Fab>
-      </Tooltip>
     </div>
   );
 }
