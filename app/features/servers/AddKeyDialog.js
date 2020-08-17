@@ -22,23 +22,8 @@ import Zoom from '@material-ui/core/Zoom';
 import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.default,
-  },
-  paper: {
-    marginTop: theme.spacing(1),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: theme.palette.background,
-  },
-  // formControl: {
-  //   margin: theme.spacing(1),
-  //   minWidth: 240,
-  // },
   form: {
-    //width: '100%', // Fix IE 11 issue.
-    minWidth: 500,
+    minWidth: 300,
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -113,12 +98,6 @@ export default function AddKeyDialog(props) {
 
           </DialogContent>
           <DialogActions>
-            {/*<Button onClick={handleClose} color="primary">*/}
-            {/*  Add*/}
-            {/*</Button>*/}
-            {/*<Button onClick={handleClose} color="primary">*/}
-            {/*  Cancel*/}
-            {/*</Button>*/}
 
             <Grid container spacing={2}>
               <Grid item xs={6}>
