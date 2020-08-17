@@ -26,10 +26,14 @@ const selectedSlice = createSlice({
       state.selectKey = action.payload.key;
       state.selectType = action.payload.type;
     },
+    deselectKey: (state, action) => {
+      state.selectKey = null;
+      state.selectType = null;
+    }
   },
 });
 
-export const { selectServer, deselectServer, selectKey } = selectedSlice.actions;
+export const { selectServer, deselectServer, selectKey, deselectKey } = selectedSlice.actions;
 export default selectedSlice.reducer;
 
 export const isSelectedServer = (state) => {

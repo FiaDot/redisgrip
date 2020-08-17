@@ -8,6 +8,9 @@ import IconButton from '@material-ui/core/IconButton';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import Typography from '@material-ui/core/Typography';
 import { addString, clearAllString, clearString } from './stringContentSlice';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +32,11 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     width: '80%',
     margin: theme.spacing(2),
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
   },
 }));
 
@@ -68,7 +76,6 @@ export default function StringContent() {
 
   return (
     <div>
-
       <Tooltip TransitionComponent={Zoom} title="clearAllString">
         <IconButton
           variant="contained"
@@ -109,6 +116,12 @@ export default function StringContent() {
             : ''
         ))
       }
+
+      <Tooltip TransitionComponent={Zoom} title="Add Key">
+      <Fab color="primary" aria-label="add" className={classes.fab}>
+          <AddIcon />
+      </Fab>
+      </Tooltip>
     </div>
   );
 }

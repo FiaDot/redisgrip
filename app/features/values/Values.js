@@ -19,14 +19,17 @@ import StringContent from './StringContent';
 import ZsetContent from './ZsetContent';
 import ListContent from './ListContent';
 import SetContent from './SetContent';
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
+import { deselectKey } from '../servers/selectedSlice';
 
 // import { remote } from 'electron';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.default,
+    //backgroundColor: theme.palette.background.default,
   },
   button: {
     margin: theme.spacing(0),
@@ -48,7 +51,22 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
   title: {
-    fontSize: 14,
+    fontSize: 24,
+  },
+  keyBar: {
+    margin: theme.spacing(1),
+    display: 'flex',
+    alignItems: 'center',
+    //width: '40%',
+    //maxWidth: 00,
+    //maxHeight : 30,
+    //color: 'white',
+    //backgroundColor: 'black',
+    backgroundColor: theme.palette.background.paper,
+  },
+  keyBarDivider: {
+    height: 28,
+    margin: 4,
   },
 }));
 
@@ -63,106 +81,127 @@ export default function Values() {
     dispatch(clearString());
   };
 
-  return (
-    <div>
-      <div className={classes.root}>
-        <Typography
-          className={classes.title}
-          color="textSecondary"
-          gutterBottom
-          align="center"
-        >
-          Value
+
+  const onDeselectKey = () => {
+    dispatch(deselectKey());
+  };
+
+  function KeyInfo() {
+    return (
+      <Paper elevation={3} className={classes.keyBar}>
+
+        <Tooltip TransitionComponent={Zoom} title="Clear">
+          <IconButton type="submit" className={classes.iconButton} aria-label="deselect" onClick={onDeselectKey}>
+            <CloseIcon color="primary" />
+          </IconButton>
+        </Tooltip>
+
+        <Divider className={classes.keyBarDivider} orientation="vertical"/>
+
+        <Typography variant="button" display="block" gutterBottom>
+          {selectType}
         </Typography>
 
-        <div className={classes.paper}>
-          <Paper elevation={3}>
-            <Tooltip TransitionComponent={Zoom} title="Reload">
-              <IconButton
-                variant="contained"
-                className={classes.button}
-                onClick={null}
-              >
-                <RefreshOutlinedIcon color="primary" />
-              </IconButton>
-            </Tooltip>
+        <Divider className={classes.keyBarDivider} orientation="vertical"/>
 
-            <Tooltip TransitionComponent={Zoom} title="Save">
-              <IconButton
-                variant="contained"
-                className={classes.button}
-                onClick={null}
-              >
-                <SaveOutlinedIcon color="primary" />
-              </IconButton>
-            </Tooltip>
+        <Typography variant="subtitle1" display="block" gutterBottom>
+          {selectKey}
+        </Typography>
 
-            <Tooltip TransitionComponent={Zoom} title="Edit">
-              <IconButton
-                variant="contained"
-                className={classes.button}
-                onClick={null}
-              >
-                <EditOutlinedIcon color="primary" />
-              </IconButton>
-            </Tooltip>
+        <Divider className={classes.keyBarDivider} orientation="vertical"/>
 
-            <Tooltip TransitionComponent={Zoom} title="Set TTL">
-              <IconButton
-                variant="contained"
-                className={classes.button}
-                onClick={null}
-              >
-                <AccessTimeOutlinedIcon color="primary" />
-              </IconButton>
-            </Tooltip>
+        <Typography variant="subtitle1" display="block" gutterBottom align="right">
+          TTL : 0
+        </Typography>
+      </Paper>
+    );
+  }
 
-            <Tooltip TransitionComponent={Zoom} title="Delete">
-              <IconButton
-                variant="contained"
-                className={classes.button}
-                onClick={null}
-              >
-                <DeleteOutlineOutlinedIcon color="primary" />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip TransitionComponent={Zoom} title="Clear">
-              <IconButton
-                variant="contained"
-                className={classes.button}
-                onClick={clear}
-              >
-                <ClearAllIcon color="primary" />
-              </IconButton>
-            </Tooltip>
-
-          </Paper>
-        </div>
-
-      </div>
-
-      <Typography key="title">
-        {selectType} {selectKey? ':' : ' '} {selectKey}
+  return (
+    <div className={classes.root}>
+      <Typography
+        color="textSecondary"
+        variant="h5"
+        gutterBottom
+        align="center"
+      >
+        Value
       </Typography>
 
-      <Divider className={classes.divider} />
 
-      <StringContent />
-      <Divider className={classes.divider} />
+      <div className={classes.paper}>
+        <Paper elevation={3}>
+          <Tooltip TransitionComponent={Zoom} title="Reload">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={null}
+            >
+              <RefreshOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
 
-      <HashContent />
-      <Divider className={classes.divider} />
+          <Tooltip TransitionComponent={Zoom} title="Save">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={null}
+            >
+              <SaveOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
 
-      <ZsetContent />
-      <Divider className={classes.divider} />
+          <Tooltip TransitionComponent={Zoom} title="Edit">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={null}
+            >
+              <EditOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
 
-      <ListContent />
-      <Divider className={classes.divider} />
+          <Tooltip TransitionComponent={Zoom} title="Set TTL">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={null}
+            >
+              <AccessTimeOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
 
-      <SetContent />
-      <Divider className={classes.divider} />
+          <Tooltip TransitionComponent={Zoom} title="Delete">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={null}
+            >
+              <DeleteOutlineOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
 
+          <Tooltip TransitionComponent={Zoom} title="Clear">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={clear}
+            >
+              <ClearAllIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+
+        </Paper>
+      </div>{/*<div className={classes.paper}>*/}
+
+      { selectKey ? KeyInfo()  : '' }
+
+      {/* key 타입에 따른 value 출력 */}
+      {selectType === 'string' ? <StringContent /> : ''}
+      {selectType === 'hash' ? <HashContent /> : ''}
+      {selectType === 'list' ? <ListContent /> : ''}
+      {selectType === 'zset' ? <ZsetContent /> : ''}
+      {selectType === 'set' ? <SetContent /> : ''}
     </div>
   );
 }
