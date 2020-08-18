@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -7,7 +7,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
@@ -18,9 +17,24 @@ export default function HashContent(props) {
   const { redis } = props;
   const records = useSelector((state) => state.hashContent.records);
 
+  const [selected, setSelected] = useState(null);
+
+  const handleClick = (event, name) => {
+    setSelected(name);
+  };
+
+  const isSelected = (name) => {
+    return selected === name;
+  };
+
   // {key, values:[{no, time, hash:[{key,value}]}]
-  const showHash = (key, value) => (
-    <TableRow key={`${key}_${value}`}>
+  const showHash = (key, value, no) => (
+    <TableRow
+      hover
+      onClick={(event) => handleClick(event, `${key}_${value}_${no}`)}
+      key={`${key}_${value}_${no}`}
+      selected={isSelected(`${key}_${value}_${no}`)}
+    >
 
       <TableCell component="th" scope="row">
         {key}
@@ -50,7 +64,7 @@ export default function HashContent(props) {
           </TableHead>
 
           <TableBody>
-            {value.hash.map((kv) => showHash(kv.key, kv.value))}
+            {value.hash.map((kv) => showHash(kv.key, kv.value, value.no))}
           </TableBody>
         </Table>
       </TableContainer>
