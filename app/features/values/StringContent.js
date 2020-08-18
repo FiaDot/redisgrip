@@ -11,9 +11,11 @@ import AddIcon from '@material-ui/icons/Add';
 import Paper from '@material-ui/core/Paper';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
+import AddKeyValueDialog from './AddKeyValueDialog';
 
-export default function StringContent() {
+export default function StringContent(props) {
   const classes = useValueStyles();
+  const { redis } = props;
 
   const selectKey = useSelector((state) => state.selected.selectKey);
   const stringRecords = useSelector((state) => state.stringContent.records);
@@ -58,16 +60,10 @@ export default function StringContent() {
         ))
       }
 
+      <AddKeyValueDialog redis={redis} />
+
 
       {/* 디버깅용 */}
-
-      <Tooltip TransitionComponent={Zoom} title="Add Key">
-      <Fab color="primary" aria-label="add" className={classes.fab}>
-          <AddIcon />
-      </Fab>
-      </Tooltip>
-
-
       <Tooltip TransitionComponent={Zoom} title="clearAllString">
         <IconButton
           variant="contained"

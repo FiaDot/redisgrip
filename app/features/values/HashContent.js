@@ -67,7 +67,7 @@ export default function HashContent(props) {
             )
         )}
 
-      <AddKeyValueDialog redis={redis} type="hash" />
+      <AddKeyValueDialog redis={redis} />
     </div>
   );
 }
