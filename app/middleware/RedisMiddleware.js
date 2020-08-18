@@ -167,7 +167,12 @@ const RedisMiddleware = () => {
           store.dispatch(setShowResult(true));
         });
         break;
-      //
+
+      case 'rediswrapper/addhash':
+        // TODO : something...
+        //next(action);
+        break;
+
       // case 'keys/scan':
       //   const scanStream = async () => {
       //     const stream = await redis.scanStream({

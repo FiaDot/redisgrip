@@ -14,11 +14,9 @@ import Grid from '@material-ui/core/Grid';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Zoom from '@material-ui/core/Zoom';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -31,20 +29,28 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(2, 0, 1),
   },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
 }));
 
-export default function AddKeyDialog(props) {
+export default function AddKeyValueDialog(props) {
   const classes = useStyles();
 
-  const { redis, onRefresh } = props;
+  const { redis } = props;
+
+  const selectKey = useSelector((state) => state.selected.selectKey);
+  const selectType = useSelector((state) => state.selected.selectType);
 
   const [inputs, setInputs] = useState({
     open: false,
-    value: '',
     key: '',
+    val: '',
   });
 
-  const { open, type, key } = inputs;
+  const { open, key, val } = inputs;
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -66,33 +72,36 @@ export default function AddKeyDialog(props) {
 
 
   const onSubmit = async () => {
-    console.log(`onSubmit ${type} ${key}`);
+    console.log(`onSubmit ${key} ${val}`);
 
     let ret = 'OK';
-    //
-    // switch ( type )
-    // {
-    //   case 'string':
-    //     ret = await redis.set(key, '');
-    //     break;
-    //   case 'list':
-    //     ret = await redis.lpush(key, '');
-    //     break;
-    //   case 'hash':
-    //     ret = await redis.hset(key, '', '');
-    //     break;
-    //   case 'set':
-    //     ret = await redis.sadd(key, '');
-    //     break;
-    //   case 'zset':
-    //     ret = await redis.zadd(key, 0, '');
-    //     break;
-    // }
+
+    switch ( selectType )
+    {
+      // case 'string':
+      //   ret = await redis.set(key, '');
+      //   break;
+      // case 'list':
+      //   ret = await redis.lpush(key, '');
+      //   break;
+      case 'hash':
+        ret = await redis.hset(selectKey, key, val);
+        break;
+      // case 'set':
+      //   ret = await redis.sadd(key, '');
+      //   break;
+      // case 'zset':
+      //   ret = await redis.zadd(key, 0, '');
+      //   break;
+      default:
+        console.log('type is wrong');
+        return;
+    }
 
     console.log(ret);
 
-    if (ret === 'OK') {
-      onRefresh();
+    if (ret === 1 ) {
+      //scan();
       handleClose();
     } else {
       // TODO : show error!!!
@@ -102,20 +111,22 @@ export default function AddKeyDialog(props) {
   return (
     <Fragment>
       <Tooltip TransitionComponent={Zoom} title="Add Key">
-        <IconButton
-          variant="contained"
-          className={classes.button}
+        <Fab
+          color="primary"
+          aria-label="add"
+          className={classes.fab}
           onClick={handleClickOpen}
         >
-          <PostAddOutlinedIcon color="primary" />
-        </IconButton>
+          <AddIcon />
+        </Fab>
       </Tooltip>
+
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-addkey"
+        aria-labelledby="form-dialog-add-sub-key"
       >
-        <DialogTitle id="form-dialog-addkey">Add New Hash Key/Value</DialogTitle>
+        <DialogTitle id="form-dialog-add-sub-key">Add Sub Key/Value</DialogTitle>
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
 
@@ -133,13 +144,12 @@ export default function AddKeyDialog(props) {
           />
 
           <TextField
-            autoFocus
             size="small"
             variant="outlined"
             margin="normal"
             label="Value"
-            name="value"
-            value={value}
+            name="val"
+            value={val}
             onChange={onChange}
             fullWidth
             className={classes.formSpecing}

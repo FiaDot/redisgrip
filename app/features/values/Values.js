@@ -23,6 +23,7 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { deselectKey } from '../servers/selectedSlice';
+import AddKeyDialog from '../keys/AddKeyDialog';
 
 // import { remote } from 'electron';
 
@@ -70,9 +71,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Values() {
+export default function Values(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+  const { redis } = props;
 
   const selectKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
@@ -197,11 +200,11 @@ export default function Values() {
       { selectKey ? KeyInfo()  : '' }
 
       {/* key 타입에 따른 value 출력 */}
-      {selectType === 'string' ? <StringContent /> : ''}
-      {selectType === 'hash' ? <HashContent /> : ''}
-      {selectType === 'list' ? <ListContent /> : ''}
-      {selectType === 'zset' ? <ZsetContent /> : ''}
-      {selectType === 'set' ? <SetContent /> : ''}
+      {selectType === 'string' ? <StringContent redis={redis} /> : ''}
+      {selectType === 'hash' ? <HashContent redis={redis} /> : ''}
+      {selectType === 'list' ? <ListContent redis={redis} /> : ''}
+      {selectType === 'zset' ? <ZsetContent redis={redis} /> : ''}
+      {selectType === 'set' ? <SetContent redis={redis} /> : ''}
     </div>
   );
 }

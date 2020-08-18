@@ -197,7 +197,7 @@ export default function ServerSheet() {
         }}
         anchor="right"
       >
-        <Values />
+        <Values redis={redis} />
       </Drawer>
 
     </div>
