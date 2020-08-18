@@ -16,6 +16,7 @@ import { connected } from './connectionSlice';
 import { addString } from '../values/stringContentSlice';
 import yellow from '@material-ui/core/colors/yellow';
 import red from '@material-ui/core/colors/red';
+import AddKeyValueDialog from '../values/AddKeyValueDialog';
 
 const drawerLeftWidth = 320;
 
@@ -199,6 +200,7 @@ export default function ServerSheet() {
       >
         <Values redis={redis} />
       </Drawer>
+
 
     </div>
   );

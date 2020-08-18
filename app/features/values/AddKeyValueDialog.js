@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -12,9 +12,12 @@ import Grid from '@material-ui/core/Grid';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Zoom from '@material-ui/core/Zoom';
-import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import RemoveOutlinedIcon from '@material-ui/icons/RemoveOutlined';
 import { useSelector } from 'react-redux';
+import AppBar from '@material-ui/core/AppBar';
+import IconButton from '@material-ui/core/IconButton';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -28,10 +31,28 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0, 1),
   },
   fab: {
+    //position: 'absolute',
+    // bottom: theme.spacing(2),
+    // right: theme.spacing(2),
     position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
+    zIndex: 1,
+    top: -30,
+    left: 0,
+    right: 0,
+    margin: '0 auto',
   },
+  grow: {
+    flexGrow: 1,
+  },
+  appBar: {
+    top: 'auto',
+    bottom: 10,
+    width: `calc(100% - 80%)`,
+    backgroundColor: theme.palette.background.paper,
+  },
+  // appBarIcon: {
+  //   color: 'red',
+  // },
 }));
 
 export default function AddKeyValueDialog(props) {
@@ -136,18 +157,53 @@ export default function AddKeyValueDialog(props) {
     return false;
   };
 
+
+
+  const ValueAppBar = () => {
+    return (
+      // eslint-disable-next-line react/jsx-filename-extension
+      <AppBar position="fixed" className={classes.appBar}>
+        <div>
+          {/* Add */}
+          <Tooltip TransitionComponent={Zoom} title="Add">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={handleClickOpen}
+            >
+              <AddIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+
+          {/* Del */}
+          <Tooltip TransitionComponent={Zoom} title="Delete">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={handleClickOpen}
+            >
+              <RemoveOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+
+          {/* Edit */}
+          <Tooltip TransitionComponent={Zoom} title="Edit">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={handleClickOpen}
+            >
+              <EditOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </AppBar>
+    );
+  }
+
   return (
-    <>
-      <Tooltip TransitionComponent={Zoom} title="Add Key">
-        <Fab
-          color="primary"
-          aria-label="add"
-          className={classes.fab}
-          onClick={handleClickOpen}
-        >
-          <AddIcon />
-        </Fab>
-      </Tooltip>
+    <Fragment>
+      {ValueAppBar()}
 
       <Dialog
         open={open}
@@ -160,7 +216,7 @@ export default function AddKeyValueDialog(props) {
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
 
-          { needKey() ?
+          {needKey() ?
             <TextField
               autoFocus
               size="small"
@@ -192,7 +248,7 @@ export default function AddKeyValueDialog(props) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Button
-                startIcon={<AddCircleIcon />}
+                startIcon={<AddCircleIcon/>}
                 fullWidth
                 variant="contained"
                 color="primary"
@@ -205,7 +261,7 @@ export default function AddKeyValueDialog(props) {
 
             <Grid item xs={6}>
               <Button
-                startIcon={<CancelIcon />}
+                startIcon={<CancelIcon/>}
                 fullWidth
                 variant="contained"
                 color="secondary"
@@ -218,6 +274,6 @@ export default function AddKeyValueDialog(props) {
           </Grid>
         </DialogActions>
       </Dialog>
-    </>
+    </Fragment>
   );
 }
