@@ -32,36 +32,27 @@ export default function HashContent(props) {
   // {key, values:[{no, time, hash:[{key,value}]}]
 
   const showHistoryHash = (key, value, no) => (
+    <TableRow key={key}>
+      <TableCell component="th" scope="row">
+        {key}
+      </TableCell>
+
+      <TableCell align="left">{value}</TableCell>
+    </TableRow>
+  );
+
+  const showHash = (key, value, no) => (
     <TableRow
-      key={`${key}`}
+      hover
+      onClick={(event) => handleClick(event, key)}
+      key={key}
+      selected={isSelected(key)}
     >
       <TableCell component="th" scope="row">
         {key}
       </TableCell>
 
-      <TableCell align="left">
-        {value}
-      </TableCell>
-
-    </TableRow>
-  );
-
-  const showHash = (key, value, no) => (
-      <TableRow
-        hover
-        onClick={(event) => handleClick(event, `${key}`)}
-        key={`${key}`}
-        selected={isSelected(`${key}`)}
-      >
-
-      <TableCell component="th" scope="row">
-        {key}
-      </TableCell>
-
-      <TableCell align="left">
-        {value}
-      </TableCell>
-
+      <TableCell align="left">{value}</TableCell>
     </TableRow>
   );
 
@@ -72,7 +63,12 @@ export default function HashContent(props) {
       <TimeNoComponent time={value.time} no={value.no} />
 
       <TableContainer component={Paper} key={`${key}_${value.no}`}>
-        <Table stickyHeader className={classes.table} size="small" aria-label="a dense table">
+        <Table
+          stickyHeader
+          className={classes.table}
+          size="small"
+          aria-label="a dense table"
+        >
           <TableHead>
             <TableRow>
               <TableCell>Key</TableCell>
@@ -85,20 +81,20 @@ export default function HashContent(props) {
           </TableBody>
         </Table>
       </TableContainer>
-
     </div>
   );
 
   return (
     <div className={classes.root}>
       {records.map((record) =>
-            record.values.map((value, index) =>
-              //if (1 == index) {
-                //console.log(index)
-                showKey(record.key, value, 0 === index ? showHash : showHistoryHash)
-              //}
-            )
-        )}
+        record.values.map(
+          (value, index) =>
+            // if (1 == index) {
+            // console.log(index)
+            showKey(record.key, value, index === 0 ? showHash : showHistoryHash)
+          // }
+        )
+      )}
 
       <AddKeyValueDialog redis={redis} />
     </div>
