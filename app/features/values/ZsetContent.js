@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -10,44 +9,16 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
-  },
-  buttons: {
-    padding: 5,
-  },
-  table: {
-    minWidth: 200,
-    margin: theme.spacing(1),
-  },
-  paper: {
-    padding: 5,
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
-  },
-  title: {
-    fontSize: 14,
-  },
-  divider: {
-    margin: theme.spacing(1),
-  },
-}));
+import useValueStyles from './ValueStyle';
+import TimeNoComponent from './TimeNoComponent';
 
 export default function ZsetContent() {
-  const classes = useStyles();
-
-  const selectKey = useSelector((state) => state.selected.selectKey);
-  const selectType = useSelector((state) => state.selected.selectType);
+  const classes = useValueStyles();
 
   const records = useSelector((state) => state.zsetContent.records);
 
   // {key, values:[{no, time, hash:[{key,value}]}]
   const showRecord = (key, value) => (
-
     <TableRow key={`${key}_${value}`}>
 
       <TableCell component="th" scope="row">
@@ -62,15 +33,13 @@ export default function ZsetContent() {
   );
 
   const showKey = (key, value) => (
-    <div key={value.time}>
+    <div key={value.time} className={classes.paper}>
 
       <Divider className={classes.divider} />
 
-      <TableContainer component={Paper} key={`${key}_${value.no}`}>
+      <TimeNoComponent time={value.time} no={value.no} />
 
-        <Typography key="title">
-          {value.no} / {value.time}
-        </Typography>
+      <TableContainer component={Paper} key={`${key}_${value.no}`}>
 
         <Table stickyHeader className={classes.table} size="small" aria-label="zset table">
           <TableHead>
