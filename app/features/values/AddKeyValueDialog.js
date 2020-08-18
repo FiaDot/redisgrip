@@ -61,6 +61,7 @@ export default function AddKeyValueDialog(props) {
 
   const selectKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
+  const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
   const [inputs, setInputs] = useState({
     open: false,
@@ -85,6 +86,53 @@ export default function AddKeyValueDialog(props) {
 
   const handleClose = () => {
     setInputs({ ...inputs, open: false });
+  };
+
+  const onDeleteSubKey = async () => {
+    console.log(`onDeleteSubKey ${selectKey} ${selectType} ${selectSubKey}`);
+
+    let ret = 'OK';
+
+    // showModel( {
+    //   title: 'delete',
+    //   button: 'Delete',
+    //   content: 'are you sure?'
+    // }).then() => {
+    //   console.log('ok');
+    // }
+    switch (selectType) {
+      // case 'string':
+      //   ret = await redis.set(selectKey, val);
+      //   break;
+      // case 'list':
+      //   //ret = await redis.lremindex(selectKey, index);
+      //   break;
+      case 'hash':
+        ret = await redis.hdel(selectKey, selectSubKey);
+        break;
+      case 'set':
+        ret = await redis.srem(selectKey, selectSubKey);
+        break;
+      case 'zset':
+        ret = await redis.zrem(selectKey, selectSubKey);
+        break;
+      default:
+        console.log('type is wrong');
+        return;
+    }
+
+    console.log(ret);
+
+    if (ret > 0 || ret == 'OK') {
+      // TODO : scan();
+      // complete
+    } else {
+      // TODO : show error!!!
+    }
+  };
+
+  const onEditSubKey = () => {
+    console.log(`onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`);
   };
 
   const onSubmit = async () => {
@@ -180,7 +228,7 @@ export default function AddKeyValueDialog(props) {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={handleClickOpen}
+              onClick={onDeleteSubKey}
             >
               <RemoveOutlinedIcon color="primary" />
             </IconButton>
@@ -191,7 +239,7 @@ export default function AddKeyValueDialog(props) {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={handleClickOpen}
+              onClick={onEditSubKey}
             >
               <EditOutlinedIcon color="primary" />
             </IconButton>

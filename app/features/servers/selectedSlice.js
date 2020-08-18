@@ -14,6 +14,8 @@ const selectedSlice = createSlice({
     // 키 이름, 타입, tll 등 있어야 함!
     selectKey: null,
     selectType: null,
+    // list, hash, set, zset 에서 선택한 항목
+    selectSubKey: null,
   },
   reducers: {
     selectServer: (state, action) => {
@@ -29,11 +31,24 @@ const selectedSlice = createSlice({
     deselectKey: (state, action) => {
       state.selectKey = null;
       state.selectType = null;
-    }
+    },
+    selectSubKey: (state, action) => {
+      state.selectSubKey = action.payload;
+    },
+    deselectSubKey: (state, action) => {
+      state.selectSubKey = null;
+    },
   },
 });
 
-export const { selectServer, deselectServer, selectKey, deselectKey } = selectedSlice.actions;
+export const {
+  selectServer,
+  deselectServer,
+  selectKey,
+  deselectKey,
+  selectSubKey,
+  deselectSubKey,
+} = selectedSlice.actions;
 export default selectedSlice.reducer;
 
 export const isSelectedServer = (state) => {
