@@ -11,10 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
+import StringContent from './StringContent';
+import AddKeyValueDialog from './AddKeyValueDialog';
 
-export default function HashContent() {
+export default function HashContent(props) {
   const classes = useValueStyles();
-
+  const { redis } = props;
   const records = useSelector((state) => state.hashContent.records);
 
   // {key, values:[{no, time, hash:[{key,value}]}]
@@ -64,6 +66,8 @@ export default function HashContent() {
               showKey(record.key, value)
             )
         )}
+
+      <AddKeyValueDialog redis={redis} />
     </div>
   );
 }

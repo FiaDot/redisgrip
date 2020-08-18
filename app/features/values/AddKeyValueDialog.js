@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -7,18 +7,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import PostAddOutlinedIcon from '@material-ui/icons/PostAddOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Zoom from '@material-ui/core/Zoom';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -31,20 +27,27 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(2, 0, 1),
   },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
 }));
 
-export default function AddKeyDialog(props) {
+export default function AddKeyValueDialog(props) {
   const classes = useStyles();
+  const { redis } = props;
 
-  const { redis, onRefresh } = props;
+  const selectKey = useSelector((state) => state.selected.selectKey);
+  const selectType = useSelector((state) => state.selected.selectType);
 
   const [inputs, setInputs] = useState({
     open: false,
-    value: '',
     key: '',
+    val: '',
   });
 
-  const { open, type, key } = inputs;
+  const { open, key, val } = inputs;
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -55,7 +58,6 @@ export default function AddKeyDialog(props) {
     });
   };
 
-
   const handleClickOpen = () => {
     setInputs({ ...inputs, open: true });
   };
@@ -64,87 +66,127 @@ export default function AddKeyDialog(props) {
     setInputs({ ...inputs, open: false });
   };
 
-
   const onSubmit = async () => {
-    console.log(`onSubmit ${type} ${key}`);
+    console.log(`onSubmit ${key} ${val}`);
 
     let ret = 'OK';
-    //
-    // switch ( type )
-    // {
-    //   case 'string':
-    //     ret = await redis.set(key, '');
-    //     break;
-    //   case 'list':
-    //     ret = await redis.lpush(key, '');
-    //     break;
-    //   case 'hash':
-    //     ret = await redis.hset(key, '', '');
-    //     break;
-    //   case 'set':
-    //     ret = await redis.sadd(key, '');
-    //     break;
-    //   case 'zset':
-    //     ret = await redis.zadd(key, 0, '');
-    //     break;
-    // }
+
+    switch (selectType) {
+      case 'string':
+        ret = await redis.set(selectKey, val);
+        break;
+      case 'list':
+        ret = await redis.lpush(selectKey, val);
+        break;
+      case 'hash':
+        ret = await redis.hset(selectKey, key, val);
+        break;
+      case 'set':
+        ret = await redis.sadd(selectKey, val);
+        break;
+      case 'zset':
+        ret = await redis.zadd(selectKey, val, key);
+        break;
+      default:
+        console.log('type is wrong');
+        return;
+    }
 
     console.log(ret);
 
-    if (ret === 'OK') {
-      onRefresh();
+    if (ret > 0 || ret == 'OK') {
+      // TODO : scan();
       handleClose();
     } else {
       // TODO : show error!!!
     }
   };
 
+  const getValueName = () => {
+    console.log(selectType);
+
+    switch (selectType) {
+      case 'string':
+      case 'list':
+      case 'hash':
+      case 'set':
+        return 'Value';
+      case 'zset':
+        return 'Score';
+      default:
+        console.log('type is wrong');
+    }
+    return 'wrong';
+  };
+
+  const needKey = () => {
+    switch (selectType) {
+      case 'string':
+      case 'list':
+      case 'set':
+        return false;
+
+      case 'hash':
+      case 'zset':
+        return true;
+
+      default:
+        console.log('type is wrong');
+    }
+    return false;
+  };
+
   return (
-    <Fragment>
+    <>
       <Tooltip TransitionComponent={Zoom} title="Add Key">
-        <IconButton
-          variant="contained"
-          className={classes.button}
+        <Fab
+          color="primary"
+          aria-label="add"
+          className={classes.fab}
           onClick={handleClickOpen}
         >
-          <PostAddOutlinedIcon color="primary" />
-        </IconButton>
+          <AddIcon />
+        </Fab>
       </Tooltip>
+
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-addkey"
+        aria-labelledby="form-dialog-add-sub-key"
       >
-        <DialogTitle id="form-dialog-addkey">Add New Hash Key/Value</DialogTitle>
+        <DialogTitle id="form-dialog-add-sub-key">
+          Add Sub Key/Value
+        </DialogTitle>
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
 
+          { needKey() ?
+            <TextField
+              autoFocus
+              size="small"
+              variant="outlined"
+              margin="normal"
+              label="Name"
+              name="key"
+              value={key}
+              onChange={onChange}
+              fullWidth
+              className={classes.formSpecing}
+            />
+            : ''
+          }
+
           <TextField
-            autoFocus
             size="small"
             variant="outlined"
             margin="normal"
-            label="Name"
-            name="key"
-            value={key}
+            label={getValueName()}
+            name="val"
+            value={val}
             onChange={onChange}
             fullWidth
             className={classes.formSpecing}
           />
-
-          <TextField
-            autoFocus
-            size="small"
-            variant="outlined"
-            margin="normal"
-            label="Value"
-            name="value"
-            value={value}
-            onChange={onChange}
-            fullWidth
-            className={classes.formSpecing}
-          />
-
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2}>
@@ -176,6 +218,6 @@ export default function AddKeyDialog(props) {
           </Grid>
         </DialogActions>
       </Dialog>
-    </Fragment>
+    </>
   );
 }

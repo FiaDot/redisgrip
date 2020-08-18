@@ -91,7 +91,7 @@ export default function AddKeyDialog(props) {
 
     console.log(ret);
 
-    if (ret === 'OK') {
+    if (ret > 0 || ret == 'OK') {
       onRefresh();
       handleClose();
     } else {

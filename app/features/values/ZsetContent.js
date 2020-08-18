@@ -11,9 +11,11 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
+import AddKeyValueDialog from './AddKeyValueDialog';
 
-export default function ZsetContent() {
+export default function ZsetContent(props) {
   const classes = useValueStyles();
+  const { redis } = props;
 
   const records = useSelector((state) => state.zsetContent.records);
 
@@ -65,6 +67,8 @@ export default function ZsetContent() {
               showKey(record.key, value)
             )
         )}
+
+      <AddKeyValueDialog redis={redis} />
     </div>
   );
 }
