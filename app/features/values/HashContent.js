@@ -33,7 +33,7 @@ export default function HashContent(props) {
 
   const showHistoryHash = (key, value, no) => (
     <TableRow
-      key={`${key}`}
+      key={key}
     >
       <TableCell component="th" scope="row">
         {key}
@@ -49,9 +49,9 @@ export default function HashContent(props) {
   const showHash = (key, value, no) => (
       <TableRow
         hover
-        onClick={(event) => handleClick(event, `${key}`)}
-        key={`${key}`}
-        selected={isSelected(`${key}`)}
+        onClick={(event) => handleClick(event, key)}
+        key={key}
+        selected={isSelected(key)}
       >
 
       <TableCell component="th" scope="row">
