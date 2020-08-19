@@ -221,8 +221,7 @@ const RedisMiddleware = () => {
     };
 
 
-    const selectKey = async (payload) => {
-      const key = payload.key;
+    const selectKey = async (key) => {
       const type = await redis.type(key);
       // console.log(`called onSelectKey ${key}=${type}`);
 
@@ -273,6 +272,7 @@ const RedisMiddleware = () => {
         }
         default:
           console.log('not matched type');
+          return null;
       }
 
       return type;
@@ -333,10 +333,9 @@ const RedisMiddleware = () => {
         break;
 
       case 'selected/selectKey':
-        selectKey(action.payload).then(type => {
-          action.payload.type = type;
-          next(action);
-        });
+        const type = await selectKey(action.payload.key);
+        action.payload.type = type;
+        next(action);
         break;
 
       case 'selected/addSubKey':
