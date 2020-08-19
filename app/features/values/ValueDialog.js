@@ -14,10 +14,11 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Zoom from '@material-ui/core/Zoom';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveOutlinedIcon from '@material-ui/icons/RemoveOutlined';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { addSubKey } from '../servers/selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -59,6 +60,7 @@ export default function ValueDialog(props) {
   const classes = useStyles();
   const { redis } = props;
 
+  const dispatch = useDispatch();
   const selectKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
@@ -138,37 +140,45 @@ export default function ValueDialog(props) {
   const onSubmit = async () => {
     console.log(`onSubmit ${key} ${val}`);
 
-    let ret = 'OK';
+    const ret = await dispatch(
+      addSubKey({ mainKey: selectKey, type: selectType, key, val })
+    );
 
-    switch (selectType) {
-      case 'string':
-        ret = await redis.set(selectKey, val);
-        break;
-      case 'list':
-        ret = await redis.lpush(selectKey, val);
-        break;
-      case 'hash':
-        ret = await redis.hset(selectKey, key, val);
-        break;
-      case 'set':
-        ret = await redis.sadd(selectKey, val);
-        break;
-      case 'zset':
-        ret = await redis.zadd(selectKey, val, key);
-        break;
-      default:
-        console.log('type is wrong');
-        return;
-    }
+    console.log(`onSubmit ${ret}`);
 
-    console.log(ret);
+    handleClose();
 
-    if (ret > 0 || ret == 'OK') {
-      // TODO : scan();
-      handleClose();
-    } else {
-      // TODO : show error!!!
-    }
+    // let ret = 'OK';
+    //
+    // switch (selectType) {
+    //   case 'string':
+    //     ret = await redis.set(selectKey, val);
+    //     break;
+    //   case 'list':
+    //     ret = await redis.lpush(selectKey, val);
+    //     break;
+    //   case 'hash':
+    //     ret = await redis.hset(selectKey, key, val);
+    //     break;
+    //   case 'set':
+    //     ret = await redis.sadd(selectKey, val);
+    //     break;
+    //   case 'zset':
+    //     ret = await redis.zadd(selectKey, val, key);
+    //     break;
+    //   default:
+    //     console.log('type is wrong');
+    //     return;
+    // }
+    //
+    // console.log(ret);
+
+    // if (ret > 0 || ret == 'OK') {
+    //   // TODO : scan();
+    //   handleClose();
+    // } else {
+    //   // TODO : show error!!!
+    // }
   };
 
   const getValueName = () => {

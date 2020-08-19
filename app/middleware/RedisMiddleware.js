@@ -128,7 +128,7 @@ const RedisMiddleware = () => {
     });
   };
 
-  return (store) => (next) => (action) => {
+  return (store) => (next) => async (action) => {
     const reduceRedisOp = (args) => {
       // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
 
@@ -150,7 +150,7 @@ const RedisMiddleware = () => {
         .unix(time)
         .format('YYYY-MM-DD HH:mm:ss:SSS')
         .toString();
-      console.log(`${fmtTime} / ${args} / ${source} / ${database}`);
+      // console.log(`${fmtTime} / ${args} / ${source} / ${database}`);
       // 1597213410.710730/SSCAN,set_test,0,COUNT,10000/59.10.191.65:61924/0
       reduceRedisOp(args.toString());
     };
@@ -279,6 +279,42 @@ const RedisMiddleware = () => {
     };
 
 
+    const addSubKey = async (mainKey, type, key, val) => {
+      // console.log(`addSubKey ${type} / ${key} / ${val}`);
+      let ret = 'OK';
+
+      switch (type) {
+        case 'string':
+          ret = await redis.set(mainKey, val);
+          break;
+        case 'list':
+          ret = await redis.lpush(mainKey, val);
+          break;
+        case 'hash':
+          ret = await redis.hset(mainKey, key, val);
+          break;
+        case 'set':
+          ret = await redis.sadd(mainKey, val);
+          break;
+        case 'zset':
+          ret = await redis.zadd(mainKey, val, key);
+          break;
+        default:
+          console.log('type is wrong');
+          return;
+      }
+
+      console.log(ret);
+
+      if (ret > 0 || ret == 'OK') {
+        return true;
+      }
+
+      return false;
+    };
+
+
+
     console.log(`RedisMiddleware type=${action.type}`);
 
     switch (action.type) {
@@ -303,10 +339,20 @@ const RedisMiddleware = () => {
         });
         break;
 
-      // case 'rediswrapper/addhash':
-      //   // TODO : something...
-      //   // next(action);
-      //   break;
+      case 'selected/addSubKey':
+        return await addSubKey(
+          action.payload.mainKey,
+          action.payload.type,
+          action.payload.key,
+          action.payload.val
+        );
+
+      case 'selected/delSubKey':
+        break;
+
+      case 'selected/editSubKey':
+        console.log('TODO : editSubKey impl');
+        break;
 
       default:
         next(action);

@@ -19,10 +19,10 @@ const selectedSlice = createSlice({
   },
   reducers: {
     selectServer: (state, action) => {
-      return { ...state, id: action.payload};
+      return { ...state, id: action.payload };
     },
     deselectServer: (state, action) => {
-      return { ...state, id: null};
+      return { ...state, id: null };
     },
     selectKey: (state, action) => {
       state.selectKey = action.payload.key;
@@ -38,6 +38,9 @@ const selectedSlice = createSlice({
     deselectSubKey: (state, action) => {
       state.selectSubKey = null;
     },
+    addSubKey: (state, action) => {},
+    delSubKey: (state, action) => {},
+    editSubKey: (state, action) => {},
   },
 });
 
@@ -48,6 +51,9 @@ export const {
   deselectKey,
   selectSubKey,
   deselectSubKey,
+  addSubKey,
+  delSubKey,
+  editSubKey,
 } = selectedSlice.actions;
 export default selectedSlice.reducer;
 
