@@ -19,7 +19,7 @@ import TrackChangesOutlinedIcon from '@material-ui/icons/TrackChangesOutlined';
 import Divider from '@material-ui/core/Divider';
 import { addHash } from '../values/hashContentSlice';
 import { addString } from '../values/stringContentSlice';
-import { addKeys, clearKeys } from './keysSlice';
+import { addKeys, clearKeys, scanKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
 import { addZset } from '../values/zsetContentSlice';
 import { addList } from '../values/listContentSlice';
