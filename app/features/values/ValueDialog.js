@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { addSubKey } from '../servers/selectedSlice';
+import { addSubKey, delSubKey } from '../servers/selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -93,44 +93,51 @@ export default function ValueDialog(props) {
   const onDeleteSubKey = async () => {
     console.log(`onDeleteSubKey ${selectKey} ${selectType} ${selectSubKey}`);
 
-    let ret = 'OK';
+    const ret = await dispatch(
+      delSubKey({ mainKey: selectKey, type: selectType, key: selectSubKey })
+    );
 
-    // showModel( {
-    //   title: 'delete',
-    //   button: 'Delete',
-    //   content: 'are you sure?'
-    // }).then() => {
-    //   console.log('ok');
+    console.log(`onDeleteSubKey ${ret}`);
+    handleClose();
+
+    // let ret = 'OK';
+    //
+    // // showModel( {
+    // //   title: 'delete',
+    // //   button: 'Delete',
+    // //   content: 'are you sure?'
+    // // }).then() => {
+    // //   console.log('ok');
+    // // }
+    // switch (selectType) {
+    //   // case 'string':
+    //   //   ret = await redis.set(selectKey, val);
+    //   //   break;
+    //   // case 'list':
+    //   //   //ret = await redis.lremindex(selectKey, index);
+    //   //   break;
+    //   case 'hash':
+    //     ret = await redis.hdel(selectKey, selectSubKey);
+    //     break;
+    //   case 'set':
+    //     ret = await redis.srem(selectKey, selectSubKey);
+    //     break;
+    //   case 'zset':
+    //     ret = await redis.zrem(selectKey, selectSubKey);
+    //     break;
+    //   default:
+    //     console.log('type is wrong');
+    //     return;
     // }
-    switch (selectType) {
-      // case 'string':
-      //   ret = await redis.set(selectKey, val);
-      //   break;
-      // case 'list':
-      //   //ret = await redis.lremindex(selectKey, index);
-      //   break;
-      case 'hash':
-        ret = await redis.hdel(selectKey, selectSubKey);
-        break;
-      case 'set':
-        ret = await redis.srem(selectKey, selectSubKey);
-        break;
-      case 'zset':
-        ret = await redis.zrem(selectKey, selectSubKey);
-        break;
-      default:
-        console.log('type is wrong');
-        return;
-    }
-
-    console.log(ret);
-
-    if (ret > 0 || ret == 'OK') {
-      // TODO : scan();
-      // complete
-    } else {
-      // TODO : show error!!!
-    }
+    //
+    // console.log(ret);
+    //
+    // if (ret > 0 || ret == 'OK') {
+    //   // TODO : scan();
+    //   // complete
+    // } else {
+    //   // TODO : show error!!!
+    // }
   };
 
   const onEditSubKey = () => {

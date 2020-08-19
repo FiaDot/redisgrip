@@ -304,8 +304,6 @@ const RedisMiddleware = () => {
           return;
       }
 
-      console.log(ret);
-
       if (ret > 0 || ret == 'OK') {
         return true;
       }
@@ -314,8 +312,42 @@ const RedisMiddleware = () => {
     };
 
 
+    const delSubKey = async (mainKey, type, key) => {
+      console.log(`onDeleteSubKey ${mainKey} ${type} ${key}`);
+
+      let ret = 'OK';
+
+      switch (type) {
+        // case 'string':
+        //   ret = await redis.set(selectKey, val);
+        //   break;
+        // case 'list':
+        //   //ret = await redis.lremindex(selectKey, index);
+        //   break;
+        case 'hash':
+          ret = await redis.hdel(mainKey, key);
+          break;
+        case 'set':
+          ret = await redis.srem(mainKey, key);
+          break;
+        case 'zset':
+          ret = await redis.zrem(mainKey, key);
+          break;
+        default:
+          console.log('type is wrong');
+          return;
+      }
+
+      if ( ret > 0 || ret == 'OK' )
+        return true;
+
+      return false;
+    };
+
+
 
     console.log(`RedisMiddleware type=${action.type}`);
+    let isSuccess;
 
     switch (action.type) {
       case 'connections/connectToServer':
@@ -339,15 +371,24 @@ const RedisMiddleware = () => {
         break;
 
       case 'selected/addSubKey':
-        return await addSubKey(
+        isSuccess = await addSubKey(
           action.payload.mainKey,
           action.payload.type,
           action.payload.key,
           action.payload.val
         );
+        await selectKey(action.payload.mainKey);
+        return isSuccess;
 
       case 'selected/delSubKey':
-        break;
+        isSuccess = await delSubKey(
+          action.payload.mainKey,
+          action.payload.type,
+          action.payload.key
+        );
+
+        await selectKey(action.payload.mainKey);
+        return isSuccess;
 
       case 'selected/editSubKey':
         console.log('TODO : editSubKey impl');
