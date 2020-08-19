@@ -103,7 +103,7 @@ export default function ValueDialog() {
     handleClose();
   };
 
-  const onEditSubKey = () => {
+  const onEditSubKey = async () => {
     console.log(`TODO : onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`);
   };
 
@@ -244,7 +244,7 @@ export default function ValueDialog() {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Button
-                startIcon={<AddCircleIcon/>}
+                startIcon={<AddCircleIcon />}
                 fullWidth
                 variant="contained"
                 color="primary"
