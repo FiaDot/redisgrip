@@ -58,8 +58,6 @@ export default function ServerSheet() {
   const dispatch = useDispatch();
 
   const connect = async () => {
-    console.log('ServerSheet:connect()');
-
     const options = {
       host: '52.79.194.253',
       port: 6379,

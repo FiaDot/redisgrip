@@ -19,6 +19,8 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import { useDispatch } from 'react-redux';
+import { addKey, scanKeys } from './keysSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -33,10 +35,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddKeyDialog(props) {
+export default function AddKeyDialog() {
   const classes = useStyles();
 
-  const { redis, onRefresh } = props;
+  const dispatch = useDispatch();
 
   const [inputs, setInputs] = useState({
     open: false,
@@ -64,40 +66,12 @@ export default function AddKeyDialog(props) {
     setInputs({ ...inputs, open: false });
   };
 
-
   const onSubmit = async () => {
     console.log(`onSubmit ${type} ${key}`);
-
-    let ret;
-
-    switch ( type )
-    {
-      case 'string':
-        ret = await redis.set(key, '');
-        break;
-      case 'list':
-        ret = await redis.lpush(key, '');
-        break;
-      case 'hash':
-        ret = await redis.hset(key, '', '');
-        break;
-      case 'set':
-        ret = await redis.sadd(key, '');
-        break;
-      case 'zset':
-        ret = await redis.zadd(key, 0, '');
-        break;
-    }
-
-    console.log(ret);
-
-    if (ret > 0 || ret == 'OK') {
-      onRefresh();
-      handleClose();
-    } else {
-      // TODO : show error!!!
-    }
-  };
+    await dispatch(addKey({key, type}));
+    handleClose();
+    dispatch(scanKeys());
+  }
 
   return (
     <Fragment>

@@ -20,7 +20,6 @@ import { addHash } from '../features/values/hashContentSlice';
 const RedisMiddleware = () => {
   let redis = null;
 
-
   function connectToSSH(options) {
     return new Promise((resolve, reject) => {
       const connection = new Client();
@@ -220,6 +219,36 @@ const RedisMiddleware = () => {
       }
     };
 
+    const addKey = async (key, type) => {
+      console.log(`addKey ${key} as ${type}`);
+
+      let ret;
+
+      switch (type) {
+        case 'string':
+          ret = await redis.set(key, '');
+          break;
+        case 'list':
+          ret = await redis.lpush(key, '');
+          break;
+        case 'hash':
+          ret = await redis.hset(key, '', '');
+          break;
+        case 'set':
+          ret = await redis.sadd(key, '');
+          break;
+        case 'zset':
+          ret = await redis.zadd(key, 0, '');
+          break;
+        default:
+          console.log('wrong type');
+          return false;
+      }
+
+      if (ret > 0 || ret == 'OK') return true;
+
+      return false;
+    };
 
     const selectKey = async (key) => {
       const type = await redis.type(key);
@@ -229,7 +258,7 @@ const RedisMiddleware = () => {
         case 'string': {
           const value = await redis.get(key);
           console.log(`called onSelectKey ${key}=${value}`);
-          store.dispatch(addString({ key, value }))
+          store.dispatch(addString({ key, value }));
           break;
         }
         case 'zset': {
@@ -267,7 +296,7 @@ const RedisMiddleware = () => {
           console.log(`called onSelectKey ${key}=${data}`);
           const kv = await makeKeyValueFromHash(data[1]);
           // console.log(kv);
-          store.dispatch(addHash({ key: key, values: kv }));
+          store.dispatch(addHash({ key, values: kv }));
           break;
         }
         default:
@@ -278,6 +307,18 @@ const RedisMiddleware = () => {
       return type;
     };
 
+    const scanKeys = async () => {
+      const stream = await redis.scanStream({
+        match: '*',
+        count: 10000,
+      });
+
+      store.dispatch(clearKeys());
+
+      stream.on('data', function (keys) {
+        store.dispatch(addKeys(keys));
+      });
+    };
 
     const addSubKey = async (mainKey, type, key, val) => {
       // console.log(`addSubKey ${type} / ${key} / ${val}`);
@@ -311,7 +352,6 @@ const RedisMiddleware = () => {
       return false;
     };
 
-
     const delSubKey = async (mainKey, type, key) => {
       console.log(`onDeleteSubKey ${mainKey} ${type} ${key}`);
 
@@ -338,13 +378,10 @@ const RedisMiddleware = () => {
           return;
       }
 
-      if ( ret > 0 || ret == 'OK' )
-        return true;
+      if (ret > 0 || ret == 'OK') return true;
 
       return false;
     };
-
-
 
     console.log(`RedisMiddleware type=${action.type}`);
     let isSuccess;
@@ -362,6 +399,14 @@ const RedisMiddleware = () => {
           // }
           store.dispatch(setShowResult(true));
         });
+        break;
+
+      case 'keys/addKey':
+        isSuccess = await addKey(action.payload.key, action.payload.type);
+        return isSuccess;
+
+      case 'keys/scanKeys':
+        await scanKeys();
         break;
 
       case 'selected/selectKey':
