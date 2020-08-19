@@ -127,55 +127,55 @@ export default function Keys(props) {
   };
 
   const onSelectKey = async (key) => {
-    const type = await redis.type(key);
+    //const type = await redis.type(key);
     // console.log(`called onSelectKey ${key}=${type}`);
 
-    dispatch(selectKey({key, type}));
+    dispatch(selectKey({key}));
 
-    switch (type) {
-      case 'string': {
-        const value = await redis.get(key);
-        console.log(`called onSelectKey ${key}=${value}`);
-        dispatch(addString({ key, value }))
-        break;
-      }
-      case 'zset': {
-        const count = await redis.zcard(key);
-        console.log(`called onSelectKey ${key}=${count}`);
-        const data = await redis.zrange(key, 0, count, 'WITHSCORES');
-        console.log(`zset len=${data.length},data=${data} `);
-
-        const kv = await makeKeyValueFromHash(data);
-        console.log(kv);
-        dispatch(addZset({ key, values: kv }));
-        break;
-      }
-      case 'list': {
-        const len = await redis.llen(key);
-        const data = await redis.lrange(key, 0, len);
-        console.log(`called onSelectKey ${key}=${data}`);
-        dispatch(addList({ key, values: await makeValuePairArray(data) }));
-        break;
-      }
-      case 'set': {
-        const len = await redis.scard(key);
-        const data = await redis.sscan(key, 0, 'count', 10000);
-        console.log(`called onSelectKey ${key}=${data}`);
-        dispatch(addSet({ key, values: await makeValuePairArray(data[1]) }));
-        break;
-      }
-      case 'hash': {
-        const len = await redis.hlen(key);
-        const data = await redis.hscan(key, 0, 'COUNT', 10000);
-        console.log(`called onSelectKey ${key}=${data}`);
-        const kv = await makeKeyValueFromHash(data[1]);
-        // console.log(kv);
-        dispatch(addHash({ key: key, values: kv }));
-        break;
-      }
-      default:
-        console.log('not matched type');
-    }
+    // switch (type) {
+    //   case 'string': {
+    //     const value = await redis.get(key);
+    //     console.log(`called onSelectKey ${key}=${value}`);
+    //     dispatch(addString({ key, value }))
+    //     break;
+    //   }
+    //   case 'zset': {
+    //     const count = await redis.zcard(key);
+    //     console.log(`called onSelectKey ${key}=${count}`);
+    //     const data = await redis.zrange(key, 0, count, 'WITHSCORES');
+    //     console.log(`zset len=${data.length},data=${data} `);
+    //
+    //     const kv = await makeKeyValueFromHash(data);
+    //     console.log(kv);
+    //     dispatch(addZset({ key, values: kv }));
+    //     break;
+    //   }
+    //   case 'list': {
+    //     const len = await redis.llen(key);
+    //     const data = await redis.lrange(key, 0, len);
+    //     console.log(`called onSelectKey ${key}=${data}`);
+    //     dispatch(addList({ key, values: await makeValuePairArray(data) }));
+    //     break;
+    //   }
+    //   case 'set': {
+    //     const len = await redis.scard(key);
+    //     const data = await redis.sscan(key, 0, 'count', 10000);
+    //     console.log(`called onSelectKey ${key}=${data}`);
+    //     dispatch(addSet({ key, values: await makeValuePairArray(data[1]) }));
+    //     break;
+    //   }
+    //   case 'hash': {
+    //     const len = await redis.hlen(key);
+    //     const data = await redis.hscan(key, 0, 'COUNT', 10000);
+    //     console.log(`called onSelectKey ${key}=${data}`);
+    //     const kv = await makeKeyValueFromHash(data[1]);
+    //     // console.log(kv);
+    //     dispatch(addHash({ key: key, values: kv }));
+    //     break;
+    //   }
+    //   default:
+    //     console.log('not matched type');
+    // }
   };
 
   const scan = async () => {

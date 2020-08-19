@@ -1,6 +1,7 @@
 import { Client } from 'ssh2';
 import Redis from 'ioredis';
 import net from 'net';
+import moment from 'moment';
 import {
   connected,
   connectFailed,
@@ -10,19 +11,15 @@ import {
 } from '../features/servers/connectionSlice';
 import { addKeys, clearKeys } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
-import moment from 'moment';
+import { selectKey } from '../features/servers/selectedSlice';
+import { addZset } from '../features/values/zsetContentSlice';
+import { addList } from '../features/values/listContentSlice';
+import { addSet } from '../features/values/setContentSlice';
+import { addHash } from '../features/values/hashContentSlice';
 
 const RedisMiddleware = () => {
   let redis = null;
 
-  // const onConnected = (store) => (event) => {
-  //   // eslint-disable-next-line no-undef
-  //   store.dispatch(actions.connected());
-  // };
-  //
-  // const onDisconnected = store => (event) => {
-  //   store.dispatch(actions.disconnect());
-  // };
 
   function connectToSSH(options) {
     return new Promise((resolve, reject) => {
@@ -44,7 +41,6 @@ const RedisMiddleware = () => {
       redisInst.once('ready', () => resolve(redisInst));
     });
   }
-
 
   function createIntermediateServer(connectionListener) {
     return new Promise((resolve, reject) => {
@@ -117,9 +113,22 @@ const RedisMiddleware = () => {
     return redisInst;
   }
 
+  const makeKeyValueFromHash = async (raw) => {
+    const kv = [];
+
+    for (let n = 0; n < raw.length / 2; n += 1) {
+      kv.push({ key: raw[n * 2], value: raw[n * 2 + 1] });
+    }
+    return kv;
+  };
+
+  const makeValuePairArray = async (raw) => {
+    return raw.map((value, index) => {
+      return { value, index };
+    });
+  };
 
   return (store) => (next) => (action) => {
-
     const reduceRedisOp = (args) => {
       // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
 
@@ -146,21 +155,18 @@ const RedisMiddleware = () => {
       reduceRedisOp(args.toString());
     };
 
-
     const connect = async (config) => {
-
       try {
         if (redis != null) {
           redis.disconnect();
         }
 
-
         const options = {
-            host: '52.79.194.253',
-            port: 6379,
-            password: 'asdf1234!',
-            connectTimeout: 10000,
-            maxRetriesPerRequest: null,
+          host: '52.79.194.253',
+          port: 6379,
+          password: 'asdf1234!',
+          connectTimeout: 10000,
+          maxRetriesPerRequest: null,
         };
 
         redis = await connectToRedis(options);
@@ -187,9 +193,8 @@ const RedisMiddleware = () => {
           console.log('errr!!!');
           store.dispatch(connectFailed());
           return;
-        } else {
-          console.log('pong ok');
         }
+        console.log('pong ok');
 
         const stream = await redis.scanStream({
           match: '*',
@@ -210,16 +215,70 @@ const RedisMiddleware = () => {
         // store.dispatch(connectSuccess());
       } catch (err) {
         console.log(err);
-        //throw err;
+        // throw err;
         store.dispatch(connectFailed());
       }
     };
 
-    // console.log(
-    //   `RedisMiddleware type=${action.type} payload=${JSON.stringify(
-    //     action.payload
-    //   )}`
-    // );
+
+    const selectKey = async (payload) => {
+      const key = payload.key;
+      const type = await redis.type(key);
+      // console.log(`called onSelectKey ${key}=${type}`);
+
+      switch (type) {
+        case 'string': {
+          const value = await redis.get(key);
+          console.log(`called onSelectKey ${key}=${value}`);
+          store.dispatch(addString({ key, value }))
+          break;
+        }
+        case 'zset': {
+          const count = await redis.zcard(key);
+          console.log(`called onSelectKey ${key}=${count}`);
+          const data = await redis.zrange(key, 0, count, 'WITHSCORES');
+          console.log(`zset len=${data.length},data=${data} `);
+
+          const kv = await makeKeyValueFromHash(data);
+          console.log(kv);
+          store.dispatch(addZset({ key, values: kv }));
+          break;
+        }
+        case 'list': {
+          const len = await redis.llen(key);
+          const data = await redis.lrange(key, 0, len);
+          console.log(`called onSelectKey ${key}=${data}`);
+          store.dispatch(
+            addList({ key, values: await makeValuePairArray(data) })
+          );
+          break;
+        }
+        case 'set': {
+          const len = await redis.scard(key);
+          const data = await redis.sscan(key, 0, 'count', 10000);
+          console.log(`called onSelectKey ${key}=${data}`);
+          store.dispatch(
+            addSet({ key, values: await makeValuePairArray(data[1]) })
+          );
+          break;
+        }
+        case 'hash': {
+          const len = await redis.hlen(key);
+          const data = await redis.hscan(key, 0, 'COUNT', 10000);
+          console.log(`called onSelectKey ${key}=${data}`);
+          const kv = await makeKeyValueFromHash(data[1]);
+          // console.log(kv);
+          store.dispatch(addHash({ key: key, values: kv }));
+          break;
+        }
+        default:
+          console.log('not matched type');
+      }
+
+      return type;
+    };
+
+
     console.log(`RedisMiddleware type=${action.type}`);
 
     switch (action.type) {
@@ -237,24 +296,18 @@ const RedisMiddleware = () => {
         });
         break;
 
-      case 'rediswrapper/addhash':
-        // TODO : something...
-        //next(action);
+      case 'selected/selectKey':
+        selectKey(action.payload).then(type => {
+          action.payload.type = type;
+          next(action);
+        });
         break;
 
-      // case 'keys/scan':
-      //   const scanStream = async () => {
-      //     const stream = await redis.scanStream({
-      //       match: '*',
-      //       count: 10000,
-      //     });
-      //
-      //     stream.on('data', function (keys) {
-      //       action.payload = keys;
-      //       next(action);
-      //     });
-      //   };
+      // case 'rediswrapper/addhash':
+      //   // TODO : something...
+      //   // next(action);
       //   break;
+
       default:
         next(action);
     }
