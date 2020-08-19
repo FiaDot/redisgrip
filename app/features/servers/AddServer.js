@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -87,6 +87,11 @@ export default function AddServer() {
     pemFilePath,
     pemPassphrase,
   } = inputs;
+
+  useEffect(() => {
+    dispatch(setShowResult(false));
+    return () => {};
+  }, []);
 
   const onChange = (e) => {
     const { name, value } = e.target;
