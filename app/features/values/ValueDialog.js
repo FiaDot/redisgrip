@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-export default function AddKeyValueDialog(props) {
+export default function ValueDialog(props) {
   const classes = useStyles();
   const { redis } = props;
 
