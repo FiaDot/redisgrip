@@ -60,7 +60,7 @@ export default function StringContent(props) {
         ))
       }
 
-      <ValueDialog redis={redis} />
+      <ValueDialog />
 
 
       {/* 디버깅용 */}

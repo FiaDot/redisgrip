@@ -99,7 +99,7 @@ export default function SetContent(props) {
           )
       )}
 
-      <ValueDialog redis={redis} />
+      <ValueDialog />
     </div>
   );
 }

@@ -63,7 +63,7 @@ export default function ListContent(props) {
           )
       )}
 
-      <ValueDialog redis={redis} />
+      <ValueDialog />
     </div>
   );
 }

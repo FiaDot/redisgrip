@@ -56,9 +56,8 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-export default function ValueDialog(props) {
+export default function ValueDialog() {
   const classes = useStyles();
-  const { redis } = props;
 
   const dispatch = useDispatch();
   const selectKey = useSelector((state) => state.selected.selectKey);
@@ -91,101 +90,31 @@ export default function ValueDialog(props) {
   };
 
   const onDeleteSubKey = async () => {
-    console.log(`onDeleteSubKey ${selectKey} ${selectType} ${selectSubKey}`);
+    // TODO : show confirm popup
 
     const ret = await dispatch(
       delSubKey({ mainKey: selectKey, type: selectType, key: selectSubKey })
     );
 
-    console.log(`onDeleteSubKey ${ret}`);
-    handleClose();
+    console.log(
+      `onDeleteSubKey ${selectKey} ${selectType} ${selectSubKey} ret=${ret}`
+    );
 
-    // let ret = 'OK';
-    //
-    // // showModel( {
-    // //   title: 'delete',
-    // //   button: 'Delete',
-    // //   content: 'are you sure?'
-    // // }).then() => {
-    // //   console.log('ok');
-    // // }
-    // switch (selectType) {
-    //   // case 'string':
-    //   //   ret = await redis.set(selectKey, val);
-    //   //   break;
-    //   // case 'list':
-    //   //   //ret = await redis.lremindex(selectKey, index);
-    //   //   break;
-    //   case 'hash':
-    //     ret = await redis.hdel(selectKey, selectSubKey);
-    //     break;
-    //   case 'set':
-    //     ret = await redis.srem(selectKey, selectSubKey);
-    //     break;
-    //   case 'zset':
-    //     ret = await redis.zrem(selectKey, selectSubKey);
-    //     break;
-    //   default:
-    //     console.log('type is wrong');
-    //     return;
-    // }
-    //
-    // console.log(ret);
-    //
-    // if (ret > 0 || ret == 'OK') {
-    //   // TODO : scan();
-    //   // complete
-    // } else {
-    //   // TODO : show error!!!
-    // }
+    handleClose();
   };
 
   const onEditSubKey = () => {
-    console.log(`onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`);
+    console.log(`TODO : onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`);
   };
 
   const onSubmit = async () => {
-    console.log(`onSubmit ${key} ${val}`);
-
     const ret = await dispatch(
       addSubKey({ mainKey: selectKey, type: selectType, key, val })
     );
 
-    console.log(`onSubmit ${ret}`);
+    console.log(`onSubmit ${key} ${val} ret=${ret}`);
 
     handleClose();
-
-    // let ret = 'OK';
-    //
-    // switch (selectType) {
-    //   case 'string':
-    //     ret = await redis.set(selectKey, val);
-    //     break;
-    //   case 'list':
-    //     ret = await redis.lpush(selectKey, val);
-    //     break;
-    //   case 'hash':
-    //     ret = await redis.hset(selectKey, key, val);
-    //     break;
-    //   case 'set':
-    //     ret = await redis.sadd(selectKey, val);
-    //     break;
-    //   case 'zset':
-    //     ret = await redis.zadd(selectKey, val, key);
-    //     break;
-    //   default:
-    //     console.log('type is wrong');
-    //     return;
-    // }
-    //
-    // console.log(ret);
-
-    // if (ret > 0 || ret == 'OK') {
-    //   // TODO : scan();
-    //   handleClose();
-    // } else {
-    //   // TODO : show error!!!
-    // }
   };
 
   const getValueName = () => {

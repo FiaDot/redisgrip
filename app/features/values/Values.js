@@ -200,11 +200,11 @@ export default function Values(props) {
       { selectKey ? KeyInfo()  : '' }
 
       {/* key 타입에 따른 value 출력 */}
-      {selectType === 'string' ? <StringContent redis={redis} /> : ''}
-      {selectType === 'hash' ? <HashContent redis={redis} /> : ''}
-      {selectType === 'list' ? <ListContent redis={redis} /> : ''}
-      {selectType === 'zset' ? <ZsetContent redis={redis} /> : ''}
-      {selectType === 'set' ? <SetContent redis={redis} /> : ''}
+      {selectType === 'string' ? <StringContent /> : ''}
+      {selectType === 'hash' ? <HashContent /> : ''}
+      {selectType === 'list' ? <ListContent /> : ''}
+      {selectType === 'zset' ? <ZsetContent /> : ''}
+      {selectType === 'set' ? <SetContent /> : ''}
     </div>
   );
 }

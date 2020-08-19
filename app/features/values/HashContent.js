@@ -13,9 +13,8 @@ import TimeNoComponent from './TimeNoComponent';
 import ValueDialog from './ValueDialog';
 import { selectSubKey } from '../servers/selectedSlice';
 
-export default function HashContent(props) {
+export default function HashContent() {
   const classes = useValueStyles();
-  const { redis } = props;
   const records = useSelector((state) => state.hashContent.records);
 
   const dispatch = useDispatch();
@@ -96,7 +95,7 @@ export default function HashContent(props) {
         )
       )}
 
-      <ValueDialog redis={redis} />
+      <ValueDialog />
     </div>
   );
 }

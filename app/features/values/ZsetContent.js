@@ -97,7 +97,7 @@ export default function ZsetContent(props) {
         )
       )}
 
-      <ValueDialog redis={redis} />
+      <ValueDialog />
     </div>
   );
 }
