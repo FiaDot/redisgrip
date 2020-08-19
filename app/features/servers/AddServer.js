@@ -17,8 +17,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { createServer } from './serversSlice';
-import { connectToServer, setShowResult } from './connectionSlice';
-import RedisMiddleware from '../../middleware/RedisMiddleware';
+import { setShowResult, startConnecting, testConnection } from './connectionSlice';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -58,7 +57,6 @@ export default function AddServer() {
   const disabled = useSelector((state) => state.connections.isConnecting);
   const connectResult = useSelector((state) => state.connections.connectResult);
   const showResult = useSelector((state) => state.connections.showResult);
-  const instance = useSelector((state) => state.connections.instance);
 
   // local
   const [inputs, setInputs] = useState({
@@ -99,10 +97,12 @@ export default function AddServer() {
     });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(
+    await dispatch(startConnecting());
+
+    await dispatch(
       createServer({
         alias,
         host,
@@ -142,7 +142,7 @@ export default function AddServer() {
 
   const onTestConnection = () => {
     dispatch(
-      connectToServer({
+      testConnection({
         alias,
         host,
         port,

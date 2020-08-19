@@ -17,6 +17,7 @@ const connectionSlice = createSlice({
     config: {},
   },
   reducers: {
+    testConnection: (state, action) => {},
     connectToServer: (state, action) => {
       state.config = action.payload;
     },
@@ -35,11 +36,9 @@ const connectionSlice = createSlice({
     },
     connectSuccess: (state, action) => {
       state.connectResult = true;
-      state.instance = action.payload;
     },
     connectFailed: (state, action) => {
       state.connectResult = false;
-      state.instance = null;
     },
     setShowResult: (state, action) => {
       state.showResult = action.payload;
@@ -48,6 +47,7 @@ const connectionSlice = createSlice({
 });
 
 export const {
+  testConnection,
   connectToServer,
   connected,
   disconnected,

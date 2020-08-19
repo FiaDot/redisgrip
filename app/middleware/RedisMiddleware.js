@@ -144,7 +144,7 @@ const RedisMiddleware = () => {
       }
     };
 
-    const monitoring = (time, args, source, database) => {
+    const parseMonitorLog = (time, args, source, database) => {
       const fmtTime = moment
         .unix(time)
         .format('YYYY-MM-DD HH:mm:ss:SSS')
@@ -195,28 +195,19 @@ const RedisMiddleware = () => {
         }
         console.log('pong ok');
 
-        const stream = await redis.scanStream({
-          match: '*',
-          count: 10000,
-        });
-
-        store.dispatch(clearKeys());
-
-        stream.on('data', function (keys) {
-          store.dispatch(addKeys(keys));
-        });
-
         store.dispatch(connected(options));
-
-        const monitor = await redis.monitor();
-        monitor.on('monitor', monitoring);
-
         // store.dispatch(connectSuccess());
+        return true;
       } catch (err) {
         console.log(err);
         // throw err;
-        store.dispatch(connectFailed());
+        return false;
       }
+    };
+
+    const monitoring = async () => {
+      const monitor = await redis.monitor();
+      monitor.on('monitor', parseMonitorLog);
     };
 
     const addKey = async (key, type) => {
@@ -401,16 +392,29 @@ const RedisMiddleware = () => {
       case 'connections/connectToServer':
         next(action);
 
-        connect(action.payload).then((ret) => {
-          // store.dispatch(stopConnecting());
-          // if (ret) {
-          //   store.dispatch(connectSuccess());
-          // } else {
-          //   store.dispatch(connectFailed());
-          // }
-          store.dispatch(setShowResult(true));
-        });
+        isSuccess = await connect(action.payload);
+
+        if (isSuccess) {
+          await scanKeys();
+          await monitoring();
+          store.dispatch(connectSuccess());
+        } else {
+          store.dispatch(connectFailed());
+        }
+        store.dispatch(setShowResult(true));
         break;
+
+      case 'connections/testConnection':
+        isSuccess = await connect(action.payload);
+
+        if (isSuccess) {
+          store.dispatch(connectSuccess());
+        } else {
+          store.dispatch(connectFailed());
+        }
+
+        store.dispatch(setShowResult(true));
+        return isSuccess;
 
       case 'keys/addKey':
         isSuccess = await addKey(action.payload.key, action.payload.type);
