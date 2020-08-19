@@ -12,7 +12,7 @@ import ServerList from './ServerList';
 import Keys from '../keys/Keys';
 import Values from '../values/Values';
 import { addKeys, clearKeys } from '../keys/keysSlice';
-import { connected } from './connectionSlice';
+import { connected, connectToServer } from './connectionSlice';
 import { addString } from '../values/stringContentSlice';
 import yellow from '@material-ui/core/colors/yellow';
 import red from '@material-ui/core/colors/red';
@@ -81,7 +81,7 @@ export default function ServerSheet() {
     });
   }
 
-  const connect = async () => {
+  const connectBackup = async () => {
     console.log('ServerSheet:connect()');
     try {
       if (redis != null) {
@@ -129,6 +129,20 @@ export default function ServerSheet() {
       console.log(err);
       throw err;
     }
+  };
+
+  const connect = async () => {
+    console.log('ServerSheet:connect()');
+
+    const options = {
+      host: '52.79.194.253',
+      port: 6379,
+      password: 'asdf1234!',
+      connectTimeout: 10000,
+      maxRetriesPerRequest: null,
+    };
+
+    dispatch(connectToServer(options));
   };
 
   const reduceRedisOp = async (args) => {

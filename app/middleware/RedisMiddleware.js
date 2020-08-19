@@ -8,6 +8,9 @@ import {
   setShowResult,
   stopConnecting,
 } from '../features/servers/connectionSlice';
+import { addKeys, clearKeys } from '../features/keys/keysSlice';
+import { addString } from '../features/values/stringContentSlice';
+import moment from 'moment';
 
 const RedisMiddleware = () => {
   let redis = null;
@@ -41,6 +44,7 @@ const RedisMiddleware = () => {
       redisInst.once('ready', () => resolve(redisInst));
     });
   }
+
 
   function createIntermediateServer(connectionListener) {
     return new Promise((resolve, reject) => {
@@ -113,38 +117,104 @@ const RedisMiddleware = () => {
     return redisInst;
   }
 
-  const connect = async (config) => {
-
-    try {
-      if (redis != null) {
-        redis.disconnect();
-      }
-
-      redis = await connectToRedisViaSSH({
-        // ssh: {
-        //   host: null,
-        //   port: null,
-        //   username: null,
-        //   privateKey: null,
-        //   passphrase: null,
-        // },
-        redis: {
-          host: '52.79.194.253',
-          port: 6379,
-          password: 'asdf1234!',
-        },
-      });
-
-      const pingReply = await redis.ping();
-      return pingReply === 'PONG';
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
-  };
-
 
   return (store) => (next) => (action) => {
+
+    const reduceRedisOp = (args) => {
+      // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
+
+      const op = args.split(',');
+
+      switch (op[0]) {
+        case 'SET':
+          // op[1] // key
+          // op[2] // value
+          store.dispatch(addString({ key: op[1], value: op[2] }));
+          break;
+        default:
+          break;
+      }
+    };
+
+    const monitoring = (time, args, source, database) => {
+      const fmtTime = moment
+        .unix(time)
+        .format('YYYY-MM-DD HH:mm:ss:SSS')
+        .toString();
+      console.log(`${fmtTime} / ${args} / ${source} / ${database}`);
+      // 1597213410.710730/SSCAN,set_test,0,COUNT,10000/59.10.191.65:61924/0
+      reduceRedisOp(args.toString());
+    };
+
+
+    const connect = async (config) => {
+
+      try {
+        if (redis != null) {
+          redis.disconnect();
+        }
+
+
+        const options = {
+            host: '52.79.194.253',
+            port: 6379,
+            password: 'asdf1234!',
+            connectTimeout: 10000,
+            maxRetriesPerRequest: null,
+        };
+
+        redis = await connectToRedis(options);
+        // redis = await connectToRedisViaSSH(options);
+        // redis = await connectToRedisViaSSH({
+        //   // ssh: {
+        //   //   host: null,
+        //   //   port: null,
+        //   //   username: null,
+        //   //   privateKey: null,
+        //   //   passphrase: null,
+        //   // },
+        //   redis: {
+        //     host: '52.79.194.253',
+        //     port: 6379,
+        //     password: 'asdf1234!',
+        //     connectTimeout: 10000,
+        //     maxRetriesPerRequest: null,
+        //   },
+        // });
+
+        const pingReply = await redis.ping();
+        if (pingReply !== 'PONG') {
+          console.log('errr!!!');
+          store.dispatch(connectFailed());
+          return;
+        } else {
+          console.log('pong ok');
+        }
+
+        const stream = await redis.scanStream({
+          match: '*',
+          count: 10000,
+        });
+
+        store.dispatch(clearKeys());
+
+        stream.on('data', function (keys) {
+          store.dispatch(addKeys(keys));
+        });
+
+        store.dispatch(connected(options));
+
+        const monitor = await redis.monitor();
+        monitor.on('monitor', monitoring);
+
+        // store.dispatch(connectSuccess());
+      } catch (err) {
+        console.log(err);
+        //throw err;
+        store.dispatch(connectFailed());
+      }
+    };
+
     // console.log(
     //   `RedisMiddleware type=${action.type} payload=${JSON.stringify(
     //     action.payload
@@ -156,14 +226,13 @@ const RedisMiddleware = () => {
       case 'connections/connectToServer':
         next(action);
 
-        const result = connect(action.payload)
-          .then((ret) => {
-          store.dispatch(stopConnecting());
-          if (ret) {
-            store.dispatch(connectSuccess());
-          } else {
-            store.dispatch(connectFailed());
-          }
+        connect(action.payload).then((ret) => {
+          // store.dispatch(stopConnecting());
+          // if (ret) {
+          //   store.dispatch(connectSuccess());
+          // } else {
+          //   store.dispatch(connectFailed());
+          // }
           store.dispatch(setShowResult(true));
         });
         break;
