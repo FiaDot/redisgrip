@@ -189,7 +189,7 @@ export default function ValueDialog(props) {
   };
 
   const getValueName = () => {
-    console.log(selectType);
+    // TODO : memo
 
     switch (selectType) {
       case 'string':
@@ -206,6 +206,8 @@ export default function ValueDialog(props) {
   };
 
   const needKey = () => {
+    // TODO : memo
+
     switch (selectType) {
       case 'string':
       case 'list':
