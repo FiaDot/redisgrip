@@ -189,9 +189,9 @@ const RedisMiddleware = () => {
 
         const pingReply = await redis.ping();
         if (pingReply !== 'PONG') {
-          console.log('errr!!!');
+          console.log('ping error');
           store.dispatch(connectFailed());
-          return;
+          return false;
         }
         console.log('pong ok');
 
@@ -323,7 +323,6 @@ const RedisMiddleware = () => {
     };
 
     const delKey = async (key) => {
-      console.log(`delKey ${key}`);
       const ret = await redis.del(key);
 
       if (ret === 1) {

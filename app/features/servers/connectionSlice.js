@@ -18,29 +18,31 @@ const connectionSlice = createSlice({
   },
   reducers: {
     connectToServer: (state, action) => {
-      return { ...state, config: action.payload};
+      state.config = action.payload;
     },
     connected: (state, action) => {
-      return { ...state, config: action.payload};
+      state.config = action.payload;
     },
     disconnected: (state, action) => {
       // state.instances.filter((server) => server.id !== action.payload.id);
       return state;
     },
     startConnecting: (state, action) => {
-      return { ...state, isConnecting: true};
+      state.isConnecting = true;
     },
     stopConnecting: (state, action) => {
-      return { ...state, isConnecting: false};
+      state.isConnecting = false;
     },
     connectSuccess: (state, action) => {
-      return { ...state, connectResult: true, instance: action.payload };
+      state.connectResult = true;
+      state.instance = action.payload;
     },
     connectFailed: (state, action) => {
-      return { ...state, connectResult: false, instance: null };
+      state.connectResult = false;
+      state.instance = null;
     },
     setShowResult: (state, action) => {
-      return { ...state, showResult: action.payload};
+      state.showResult = action.payload;
     },
   },
 });
