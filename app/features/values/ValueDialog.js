@@ -14,10 +14,11 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Zoom from '@material-ui/core/Zoom';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveOutlinedIcon from '@material-ui/icons/RemoveOutlined';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { addSubKey, delSubKey } from '../servers/selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -55,10 +56,10 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-export default function AddKeyValueDialog(props) {
+export default function ValueDialog() {
   const classes = useStyles();
-  const { redis } = props;
 
+  const dispatch = useDispatch();
   const selectKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
@@ -89,90 +90,35 @@ export default function AddKeyValueDialog(props) {
   };
 
   const onDeleteSubKey = async () => {
-    console.log(`onDeleteSubKey ${selectKey} ${selectType} ${selectSubKey}`);
+    // TODO : show confirm popup
 
-    let ret = 'OK';
+    const ret = await dispatch(
+      delSubKey({ mainKey: selectKey, type: selectType, key: selectSubKey })
+    );
 
-    // showModel( {
-    //   title: 'delete',
-    //   button: 'Delete',
-    //   content: 'are you sure?'
-    // }).then() => {
-    //   console.log('ok');
-    // }
-    switch (selectType) {
-      // case 'string':
-      //   ret = await redis.set(selectKey, val);
-      //   break;
-      // case 'list':
-      //   //ret = await redis.lremindex(selectKey, index);
-      //   break;
-      case 'hash':
-        ret = await redis.hdel(selectKey, selectSubKey);
-        break;
-      case 'set':
-        ret = await redis.srem(selectKey, selectSubKey);
-        break;
-      case 'zset':
-        ret = await redis.zrem(selectKey, selectSubKey);
-        break;
-      default:
-        console.log('type is wrong');
-        return;
-    }
+    console.log(
+      `onDeleteSubKey ${selectKey} ${selectType} ${selectSubKey} ret=${ret}`
+    );
 
-    console.log(ret);
-
-    if (ret > 0 || ret == 'OK') {
-      // TODO : scan();
-      // complete
-    } else {
-      // TODO : show error!!!
-    }
+    handleClose();
   };
 
   const onEditSubKey = () => {
-    console.log(`onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`);
+    console.log(`TODO : onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`);
   };
 
   const onSubmit = async () => {
-    console.log(`onSubmit ${key} ${val}`);
+    const ret = await dispatch(
+      addSubKey({ mainKey: selectKey, type: selectType, key, val })
+    );
 
-    let ret = 'OK';
+    console.log(`onSubmit ${key} ${val} ret=${ret}`);
 
-    switch (selectType) {
-      case 'string':
-        ret = await redis.set(selectKey, val);
-        break;
-      case 'list':
-        ret = await redis.lpush(selectKey, val);
-        break;
-      case 'hash':
-        ret = await redis.hset(selectKey, key, val);
-        break;
-      case 'set':
-        ret = await redis.sadd(selectKey, val);
-        break;
-      case 'zset':
-        ret = await redis.zadd(selectKey, val, key);
-        break;
-      default:
-        console.log('type is wrong');
-        return;
-    }
-
-    console.log(ret);
-
-    if (ret > 0 || ret == 'OK') {
-      // TODO : scan();
-      handleClose();
-    } else {
-      // TODO : show error!!!
-    }
+    handleClose();
   };
 
   const getValueName = () => {
-    console.log(selectType);
+    // TODO : memo
 
     switch (selectType) {
       case 'string':
@@ -189,6 +135,8 @@ export default function AddKeyValueDialog(props) {
   };
 
   const needKey = () => {
+    // TODO : memo
+
     switch (selectType) {
       case 'string':
       case 'list':

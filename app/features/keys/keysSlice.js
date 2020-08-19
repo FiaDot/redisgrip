@@ -8,9 +8,7 @@ const keysSlice = createSlice({
   name: 'keys',
   initialState: [],
   reducers: {
-    scanKeys: (state, action) => {
-      return [...state, action.payload];
-    },
+    scanKeys: (state, action) => {},
     clearKeys: (state, action) => {
       return [];
     },
@@ -27,5 +25,12 @@ const keysSlice = createSlice({
   },
 });
 
-export const { scanKeys, clearKeys, addKey, addKeys, delKey } = keysSlice.actions;
+export const {
+  scanKeys,
+  clearKeys,
+  addKey,
+  addKeys,
+  delKey,
+} = keysSlice.actions;
+
 export default keysSlice.reducer;

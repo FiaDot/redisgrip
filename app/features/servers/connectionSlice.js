@@ -18,7 +18,6 @@ const connectionSlice = createSlice({
   },
   reducers: {
     connectToServer: (state, action) => {
-      console.log('called connectToServer');
       return { ...state, config: action.payload};
     },
     connected: (state, action) => {
@@ -35,11 +34,9 @@ const connectionSlice = createSlice({
       return { ...state, isConnecting: false};
     },
     connectSuccess: (state, action) => {
-      console.log('called connectSuccess');
       return { ...state, connectResult: true, instance: action.payload };
     },
     connectFailed: (state, action) => {
-      console.log('called connectFailed');
       return { ...state, connectResult: false, instance: null };
     },
     setShowResult: (state, action) => {

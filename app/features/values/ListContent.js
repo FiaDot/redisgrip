@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
-import AddKeyValueDialog from './AddKeyValueDialog';
+import ValueDialog from './ValueDialog';
 
 export default function ListContent(props) {
   const classes = useValueStyles();
@@ -63,7 +63,7 @@ export default function ListContent(props) {
           )
       )}
 
-      <AddKeyValueDialog redis={redis} />
+      <ValueDialog />
     </div>
   );
 }

@@ -11,7 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Paper from '@material-ui/core/Paper';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
-import AddKeyValueDialog from './AddKeyValueDialog';
+import ValueDialog from './ValueDialog';
 
 export default function StringContent(props) {
   const classes = useValueStyles();
@@ -60,7 +60,7 @@ export default function StringContent(props) {
         ))
       }
 
-      <AddKeyValueDialog redis={redis} />
+      <ValueDialog />
 
 
       {/* 디버깅용 */}

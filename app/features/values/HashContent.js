@@ -10,12 +10,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Divider from '@material-ui/core/Divider';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
-import AddKeyValueDialog from './AddKeyValueDialog';
+import ValueDialog from './ValueDialog';
 import { selectSubKey } from '../servers/selectedSlice';
 
-export default function HashContent(props) {
+export default function HashContent() {
   const classes = useValueStyles();
-  const { redis } = props;
   const records = useSelector((state) => state.hashContent.records);
 
   const dispatch = useDispatch();
@@ -96,7 +95,7 @@ export default function HashContent(props) {
         )
       )}
 
-      <AddKeyValueDialog redis={redis} />
+      <ValueDialog />
     </div>
   );
 }
