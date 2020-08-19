@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddKeyDialog() {
   const classes = useStyles();
-
   const dispatch = useDispatch();
 
   const [inputs, setInputs] = useState({
@@ -57,7 +56,6 @@ export default function AddKeyDialog() {
     });
   };
 
-
   const handleClickOpen = () => {
     setInputs({ ...inputs, open: true });
   };
@@ -68,10 +66,10 @@ export default function AddKeyDialog() {
 
   const onSubmit = async () => {
     console.log(`onSubmit ${type} ${key}`);
-    await dispatch(addKey({key, type}));
+    await dispatch(addKey({ key, type }));
     handleClose();
     dispatch(scanKeys());
-  }
+  };
 
   return (
     <Fragment>

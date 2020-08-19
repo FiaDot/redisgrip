@@ -245,7 +245,9 @@ const RedisMiddleware = () => {
           return false;
       }
 
-      if (ret > 0 || ret == 'OK') return true;
+      if (ret > 0 || ret == 'OK') {
+        return true;
+      }
 
       return false;
     };
@@ -318,6 +320,16 @@ const RedisMiddleware = () => {
       stream.on('data', function (keys) {
         store.dispatch(addKeys(keys));
       });
+    };
+
+    const delKey = async (key) => {
+      console.log(`delKey ${key}`);
+      const ret = await redis.del(key);
+
+      if (ret === 1) {
+        return true;
+      }
+      return false;
     };
 
     const addSubKey = async (mainKey, type, key, val) => {
@@ -407,6 +419,10 @@ const RedisMiddleware = () => {
 
       case 'keys/scanKeys':
         await scanKeys();
+        break;
+
+      case 'keys/delKey':
+        await delKey(action.payload.key);
         break;
 
       case 'selected/selectKey':

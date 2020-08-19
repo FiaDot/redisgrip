@@ -100,100 +100,20 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
   );
 });
 
-export default function Keys(props) {
+export default function Keys() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const { redis } = props;
   const keys = useSelector((state) => state.keys);
   const selectedKey = useSelector((state) => state.selected.selectKey);
 
-  const dispatch = useDispatch();
-  const onAddKeys = (keys) => dispatch(addKeys(keys));
-
-
-  const makeKeyValueFromHash = async (raw) => {
-    const kv = [];
-
-    for (let n = 0; n < raw.length / 2; n += 1) {
-      kv.push({ key: raw[n * 2], value: raw[n * 2 + 1] });
-    }
-    return kv;
-  };
-
-  const makeValuePairArray = async (raw) => {
-    return raw.map((value, index) => {
-      return { value, index };
-    });
-  };
-
   const onSelectKey = async (key) => {
-    //const type = await redis.type(key);
-    // console.log(`called onSelectKey ${key}=${type}`);
-
     dispatch(selectKey({key}));
-
-    // switch (type) {
-    //   case 'string': {
-    //     const value = await redis.get(key);
-    //     console.log(`called onSelectKey ${key}=${value}`);
-    //     dispatch(addString({ key, value }))
-    //     break;
-    //   }
-    //   case 'zset': {
-    //     const count = await redis.zcard(key);
-    //     console.log(`called onSelectKey ${key}=${count}`);
-    //     const data = await redis.zrange(key, 0, count, 'WITHSCORES');
-    //     console.log(`zset len=${data.length},data=${data} `);
-    //
-    //     const kv = await makeKeyValueFromHash(data);
-    //     console.log(kv);
-    //     dispatch(addZset({ key, values: kv }));
-    //     break;
-    //   }
-    //   case 'list': {
-    //     const len = await redis.llen(key);
-    //     const data = await redis.lrange(key, 0, len);
-    //     console.log(`called onSelectKey ${key}=${data}`);
-    //     dispatch(addList({ key, values: await makeValuePairArray(data) }));
-    //     break;
-    //   }
-    //   case 'set': {
-    //     const len = await redis.scard(key);
-    //     const data = await redis.sscan(key, 0, 'count', 10000);
-    //     console.log(`called onSelectKey ${key}=${data}`);
-    //     dispatch(addSet({ key, values: await makeValuePairArray(data[1]) }));
-    //     break;
-    //   }
-    //   case 'hash': {
-    //     const len = await redis.hlen(key);
-    //     const data = await redis.hscan(key, 0, 'COUNT', 10000);
-    //     console.log(`called onSelectKey ${key}=${data}`);
-    //     const kv = await makeKeyValueFromHash(data[1]);
-    //     // console.log(kv);
-    //     dispatch(addHash({ key: key, values: kv }));
-    //     break;
-    //   }
-    //   default:
-    //     console.log('not matched type');
-    // }
   };
 
   const scan = async () => {
-    const stream = await redis.scanStream({
-      match: '*',
-      count: 10000,
-    });
-
-    dispatch(clearKeys());
-
-    stream.on('data', function (keys) {
-      onAddKeys(keys);
-    });
-
-    // const monitor = await redis.monitor();
-    // monitor.on('monitor', console.log);
+    dispatch(scanKeys());
   };
-
 
   return (
     <div className={classes.root}>
@@ -220,11 +140,11 @@ export default function Keys(props) {
           </Tooltip>
 
           {/* Add Key */}
-          <AddKeyDialog redis={redis} onRefresh={scan} />
+          <AddKeyDialog />
 
 
           {/* Del key */}
-          <DelKeyDialog redis={redis} onRefresh={scan} />
+          <DelKeyDialog />
 
           {/* Trace key */}
           <Tooltip TransitionComponent={Zoom} title="Trace Key">

@@ -1,27 +1,18 @@
 import React, { Fragment, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
-import PostAddOutlinedIcon from '@material-ui/icons/PostAddOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
 import Zoom from '@material-ui/core/Zoom';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
-import Paper from '@material-ui/core/Paper';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { delKey, scanKeys } from './keysSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -36,11 +27,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DelKeyDialog(props) {
+export default function DelKeyDialog() {
   const classes = useStyles();
 
-  const { redis, onRefresh } = props;
-
+  const dispatch = useDispatch();
   const selectKey = useSelector((state) => state.selected.selectKey);
 
   const [inputs, setInputs] = useState({
@@ -67,17 +57,9 @@ export default function DelKeyDialog(props) {
   };
 
   const onSubmit = async () => {
-    console.log(`onSubmit`);
-
-    const ret = await redis.del(selectKey);
-    console.log(ret);
-
-    if (ret === 1 ) {
-      onRefresh();
-      handleClose();
-    } else {
-      // TODO : show error!!!
-    }
+    await dispatch(delKey({ key: selectKey }));
+    handleClose();
+    await dispatch(scanKeys());
   };
 
   return (
