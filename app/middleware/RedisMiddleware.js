@@ -19,6 +19,13 @@ import { addHash } from '../features/values/hashContentSlice';
 
 const RedisMiddleware = () => {
   let redis = null;
+  let connectionOptions = {
+    host: '52.79.194.253',
+    port: 6379,
+    password: 'asdf1234!',
+    connectTimeout: 10000,
+    maxRetriesPerRequest: null,
+  };
 
   function connectToSSH(options) {
     return new Promise((resolve, reject) => {
@@ -154,13 +161,17 @@ const RedisMiddleware = () => {
       reduceRedisOp(args.toString());
     };
 
+    const onError = (event) => {
+      console.log(event);
+    };
+
     const connect = async (config) => {
       try {
         if (redis != null) {
           redis.disconnect();
         }
 
-        const options = {
+        connectionOptions = {
           host: '52.79.194.253',
           port: 6379,
           password: 'asdf1234!',
@@ -168,7 +179,9 @@ const RedisMiddleware = () => {
           maxRetriesPerRequest: null,
         };
 
-        redis = await connectToRedis(options);
+        redis = await connectToRedis(connectionOptions);
+        redis.error = onError();
+
         // redis = await connectToRedisViaSSH(options);
         // redis = await connectToRedisViaSSH({
         //   // ssh: {
@@ -195,7 +208,7 @@ const RedisMiddleware = () => {
         }
         console.log('pong ok');
 
-        store.dispatch(connected(options));
+        store.dispatch(connected(connectionOptions));
         // store.dispatch(connectSuccess());
         return true;
       } catch (err) {
@@ -388,6 +401,14 @@ const RedisMiddleware = () => {
     console.log(`RedisMiddleware type=${action.type}`);
     let isSuccess;
 
+    if (null != redis) {
+        try {
+          const alive = await redis.ping();
+        } catch (err) {
+          await connect(connectionOptions);
+        }
+    }
+
     switch (action.type) {
       case 'connections/connectToServer':
         next(action);
@@ -415,6 +436,11 @@ const RedisMiddleware = () => {
 
         store.dispatch(setShowResult(true));
         return isSuccess;
+
+      case 'connections/disconnected':
+        redis.disconnect();
+        next(action);
+        break;
 
       case 'keys/addKey':
         isSuccess = await addKey(action.payload.key, action.payload.type);

@@ -16,6 +16,7 @@ import ClearAllIcon from '@material-ui/icons/ClearAll';
 import { clearStorage, delServer } from './serversSlice';
 import { deselectServer, isSelectedServer } from './selectedSlice';
 import { clearKeys } from '../keys/keysSlice';
+import { disconnected } from './connectionSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,8 +77,9 @@ export default function ServerToolbar(props) {
   const disconnect = () => {
     console.log('called disconnect');
 
+    dispatch(disconnected());
     // key, value 삭제
-    dispatch(clearKeys());
+    // dispatch(clearKeys());
   };
 
   const clear = () => {
