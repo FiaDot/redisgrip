@@ -17,7 +17,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { createServer } from './serversSlice';
-import { setShowResult, startConnecting, testConnection } from './connectionSlice';
+import { setShowResult, startConnecting, stopConnecting, testConnection } from './connectionSlice';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -89,6 +89,7 @@ export default function AddServer() {
   } = inputs;
 
   useEffect(() => {
+    dispatch(stopConnecting());
     dispatch(setShowResult(false));
     return () => {};
   }, []);
