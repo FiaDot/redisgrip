@@ -5,60 +5,56 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
-import {
-  loadStorage
-} from './serversSlice';
+import { loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 
-const { dialog, remote } = require('electron');
-
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.default,
-    overflowY: 'scroll',
-  },
+  // root: {
+  //   width: '100%',
+  //   maxWidth: 360,
+  //   backgroundColor: theme.palette.background.default,
+  //   overflowY: 'scroll',
+  // },
 }));
 
 const ServerListMemo = React.memo(function serverList({
-  servers,
+  serverId,
+  serverAlias,
   selected,
   onSelectServer,
   onConnectServer,
-  onEditServer,
-  onRemoveServer,
 }) {
   return (
-    <Paper style={{ maxHeight: 500, overflowY: 'scroll' }}>
-      <List component="nav" aria-label="servers">
-        {servers.length === 0
-          ? ''
-          : servers.map((server) => (
-            <Grid container spacing={0} key={server.id}>
-                <Grid item xs={12}>
-                <ListItem
-                    button
-                    selected={selected === server.id}
-                    key={server.id}
-                    onClick={(event) => onSelectServer(server.id)}
-                    onDoubleClick={(event) => onConnectServer(server.id)}
-                  >
-                    <StorageOutlinedIcon
-                    color="primary"
-                    style={{ paddingRight: 10 }}
-                  />
-                    <ListItemText primary={server.alias} />
-                  </ListItem>
-              </Grid>
-              </Grid>
-            ))}
-      </List>
-    </Paper>
+    // eslint-disable-next-line react/jsx-filename-extension
+    <Grid container spacing={0} key={serverId}>
+      <Grid item xs={12}>
+        <ListItem
+          button
+          selected={selected === serverId}
+          key={serverId}
+          onClick={(event) => onSelectServer(serverId)}
+          onDoubleClick={(event) => onConnectServer(serverId)}
+        >
+          <StorageOutlinedIcon color="primary" style={{ paddingRight: 10 }} />
+          <ListItemText primary={serverAlias} />
+        </ListItem>
+      </Grid>
+    </Grid>
   );
 });
+
+// const ServerListMemo = React.memo(function serverList(
+//   servers,
+//   selected,
+//   onSelectServer,
+//   onConnectServer,
+// ) {
+//   return (
+//     // eslint-disable-next-line react/jsx-filename-extension
+//
+//   );
+// });
 
 export default function ServerList(props) {
   const classes = useStyles();
@@ -68,7 +64,6 @@ export default function ServerList(props) {
 
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
-
 
   useEffect(() => {
     console.log('loaded ServerList');
@@ -88,49 +83,20 @@ export default function ServerList(props) {
     props.connect();
   };
 
-  const onEditServer = (id) => {
-    console.log(`called onEditServer=${id}`);
-  };
-
-  const onRemoveServer = (id) => {
-    console.log(`called onRemoveServer=${id}`);
-
-    // // 경로
-    // console.log(remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] }));
-    //
-    // // 다양한 옵
-    // const options = {
-    //   type: 'question',
-    //   buttons: ['Cancel', 'Yes, please', 'No, thanks'],
-    //   defaultId: 2,
-    //   title: 'Question',
-    //   message: 'Do you want to do this?',
-    //   detail: 'It does not really matter',
-    //   checkboxLabel: 'Remember my answer',
-    //   checkboxChecked: true,
-    // };
-    //
-    // remote.dialog.showMessageBox(null, options, (response, checkboxChecked) => {
-    //   console.log(response);
-    //   console.log(checkboxChecked);
-    // });
-    //
-    // // 단순 알림
-    // const selectedPaths = remote.dialog.showErrorBox('test', 'aasd');
-    // // eslint-disable-next-line no-console
-    // console.log(selectedPaths);
-  };
-
   return (
-    <div className={classes.root}>
-      <ServerListMemo
-        servers={servers}
-        selected={selected.id}
-        onSelectServer={onSelectServer}
-        onConnectServer={onConnectServer}
-        onEditServer={onEditServer}
-        onRemoveServer={onRemoveServer}
-      />
-    </div>
+    <List component="nav" aria-label="servers">
+      {servers.length === 0
+        ? ''
+        : servers.map((server) => (
+            <ServerListMemo
+              key={server.id}
+              serverId={server.id}
+              serverAlias={server.alias}
+              selected={selected.id}
+              onSelectServer={onSelectServer}
+              onConnectServer={onConnectServer}
+            />
+          ))}
+    </List>
   );
 }
