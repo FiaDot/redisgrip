@@ -44,16 +44,16 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       // width: theme.spacing(32),
       // height: theme.spacing(26),
-      minWidth: 250,
+      // minWidth: 250,
       backgroundColor: theme.palette.background.paper,
     },
   },
   divider: {
     margin: theme.spacing(1),
   },
-  title: {
-    fontSize: 24,
-  },
+  // title: {
+  //   fontSize: 24,
+  // },
   keyBar: {
     margin: theme.spacing(1),
     display: 'flex',
@@ -97,6 +97,16 @@ export default function Values() {
           </IconButton>
         </Tooltip>
 
+        <Tooltip TransitionComponent={Zoom} title="History Clear">
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            onClick={clear}
+          >
+            <ClearAllIcon color="primary" />
+          </IconButton>
+        </Tooltip>
+
         <Divider className={classes.keyBarDivider} orientation="vertical"/>
 
         <Typography variant="button" display="block" gutterBottom>
@@ -115,6 +125,7 @@ export default function Values() {
         {/*<Typography variant="subtitle1" display="block" gutterBottom align="right">*/}
         {/*  TTL : 0*/}
         {/*</Typography>*/}
+
       </Paper>
     );
   }
@@ -122,78 +133,80 @@ export default function Values() {
   return (
     <div className={classes.root}>
       <Typography
+        className={classes.title}
         color="textSecondary"
-        variant="h5"
         gutterBottom
         align="center"
       >
         Value
       </Typography>
 
-      <div className={classes.paper}>
-        <Paper elevation={3}>
-          <Tooltip TransitionComponent={Zoom} title="Reload">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={null}
-            >
-              <RefreshOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+      {/*<div className={classes.paper}>*/}
+      {/*  <Paper elevation={3}>*/}
+          {/*<Tooltip TransitionComponent={Zoom} title="Reload">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={null}*/}
+          {/*  >*/}
+          {/*    <RefreshOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
-          <Tooltip TransitionComponent={Zoom} title="Save">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={null}
-            >
-              <SaveOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          {/*<Tooltip TransitionComponent={Zoom} title="Save">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={null}*/}
+          {/*  >*/}
+          {/*    <SaveOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
-          <Tooltip TransitionComponent={Zoom} title="Edit">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={null}
-            >
-              <EditOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          {/*<Tooltip TransitionComponent={Zoom} title="Edit">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={null}*/}
+          {/*  >*/}
+          {/*    <EditOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
-          <Tooltip TransitionComponent={Zoom} title="Set TTL">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={null}
-            >
-              <AccessTimeOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          {/*TODO : IMPL TTL*/}
+          {/*<Tooltip TransitionComponent={Zoom} title="Set TTL">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={null}*/}
+          {/*  >*/}
+          {/*    <AccessTimeOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
-          <Tooltip TransitionComponent={Zoom} title="Delete">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={null}
-            >
-              <DeleteOutlineOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          {/*TODO : IMPL Delete*/}
+          {/*<Tooltip TransitionComponent={Zoom} title="Delete">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={null}*/}
+          {/*  >*/}
+          {/*    <DeleteOutlineOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
-          <Tooltip TransitionComponent={Zoom} title="History Clear">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={clear}
-            >
-              <ClearAllIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          {/*<Tooltip TransitionComponent={Zoom} title="History Clear">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={clear}*/}
+          {/*  >*/}
+          {/*    <ClearAllIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
-        </Paper>
-      </div>{/*<div className={classes.paper}>*/}
+      {/*  </Paper>*/}
+      {/*</div>/!*<div className={classes.paper}>*!/*/}
 
       { selectKey ? KeyInfo()  : '' }
 
