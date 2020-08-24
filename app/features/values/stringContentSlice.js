@@ -45,13 +45,10 @@ const stringContentSlice = createSlice({
       }
     },
     clearString: (state, action) => {
-      state.records = state.records.filter((record) => record.key !== action.payload);
-    },
-    clearAllString: (state, action) => {
       state.records = [];
     },
   },
 });
 
-export const { addString, clearString, clearAllString } = stringContentSlice.actions;
+export const { addString, clearString } = stringContentSlice.actions;
 export default stringContentSlice.reducer;
