@@ -158,6 +158,7 @@ export default function ValueDialog() {
 
   const AddButton = (isDisabled) => {
     return (
+      // eslint-disable-next-line react/jsx-filename-extension
       <Tooltip TransitionComponent={Zoom} title="Add">
         <IconButton
           variant="contained"
@@ -237,7 +238,9 @@ export default function ValueDialog() {
               fullWidth
               className={classes.formSpecing}
             />
-          ) : ''}
+          ) : (
+            ''
+          )}
 
           <TextField
             size="small"
