@@ -19,6 +19,7 @@ import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { addSubKey, delSubKey } from '../servers/selectedSlice';
+import StringContent from './StringContent';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0, 1),
   },
   fab: {
-    //position: 'absolute',
+    // position: 'absolute',
     // bottom: theme.spacing(2),
     // right: theme.spacing(2),
     position: 'absolute',
@@ -104,7 +105,9 @@ export default function ValueDialog() {
   };
 
   const onEditSubKey = async () => {
-    console.log(`TODO : onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`);
+    console.log(
+      `TODO : onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`
+    );
   };
 
   const onSubmit = async () => {
@@ -153,66 +156,76 @@ export default function ValueDialog() {
     return false;
   };
 
-
-
-  const ValueAppBar = () => {
+  const AddButton = (isDisabled) => {
     return (
       // eslint-disable-next-line react/jsx-filename-extension
-      <AppBar position="fixed" className={classes.appBar}>
-        <div>
-          {/* Add */}
-          <Tooltip TransitionComponent={Zoom} title="Add">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={handleClickOpen}
-            >
-              <AddIcon color="primary" />
-            </IconButton>
-          </Tooltip>
-
-          {/* Del */}
-          <Tooltip TransitionComponent={Zoom} title="Delete">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={onDeleteSubKey}
-            >
-              <RemoveOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
-
-          {/* Edit */}
-          <Tooltip TransitionComponent={Zoom} title="Edit">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={onEditSubKey}
-            >
-              <EditOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
-        </div>
-      </AppBar>
+      <Tooltip TransitionComponent={Zoom} title="Add">
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={isDisabled ? null : handleClickOpen}
+        >
+          <AddIcon color={isDisabled ? 'disabled' : 'primary'} />
+        </IconButton>
+      </Tooltip>
     );
-  }
+  };
+
+  const DelButton = (isDisabled) => {
+    return (
+      <Tooltip TransitionComponent={Zoom} title="Delete">
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={isDisabled ? null : onDeleteSubKey}
+        >
+          <RemoveOutlinedIcon color={isDisabled ? 'disabled' : 'primary'} />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+
+  const EditButton = (isDisabled) => {
+    return (
+      <Tooltip TransitionComponent={Zoom} title="Edit">
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={isDisabled ? null : onEditSubKey}
+        >
+          <EditOutlinedIcon color={isDisabled ? 'disabled' : 'primary'} />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+  const ShowTitle = (text) => {
+    return (
+      <DialogTitle id="form-dialog-add-sub-key">
+        {text}
+      </DialogTitle>
+    )};
 
   return (
-    <Fragment>
-      {ValueAppBar()}
+    <>
+      <AppBar position="fixed" className={classes.appBar}>
+        <div>
+          {EditButton(false)}
+          {AddButton(selectType === 'string')}
+          {DelButton(selectType === 'string')}
+        </div>
+      </AppBar>
 
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-add-sub-key"
       >
-        <DialogTitle id="form-dialog-add-sub-key">
-          Add Sub Key/Value
-        </DialogTitle>
+        { ShowTitle(selectType === 'string' ? "Edit String" : "Add Sub Key/Value") }
+
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
 
-          {needKey() ?
+          {needKey() ? (
             <TextField
               autoFocus
               size="small"
@@ -225,8 +238,9 @@ export default function ValueDialog() {
               fullWidth
               className={classes.formSpecing}
             />
-            : ''
-          }
+          ) : (
+            ''
+          )}
 
           <TextField
             size="small"
@@ -257,7 +271,7 @@ export default function ValueDialog() {
 
             <Grid item xs={6}>
               <Button
-                startIcon={<CancelIcon/>}
+                startIcon={<CancelIcon />}
                 fullWidth
                 variant="contained"
                 color="secondary"
@@ -270,6 +284,6 @@ export default function ValueDialog() {
           </Grid>
         </DialogActions>
       </Dialog>
-    </Fragment>
+    </>
   );
 }
