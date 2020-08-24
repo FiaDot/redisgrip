@@ -12,25 +12,12 @@ import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
-import { Link } from 'react-router-dom';
-import PostAddOutlinedIcon from '@material-ui/icons/PostAddOutlined';
-import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
-import TrackChangesOutlinedIcon from '@material-ui/icons/TrackChangesOutlined';
 import Divider from '@material-ui/core/Divider';
-import { addHash } from '../values/hashContentSlice';
-import { addString } from '../values/stringContentSlice';
-import { addKeys, clearKeys, scanKeys } from './keysSlice';
+import { scanKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
-import { addZset } from '../values/zsetContentSlice';
-import { addList } from '../values/listContentSlice';
-import { addSet } from '../values/setContentSlice';
-
-import yellow from '@material-ui/core/colors/yellow';
 import SearchKey from './SearchKey';
 import AddKeyDialog from './AddKeyDialog';
 import DelKeyDialog from './DelKeyDialog';
-// import { remote } from 'electron';
-// const ioredis = require('ioredis');
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -146,31 +133,32 @@ export default function Keys() {
           {/* Del key */}
           <DelKeyDialog />
 
-          {/* Trace key */}
-          <Tooltip TransitionComponent={Zoom} title="Trace Key">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={null}
-            >
-              <TrackChangesOutlinedIcon color={'disabled'} />
-            </IconButton>
-          </Tooltip>
+          {/* Trace key : TODO : IMPL */}
+          {/*<Tooltip TransitionComponent={Zoom} title="Trace Key">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={null}*/}
+          {/*  >*/}
+          {/*    <TrackChangesOutlinedIcon color={'disabled'} />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
+
         </Paper>
       </div>
 
-      {/* Search bar */}
-      <SearchKey />
+      {/* Search bar TODO : IMPL*/}
+      {/*<SearchKey />*/}
 
       {/* Key List */}
-      {keys.length <= 0 ? '' :
-        // <Paper style={{ maxHeight: 500, overflowY: 'scroll' }}>
-        <Paper>
-          <List component="nav" aria-label="keys">
-            <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />
-          </List>
-        </Paper>
-      }
+      <List component="nav" aria-label="keys">
+        {
+          keys.length <= 0
+            ? ''
+            : <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />
+        }
+      </List>
+
     </div>
   );
 }
