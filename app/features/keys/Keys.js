@@ -20,13 +20,13 @@ import AddKeyDialog from './AddKeyDialog';
 import DelKeyDialog from './DelKeyDialog';
 
 const useStyles = makeStyles((theme) => ({
-  // root: {
-  //   // width: '100%',
-  //   width: 500,
-  //   //maxWidth: 360,
-  //   backgroundColor: theme.palette.background.default,
-  //   overflowY: 'scroll',
-  // },
+  root: {
+    width: '100%',
+    // width: 500,
+    //maxWidth: 360,
+    backgroundColor: theme.palette.background.default,
+    overflowY: 'scroll',
+  },
   //button: {
   //   margin: theme.spacing(0),
   //   // backgroundColor: '#0000cc',
@@ -79,7 +79,7 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
               />
               <ListItemText primary={key} />
             </ListItem>
-            <Divider variant="middle" component="li" />
+            {/*<Divider variant="middle" component="li" />*/}
           </Grid>
         </Grid>
       ))}
