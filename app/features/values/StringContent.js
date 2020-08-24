@@ -64,35 +64,35 @@ export default function StringContent(props) {
 
 
       {/* 디버깅용 */}
-      <Tooltip TransitionComponent={Zoom} title="clearAllString">
-        <IconButton
-          variant="contained"
-          className={classes.button}
-          onClick={(e) => dispatch(clearAllString())}
-        >
-          <ClearAllIcon className={classes.buttonIcon} color="secondary" />
-        </IconButton>
-      </Tooltip>
+      {/*<Tooltip TransitionComponent={Zoom} title="clearAllString">*/}
+      {/*  <IconButton*/}
+      {/*    variant="contained"*/}
+      {/*    className={classes.button}*/}
+      {/*    onClick={(e) => dispatch(clearAllString())}*/}
+      {/*  >*/}
+      {/*    <ClearAllIcon className={classes.buttonIcon} color="secondary" />*/}
+      {/*  </IconButton>*/}
+      {/*</Tooltip>*/}
 
-      <Tooltip TransitionComponent={Zoom} title="clearString">
-        <IconButton
-          variant="contained"
-          className={classes.button}
-          onClick={(e) => dispatch(clearString('string_test'))}
-        >
-          <ClearAllIcon className={classes.buttonIcon} color="secondary" />
-        </IconButton>
-      </Tooltip>
+      {/*<Tooltip TransitionComponent={Zoom} title="clearString">*/}
+      {/*  <IconButton*/}
+      {/*    variant="contained"*/}
+      {/*    className={classes.button}*/}
+      {/*    onClick={(e) => dispatch(clearString('string_test'))}*/}
+      {/*  >*/}
+      {/*    <ClearAllIcon className={classes.buttonIcon} color="secondary" />*/}
+      {/*  </IconButton>*/}
+      {/*</Tooltip>*/}
 
-      <Tooltip TransitionComponent={Zoom} title="addString">
-        <IconButton
-          variant="contained"
-          className={classes.button}
-          onClick={(e) => addStringTest('string_test', 'ww3')}
-        >
-          <ClearAllIcon className={classes.buttonIcon} color="secondary" />
-        </IconButton>
-      </Tooltip>
+      {/*<Tooltip TransitionComponent={Zoom} title="addString">*/}
+      {/*  <IconButton*/}
+      {/*    variant="contained"*/}
+      {/*    className={classes.button}*/}
+      {/*    onClick={(e) => addStringTest('string_test', 'ww3')}*/}
+      {/*  >*/}
+      {/*    <ClearAllIcon className={classes.buttonIcon} color="secondary" />*/}
+      {/*  </IconButton>*/}
+      {/*</Tooltip>*/}
 
     </div>
   );
