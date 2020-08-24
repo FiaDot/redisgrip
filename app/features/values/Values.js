@@ -131,7 +131,6 @@ export default function Values(props) {
         Value
       </Typography>
 
-
       <div className={classes.paper}>
         <Paper elevation={3}>
           <Tooltip TransitionComponent={Zoom} title="Reload">
