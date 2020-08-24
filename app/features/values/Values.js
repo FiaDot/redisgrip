@@ -12,7 +12,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
-import { clearString } from './stringContentSlice';
+import { clearAllString, clearString } from './stringContentSlice';
 import Divider from '@material-ui/core/Divider';
 import HashContent from './HashContent';
 import StringContent from './StringContent';
@@ -71,11 +71,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Values(props) {
+export default function Values() {
   const classes = useStyles();
   const dispatch = useDispatch();
-
-  const { redis } = props;
 
   const selectKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
@@ -113,9 +111,10 @@ export default function Values(props) {
 
         <Divider className={classes.keyBarDivider} orientation="vertical"/>
 
-        <Typography variant="subtitle1" display="block" gutterBottom align="right">
-          TTL : 0
-        </Typography>
+        {/* TODO : IMPL TTL */}
+        {/*<Typography variant="subtitle1" display="block" gutterBottom align="right">*/}
+        {/*  TTL : 0*/}
+        {/*</Typography>*/}
       </Paper>
     );
   }
@@ -183,7 +182,7 @@ export default function Values(props) {
             </IconButton>
           </Tooltip>
 
-          <Tooltip TransitionComponent={Zoom} title="Clear">
+          <Tooltip TransitionComponent={Zoom} title="History Clear">
             <IconButton
               variant="contained"
               className={classes.button}
