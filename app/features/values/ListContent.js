@@ -18,6 +18,7 @@ export default function ListContent() {
   const records = useSelector((state) => state.listContent.records);
 
   const dispatch = useDispatch();
+  const selectedKey = useSelector((state) => state.selected.selectKey);
   const selectedSubKey = useSelector((state) => state.selected.selectSubKey);
 
   const handleClick = (event, name) => {
@@ -28,10 +29,10 @@ export default function ListContent() {
     return selectedSubKey === name;
   };
 
-  const showHistoryRecord = (key, value) => (
-    <TableRow key={key}>
+  const showHistoryRecord = (index, value) => (
+    <TableRow key={index}>
       <TableCell component="th" scope="row">
-        {key}
+        {index}
       </TableCell>
 
       <TableCell align="left">{value}</TableCell>
@@ -84,13 +85,15 @@ export default function ListContent() {
   return (
     <div className={classes.root}>
       {records.map((record) =>
-        record.values.map((value, index) =>
-          showKey(
-            record.key,
-            value,
-            index === 0 ? showRecord : showHistoryRecord
-          )
-        )
+        record.key === selectedKey
+          ? record.values.map((value, index) =>
+              showKey(
+                record.key,
+                value,
+                index === 0 ? showRecord : showHistoryRecord
+              )
+            )
+          : ''
       )}
       <ValueDialog />
     </div>
