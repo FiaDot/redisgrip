@@ -7,16 +7,14 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
 import ValueDialog from './ValueDialog';
 import { selectSubKey } from '../servers/selectedSlice';
 
-export default function ZsetContent(props) {
+export default function ZsetContent() {
   const classes = useValueStyles();
-  const { redis } = props;
 
   const records = useSelector((state) => state.zsetContent.records);
 

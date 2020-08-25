@@ -160,7 +160,7 @@ export default function DelValueDialog() {
 
   return (
     <>
-      {ShowButton(selectType === 'string' || !selectSubKey )}
+      {ShowButton(selectType === 'string' || selectSubKey == null)}
 
       <Dialog
         open={open}

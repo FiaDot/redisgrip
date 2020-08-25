@@ -376,9 +376,11 @@ const RedisMiddleware = () => {
         // case 'string':
         //   ret = await redis.set(selectKey, val);
         //   break;
-        // case 'list':
-        //   //ret = await redis.lremindex(selectKey, index);
-        //   break;
+        case 'list':
+          //ret = await redis.lremindex(mainKey, key);
+          await redis.lset(mainKey, key, 'deleted');
+          await redis.lrem(mainKey, 1, 'deleted');
+          break;
         case 'hash':
           ret = await redis.hdel(mainKey, key);
           break;
