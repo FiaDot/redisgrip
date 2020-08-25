@@ -159,7 +159,7 @@ export default function AddValueDialog() {
         onClose={handleClose}
         aria-labelledby="form-dialog-edit-sub-key"
       >
-        {ShowTitle(`Add ${  selectType  } record`)}
+        {ShowTitle(`Add ${selectType} record`)}
 
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
