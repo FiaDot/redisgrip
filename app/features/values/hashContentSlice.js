@@ -50,8 +50,8 @@ const hashContentSlice = createSlice({
       }
     },
     clearHash: (state, action) => {
-        state.records = [];
-    }
+      state.records = [];
+    },
   },
 });
 

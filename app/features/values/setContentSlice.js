@@ -49,8 +49,11 @@ const setContentSlice = createSlice({
         });
       }
     },
+    clearSet: (state, action) => {
+      state.records = [];
+    },
   },
 });
 
-export const { addSet } = setContentSlice.actions;
+export const { addSet, clearSet } = setContentSlice.actions;
 export default setContentSlice.reducer;

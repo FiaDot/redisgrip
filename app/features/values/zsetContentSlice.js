@@ -51,8 +51,11 @@ const zsetContentSlice = createSlice({
         console.log(JSON.stringify(state));
       }
     },
+    clearZset: (state, action) => {
+      state.records = [];
+    },
   },
 });
 
-export const { addZset } = zsetContentSlice.actions;
+export const { addZset, clearZset } = zsetContentSlice.actions;
 export default zsetContentSlice.reducer;

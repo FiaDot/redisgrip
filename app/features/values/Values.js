@@ -25,6 +25,9 @@ import SetContent from './SetContent';
 import { deselectKey } from '../servers/selectedSlice';
 import AddKeyDialog from '../keys/AddKeyDialog';
 import { clearHash } from './hashContentSlice';
+import { clearList } from './listContentSlice';
+import { clearSet } from './setContentSlice';
+import { clearZset } from './zsetContentSlice';
 
 // import { remote } from 'electron';
 
@@ -86,8 +89,15 @@ export default function Values() {
         break;
 
       case 'list':
+        dispatch(clearList());
+        break;
+
       case 'set':
+        dispatch(clearSet());
+        break;
+
       case 'zset':
+        dispatch(clearZset());
         break;
 
       case 'hash':
