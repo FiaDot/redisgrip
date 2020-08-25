@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Zoom from '@material-ui/core/Zoom';
-import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { useSelector, useDispatch } from 'react-redux';
 import { delKey, scanKeys } from './keysSlice';
 
@@ -70,7 +70,8 @@ export default function DelKeyDialog() {
           className={classes.button}
           onClick={handleClickOpen}
         >
-          <DeleteSweepOutlinedIcon color={selectKey ? 'primary' : 'disabled'} />
+
+          <DeleteOutlineIcon color={selectKey ? 'primary' : 'disabled'} />
         </IconButton>
       </Tooltip>
 
