@@ -27,6 +27,7 @@ const selectedSlice = createSlice({
     selectKey: (state, action) => {
       state.selectKey = action.payload.key;
       state.selectType = action.payload.type;
+      state.selectSubKey = null;
     },
     deselectKey: (state, action) => {
       state.selectKey = null;
@@ -39,7 +40,9 @@ const selectedSlice = createSlice({
       state.selectSubKey = null;
     },
     addSubKey: (state, action) => {},
-    delSubKey: (state, action) => {},
+    delSubKey: (state, action) => {
+      state.selectSubKey = null;
+    },
     editSubKey: (state, action) => {},
   },
 });
