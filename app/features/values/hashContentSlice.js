@@ -49,8 +49,11 @@ const hashContentSlice = createSlice({
         });
       }
     },
+    clearHash: (state, action) => {
+      state.records = [];
+    },
   },
 });
 
-export const { addHash } = hashContentSlice.actions;
+export const { addHash, clearHash } = hashContentSlice.actions;
 export default hashContentSlice.reducer;

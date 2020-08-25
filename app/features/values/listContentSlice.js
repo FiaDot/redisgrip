@@ -51,8 +51,11 @@ const listContentSlice = createSlice({
         console.log(JSON.stringify(state));
       }
     },
+    clearList: (state, action) => {
+      state.records = [];
+    },
   },
 });
 
-export const { addList } = listContentSlice.actions;
+export const { addList, clearList } = listContentSlice.actions;
 export default listContentSlice.reducer;
