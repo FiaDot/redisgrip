@@ -24,6 +24,7 @@ import ListContent from './ListContent';
 import SetContent from './SetContent';
 import { deselectKey } from '../servers/selectedSlice';
 import AddKeyDialog from '../keys/AddKeyDialog';
+import { clearHash } from './hashContentSlice';
 
 // import { remote } from 'electron';
 
@@ -79,7 +80,23 @@ export default function Values() {
   const selectType = useSelector((state) => state.selected.selectType);
 
   const clear = () => {
-    dispatch(clearString());
+    switch (selectType) {
+      case 'string':
+        dispatch(clearString());
+        break;
+
+      case 'list':
+      case 'set':
+      case 'zset':
+        break;
+
+      case 'hash':
+        dispatch(clearHash());
+        break;
+
+      default:
+        console.log('type is wrong');
+    }
   };
 
   const onDeselectKey = () => {
