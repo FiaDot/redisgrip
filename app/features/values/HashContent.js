@@ -18,6 +18,7 @@ export default function HashContent() {
   const records = useSelector((state) => state.hashContent.records);
 
   const dispatch = useDispatch();
+  const selectedKey = useSelector((state) => state.selected.selectKey);
   const selectedSubKey = useSelector((state) => state.selected.selectSubKey);
 
   const handleClick = (event, name) => {
@@ -86,13 +87,15 @@ export default function HashContent() {
   return (
     <div className={classes.root}>
       {records.map((record) =>
-        record.values.map(
-          (value, index) =>
-            // if (1 == index) {
-            // console.log(index)
-            showKey(record.key, value, index === 0 ? showHash : showHistoryHash)
-          // }
-        )
+        record.key === selectedKey
+          ? record.values.map((value, index) =>
+              showKey(
+                record.key,
+                value,
+                index === 0 ? showHash : showHistoryHash
+              )
+            )
+          : ''
       )}
 
       <ValueDialog />
