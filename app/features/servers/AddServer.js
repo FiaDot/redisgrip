@@ -95,8 +95,7 @@ export default function AddServer() {
 
   useEffect(() => {
     console.log('AddServer useEffect open');
-    // dispatch(stopConnecting());
-    // dispatch(setShowResult(false));
+
     return () => {
       console.log('AddServer useEffect close');
       dispatch(stopConnecting());
