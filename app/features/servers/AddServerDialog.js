@@ -23,6 +23,7 @@ import {
   stopConnecting,
   testConnection,
 } from './connectionSlice';
+import Dialog from '@material-ui/core/Dialog';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddServer() {
+export default function AddServerDialog() {
   const classes = useStyles();
 
   // redux
@@ -65,7 +66,7 @@ export default function AddServer() {
 
   // local
   const [inputs, setInputs] = useState({
-    redirect: false,
+    open: false,
     alias: generate({ words: 2, number: true }).dashed,
     host: 'localhost',
     port: 6379,
@@ -80,7 +81,7 @@ export default function AddServer() {
   });
 
   const {
-    redirect,
+    open,
     alias,
     host,
     port,
@@ -108,6 +109,14 @@ export default function AddServer() {
     });
   };
 
+  const handleClickOpen = () => {
+    setInputs({ ...inputs, open: true });
+  };
+
+  const handleClose = () => {
+    setInputs({ ...inputs, open: false });
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -128,11 +137,7 @@ export default function AddServer() {
       })
     );
 
-    // 저장 하고 나서 첫화면으로 이동
-    setInputs({
-      ...inputs,
-      redirect: true,
-    });
+    handleClose();
   };
 
   const onAddPemFile = (e) => {
@@ -168,9 +173,7 @@ export default function AddServer() {
     );
   };
 
-  return redirect ? (
-    <Redirect push to="/servers" />
-  ) : (
+  return (
     <Container component="main" maxWidth="xs">
       <Backdrop className={classes.backdrop} open={disabled}>
         <CircularProgress color="inherit" />
