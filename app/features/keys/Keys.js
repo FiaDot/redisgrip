@@ -18,6 +18,8 @@ import { selectKey } from '../servers/selectedSlice';
 import SearchKey from './SearchKey';
 import AddKeyDialog from './AddKeyDialog';
 import DelKeyDialog from './DelKeyDialog';
+import Badge from '@material-ui/core/Badge';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +63,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    right: 25,
+    top: 1,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}))(Badge);
+
 const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
   return (
     <div>
@@ -73,10 +84,12 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
               key={key}
               onClick={(event) => onSelectKey(key)}
             >
-              <VpnKeyOutlinedIcon
-                color="primary"
-                style={{ paddingRight: 10 }}
-              />
+              {/*<StyledBadge badgeContent={4} max={9} color="secondary">*/}
+                <VpnKeyOutlinedIcon
+                  color="primary"
+                  style={{ paddingRight: 10 }}
+                />
+              {/*</StyledBadge>*/}
               <ListItemText primary={key} />
             </ListItem>
             {/*<Divider variant="middle" component="li" />*/}
