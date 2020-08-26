@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
-import { loadStorage } from './serversSlice';
+import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
@@ -65,16 +65,16 @@ export default function ServerList(props) {
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
 
-  useEffect(() => {
-    console.log('loaded ServerList');
-
-    // 서버 목록 불러오기
-    dispatch(loadStorage());
-
-    return () => {
-      console.log('unloaded ServerList');
-    };
-  }, []);
+  // useEffect(() => {
+  //   console.log('loaded ServerList');
+  //
+  //   // 서버 목록 불러오기
+  //   dispatch(loadStorage());
+  //
+  //   return () => {
+  //     console.log('unloaded ServerList');
+  //   };
+  // }, []);
 
   const onConnectServer = (id) => {
     console.log(`called onConnectServer=${id}`);

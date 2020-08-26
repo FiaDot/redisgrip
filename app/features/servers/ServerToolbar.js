@@ -17,6 +17,7 @@ import { clearStorage, delServer } from './serversSlice';
 import { deselectServer, isSelectedServer } from './selectedSlice';
 import { clearKeys } from '../keys/keysSlice';
 import { disconnected } from './connectionSlice';
+import AddServerDialog from './AddServerDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -100,6 +101,7 @@ export default function ServerToolbar(props) {
       <div className={classes.paper}>
         <Paper elevation={3}>
           {/* Add */}
+          {/*<AddServerDialog />*/}
           <Tooltip TransitionComponent={Zoom} title="Add">
             <IconButton
               // variant="contained"

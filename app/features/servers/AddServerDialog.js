@@ -16,13 +16,23 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { createServer } from './serversSlice';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
+import IconButton from '@material-ui/core/IconButton';
+import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
+import Paper from '@material-ui/core/Paper';
 import {
   setShowResult,
   startConnecting,
   stopConnecting,
   testConnection,
 } from './connectionSlice';
+import { createServer } from './serversSlice';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -45,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     align: 'center',
   },
   form: {
+    minWidth: 500,
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
@@ -53,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddServer() {
+export default function AddServerDialog() {
   const classes = useStyles();
 
   // redux
@@ -65,7 +76,7 @@ export default function AddServer() {
 
   // local
   const [inputs, setInputs] = useState({
-    redirect: false,
+    open: false,
     alias: generate({ words: 2, number: true }).dashed,
     host: 'localhost',
     port: 6379,
@@ -80,7 +91,7 @@ export default function AddServer() {
   });
 
   const {
-    redirect,
+    open,
     alias,
     host,
     port,
@@ -93,16 +104,14 @@ export default function AddServer() {
     pemPassphrase,
   } = inputs;
 
-  useEffect(() => {
-    console.log('AddServer useEffect open');
-    // dispatch(stopConnecting());
-    // dispatch(setShowResult(false));
-    return () => {
-      console.log('AddServer useEffect close');
-      dispatch(stopConnecting());
-      dispatch(setShowResult(false));
-    };
-  }, []);
+  // useEffect(() => {
+  //   dispatch(stopConnecting());
+  //   dispatch(setShowResult(false));
+  //   return () => {
+  //     dispatch(stopConnecting());
+  //     dispatch(setShowResult(false));
+  //   };
+  // }, []);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -113,10 +122,26 @@ export default function AddServer() {
     });
   };
 
-  const onSubmit = (e) => {
+  const handleClickOpen = () => {
+    dispatch(stopConnecting());
+    dispatch(setShowResult(false));
+
+    setInputs({ ...inputs, open: true });
+  };
+
+  const handleClose = () => {
+    dispatch(stopConnecting());
+    dispatch(setShowResult(false));
+
+    setInputs({ ...inputs, open: false });
+  };
+
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(
+    await dispatch(startConnecting());
+
+    await dispatch(
       createServer({
         alias,
         host,
@@ -131,11 +156,7 @@ export default function AddServer() {
       })
     );
 
-    // 저장 하고 나서 첫화면으로 이동
-    setInputs({
-      ...inputs,
-      redirect: true,
-    });
+    handleClose();
   };
 
   const onAddPemFile = (e) => {
@@ -171,13 +192,24 @@ export default function AddServer() {
     );
   };
 
-  return redirect ? (
-    <Redirect push to="/servers" />
-  ) : (
-    <Container component="main" maxWidth="xs">
-      <Backdrop className={classes.backdrop} open={disabled}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+  const ShowIcon = () => {
+    return (
+      <Tooltip TransitionComponent={Zoom} title="Add">
+        <IconButton
+          // variant="contained"
+          className={classes.button}
+          onClick={handleClickOpen}
+        >
+          <AddBoxOutlinedIcon className={classes.buttonIcon} color="primary" />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+
+  return (
+    <>
+      {/* 아이콘 */}
+      {ShowIcon()}
 
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -195,9 +227,21 @@ export default function AddServer() {
         </Alert>
       </Snackbar>
 
-      <CssBaseline />
-      <div className={classes.paper}>
-        <form className={classes.form} noValidate>
+      <Backdrop className={classes.backdrop} open={disabled}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-add-server"
+      >
+        <DialogTitle id="form-dialog-add-sub-key">Server</DialogTitle>
+
+        <DialogContent className={classes.form}>
+          <DialogContentText>{/* New Key... */}</DialogContentText>
+
+          {/* alias */}
           <TextField
             size="small"
             variant="outlined"
@@ -212,6 +256,7 @@ export default function AddServer() {
             disabled={disabled}
           />
 
+          {/* host, port */}
           <Grid container spacing={1}>
             <Grid item xs={12} sm={9}>
               <TextField
@@ -242,6 +287,7 @@ export default function AddServer() {
             </Grid>
           </Grid>
 
+          {/* password */}
           <TextField
             size="small"
             variant="outlined"
@@ -253,10 +299,12 @@ export default function AddServer() {
             onChange={onChange}
           />
 
+          {/* ssh */}
           <Typography component="h1" variant="h6" align="center">
             SSH
           </Typography>
 
+          {/* ssh host, port */}
           <Grid container spacing={1}>
             <Grid item xs={12} sm={9}>
               <TextField
@@ -285,6 +333,7 @@ export default function AddServer() {
             </Grid>
           </Grid>
 
+          {/* ssh id, pwd */}
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -312,6 +361,8 @@ export default function AddServer() {
               />
             </Grid>
           </Grid>
+
+          {/* ssh pem */}
 
           <Grid container spacing={1}>
             <Grid item xs={12} sm={10}>
@@ -347,6 +398,7 @@ export default function AddServer() {
             </Grid>
           </Grid>
 
+          {/* ssh pem pwd */}
           <TextField
             size="small"
             variant="outlined"
@@ -358,6 +410,8 @@ export default function AddServer() {
             onChange={onChange}
           />
 
+
+          {/* Test Button */}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <Button
@@ -368,11 +422,14 @@ export default function AddServer() {
                 onClick={onTestConnection}
                 disabled={disabled}
               >
-                Test
+                Connection Test
               </Button>
             </Grid>
           </Grid>
+        </DialogContent>
 
+        <DialogActions>
+          {/* Add, Cancel Button */}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={8}>
               <Button
@@ -403,8 +460,8 @@ export default function AddServer() {
               </Button>
             </Grid>
           </Grid>
-        </form>
-      </div>
-    </Container>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }

@@ -18,6 +18,7 @@ const serversSlice = createSlice({
       return [];
     },
     addServer: (state, action) => {
+      console.log('addServer in serverSlice');
       return [...state, action.payload];
     },
     delServer: (state, action) => {
@@ -37,7 +38,7 @@ const serversSlice = createSlice({
     },
     clearServers: (state, action) => {
       // 목록만 삭제
-      return [];
+      state = [];
     },
   },
 });
@@ -61,7 +62,8 @@ export const loadStorage = () => {
       if (error) throw error;
 
       const keys = Object.keys(data);
-      keys.map(key => {
+      // eslint-disable-next-line array-callback-return
+      keys.map((key) => {
         dispatch(addServer(data[key]));
       });
     });
@@ -79,8 +81,8 @@ export const createServer = (payload) => {
     storage.set(payload.id, payload, function(error) {
       if (error) throw error;
 
+      console.log('call dispatch(addServer)');
       dispatch(addServer(payload));
     });
-
   };
 };
