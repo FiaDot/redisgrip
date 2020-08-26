@@ -230,19 +230,19 @@ const RedisMiddleware = () => {
 
       switch (type) {
         case 'string':
-          ret = await redis.set(key, '');
+          ret = await redis.set(key, 'tmp');
           break;
         case 'list':
-          ret = await redis.lpush(key, '');
+          ret = await redis.lpush(key, 'tmp');
           break;
         case 'hash':
-          ret = await redis.hset(key, '', '');
+          ret = await redis.hset(key, 'tmp_key', 'tmp_value');
           break;
         case 'set':
-          ret = await redis.sadd(key, '');
+          ret = await redis.sadd(key, 'tmp');
           break;
         case 'zset':
-          ret = await redis.zadd(key, 0, '');
+          ret = await redis.zadd(key, 0, 'tmp');
           break;
         default:
           console.log('wrong type');
