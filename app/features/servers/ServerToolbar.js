@@ -55,6 +55,8 @@ export default function ServerToolbar(props) {
   const selectedId = useSelector((state) => state.selected.id);
   const isSelected = useSelector(isSelectedServer);
 
+  const isConnected = useSelector((state) => state.connections.connectResult);
+
   const dispatch = useDispatch();
   const onDelServer = (id) => dispatch(delServer(id));
   const onDeselectServer = () => dispatch(deselectServer());
@@ -167,11 +169,11 @@ export default function ServerToolbar(props) {
             <IconButton
               variant="contained"
               className={classes.button}
-              onClick={isSelected ? disconnect : null}
+              onClick={isConnected ? disconnect : null}
             >
               <LinkOffOutlinedIcon
                 className={classes.buttonIcon}
-                color={isSelected ? 'primary' : 'disabled'}
+                color={isConnected ? 'primary' : 'disabled'}
               />
             </IconButton>
           </Tooltip>
