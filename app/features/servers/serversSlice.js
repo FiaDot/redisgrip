@@ -15,15 +15,32 @@ const serversSlice = createSlice({
     clearStorage: (state, action) => {
       // 저장 데이터 삭제
       storage.clear();
-      return [];
+      // eslint-disable-next-line no-param-reassign
+      state = [];
+      return state;
     },
     addServer: (state, action) => {
       console.log('addServer in serverSlice');
-      return [...state, action.payload];
+
+      let item = state.find(
+        (record) => record.id === action.payload.id
+      );
+
+      if (item) {
+        // eslint-disable-next-line no-const-assign
+        item = action.payload;
+      } else {
+        state.push(action.payload);
+      }
     },
     delServer: (state, action) => {
+      // let item = state.find(
+      //   (record) => record.id === action.payload.id
+      // );
+      //state.remove(action.payload);
       storage.remove(action.payload);
-      return state.filter((server) => server.id !== action.payload);
+      return state.filter((server) => server.id !== action.payload)
+      //return state.filter((server) => server.id !== action.payload);
     },
     editServer: (state, action) => {
       storage.set(action.payload.id, action.payload, function(error) {
@@ -38,6 +55,7 @@ const serversSlice = createSlice({
     },
     clearServers: (state, action) => {
       // 목록만 삭제
+      // eslint-disable-next-line no-param-reassign
       state = [];
     },
   },
@@ -78,10 +96,13 @@ export const createServer = (payload) => {
 
     payload.id = payload.id || uuid.v4();
 
-    storage.set(payload.id, payload, function(error) {
-      if (error) throw error;
+    storage.set(payload.id, payload, function (error) {
+      if (error) {
+        console.log(error);
+        throw error;
+      }
 
-      console.log('call dispatch(addServer)');
+      console.log(`call dispatch(addServer) ${JSON.stringify(payload)}`);
       dispatch(addServer(payload));
     });
   };
