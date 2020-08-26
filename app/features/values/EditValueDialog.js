@@ -79,7 +79,6 @@ export default function EditValueDialog() {
   //   };
   // }, []);
 
-
   const onChange = (e) => {
     const { name, value } = e.target;
 
@@ -98,11 +97,31 @@ export default function EditValueDialog() {
   };
 
   const onSubmit = async () => {
-    // TODO : dispatch
+    let ret = '';
 
-    const ret = await dispatch(
-      editSubKey({ mainKey: selectKey, type: selectType, key, val })
-    );
+    switch (selectType) {
+      case 'string':
+      case 'hash':
+      case 'zset':
+      case 'list':
+        ret = await dispatch(
+          editSubKey({ mainKey: selectKey, type: selectType, key, val })
+        );
+        break;
+
+      case 'set':
+        ret = await dispatch(
+          editSubKey({
+            mainKey: selectKey,
+            type: selectType,
+            key: selectSubKey,
+            val,
+          })
+        );
+        break;
+
+      default:
+    }
 
     console.log(`onSubmit ${key} ${val} ret=${ret}`);
 
@@ -160,11 +179,8 @@ export default function EditValueDialog() {
   };
 
   const ShowTitle = (text) => {
-    return (
-      <DialogTitle id="form-dialog-add-sub-key">
-        {text}
-      </DialogTitle>
-    )};
+    return <DialogTitle id="form-dialog-add-sub-key">{text}</DialogTitle>;
+  };
 
   return (
     <>
@@ -180,7 +196,9 @@ export default function EditValueDialog() {
         onClose={handleClose}
         aria-labelledby="form-dialog-edit-sub-key"
       >
-        { ShowTitle(selectType === 'string' ? "Edit String" : "Edit Sub Key/Value") }
+        {ShowTitle(
+          selectType === 'string' ? 'Edit String' : 'Edit Sub Key/Value'
+        )}
 
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>

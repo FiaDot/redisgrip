@@ -401,13 +401,14 @@ const RedisMiddleware = () => {
     };
 
     const editSubKey = async (mainKey, type, key, val) => {
-      console.log(`editSubKey ${type} / ${key} / ${val}`);
+      console.log(`editSubKey ${mainKey} / ${type} / ${key} / ${val}`);
       let ret = 'FAILED';
 
       switch (type) {
         case 'string':
           ret = await redis.set(mainKey, val);
           break;
+
         case 'list':
           // ret = await redis.lpush(mainKey, val);
           break;
@@ -415,9 +416,12 @@ const RedisMiddleware = () => {
         case 'hash':
           ret = await redis.hset(mainKey, key, val);
           break;
+
         case 'set':
-          //ret = await redis.sadd(mainKey, val);
+          ret = await redis.srem(mainKey, key);
+          ret = await redis.sadd(mainKey, val);
           break;
+
         case 'zset':
           //ret = await redis.zadd(mainKey, val, key);
           break;
