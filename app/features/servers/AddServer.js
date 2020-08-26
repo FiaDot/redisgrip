@@ -94,9 +94,14 @@ export default function AddServer() {
   } = inputs;
 
   useEffect(() => {
-    dispatch(stopConnecting());
-    dispatch(setShowResult(false));
-    return () => {};
+    console.log('AddServer useEffect open');
+    // dispatch(stopConnecting());
+    // dispatch(setShowResult(false));
+    return () => {
+      console.log('AddServer useEffect close');
+      dispatch(stopConnecting());
+      dispatch(setShowResult(false));
+    };
   }, []);
 
   const onChange = (e) => {
@@ -108,12 +113,10 @@ export default function AddServer() {
     });
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
 
-    await dispatch(startConnecting());
-
-    await dispatch(
+    dispatch(
       createServer({
         alias,
         host,

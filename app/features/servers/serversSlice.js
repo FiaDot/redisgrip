@@ -38,7 +38,7 @@ const serversSlice = createSlice({
     },
     clearServers: (state, action) => {
       // 목록만 삭제
-      return [];
+      state = [];
     },
   },
 });
@@ -56,6 +56,8 @@ export default serversSlice.reducer;
 // 저장소에서 목록 불러오기
 export const loadStorage = () => {
   return (dispatch, getState) => {
+    dispatch(clearServers());
+
     storage.getAll(function (error, data) {
       if (error) throw error;
 
@@ -79,8 +81,8 @@ export const createServer = (payload) => {
     storage.set(payload.id, payload, function(error) {
       if (error) throw error;
 
+      console.log('call dispatch(addServer)');
       dispatch(addServer(payload));
     });
-
   };
 };

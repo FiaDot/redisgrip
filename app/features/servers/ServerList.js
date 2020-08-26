@@ -65,17 +65,16 @@ export default function ServerList(props) {
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
 
-  useEffect(() => {
-    console.log('loaded ServerList');
-
-    dispatch(clearServers());
-    // 서버 목록 불러오기
-    dispatch(loadStorage());
-
-    return () => {
-      console.log('unloaded ServerList');
-    };
-  }, []);
+  // useEffect(() => {
+  //   console.log('loaded ServerList');
+  //
+  //   // 서버 목록 불러오기
+  //   dispatch(loadStorage());
+  //
+  //   return () => {
+  //     console.log('unloaded ServerList');
+  //   };
+  // }, []);
 
   const onConnectServer = (id) => {
     console.log(`called onConnectServer=${id}`);

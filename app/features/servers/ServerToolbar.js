@@ -101,21 +101,21 @@ export default function ServerToolbar(props) {
       <div className={classes.paper}>
         <Paper elevation={3}>
           {/* Add */}
-          <AddServerDialog />
-          {/*<Tooltip TransitionComponent={Zoom} title="Add">*/}
-          {/*  <IconButton*/}
-          {/*    // variant="contained"*/}
-          {/*    className={classes.button}*/}
-          {/*    // onClick={add}*/}
-          {/*    component={Link}*/}
-          {/*    to="/AddServer"*/}
-          {/*  >*/}
-          {/*    <AddBoxOutlinedIcon*/}
-          {/*      className={classes.buttonIcon}*/}
-          {/*      color="primary"*/}
-          {/*    />*/}
-          {/*  </IconButton>*/}
-          {/*</Tooltip>*/}
+          {/*<AddServerDialog />*/}
+          <Tooltip TransitionComponent={Zoom} title="Add">
+            <IconButton
+              // variant="contained"
+              className={classes.button}
+              // onClick={add}
+              component={Link}
+              to="/AddServer"
+            >
+              <AddBoxOutlinedIcon
+                className={classes.buttonIcon}
+                color="primary"
+              />
+            </IconButton>
+          </Tooltip>
 
           {/* Del */}
           <Tooltip TransitionComponent={Zoom} title="Delete">
