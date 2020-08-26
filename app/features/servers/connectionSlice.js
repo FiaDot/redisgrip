@@ -26,7 +26,7 @@ const connectionSlice = createSlice({
     },
     disconnected: (state, action) => {
       // state.instances.filter((server) => server.id !== action.payload.id);
-      return state;
+      state.connectResult = false;
     },
     startConnecting: (state, action) => {
       state.isConnecting = true;
@@ -59,4 +59,3 @@ export const {
 } = connectionSlice.actions;
 
 export default connectionSlice.reducer;
-

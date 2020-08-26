@@ -22,6 +22,7 @@ const ServerListMemo = React.memo(function serverList({
   serverId,
   serverAlias,
   selected,
+  connectedId,
   onSelectServer,
   onConnectServer,
 }) {
@@ -36,7 +37,10 @@ const ServerListMemo = React.memo(function serverList({
           onClick={(event) => onSelectServer(serverId)}
           onDoubleClick={(event) => onConnectServer(serverId)}
         >
-          <StorageOutlinedIcon color="primary" style={{ paddingRight: 10 }} />
+          <StorageOutlinedIcon
+            color={connectedId === serverId ? 'secondary' : 'primary'}
+            style={{ paddingRight: 10 }}
+          />
           <ListItemText primary={serverAlias} />
         </ListItem>
       </Grid>
@@ -61,6 +65,8 @@ export default function ServerList(props) {
 
   const servers = useSelector((state) => state.servers);
   const selected = useSelector((state) => state.selected);
+
+  const connectedId = useSelector( (state) => state.connections.config.id);
 
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
@@ -94,6 +100,7 @@ export default function ServerList(props) {
               serverId={server.id}
               serverAlias={server.alias}
               selected={selected.id}
+              connectedId={connectedId}
               onSelectServer={onSelectServer}
               onConnectServer={onConnectServer}
             />
