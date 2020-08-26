@@ -102,13 +102,13 @@ export default function EditValueDialog() {
     switch (selectType) {
       case 'string':
       case 'hash':
-      case 'zset':
       case 'list':
         ret = await dispatch(
           editSubKey({ mainKey: selectKey, type: selectType, key, val })
         );
         break;
 
+      case 'zset':
       case 'set':
         ret = await dispatch(
           editSubKey({
@@ -152,10 +152,10 @@ export default function EditValueDialog() {
       case 'string':
       case 'list':
       case 'set':
+      case 'zset':
         return false;
 
       case 'hash':
-      case 'zset':
         return true;
 
       default:
