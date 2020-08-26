@@ -400,6 +400,42 @@ const RedisMiddleware = () => {
       return false;
     };
 
+    const editSubKey = async (mainKey, type, key, val) => {
+      console.log(`editSubKey ${type} / ${key} / ${val}`);
+      let ret = 'FAILED';
+
+      switch (type) {
+        case 'string':
+          ret = await redis.set(mainKey, val);
+          break;
+        case 'list':
+          // ret = await redis.lpush(mainKey, val);
+          break;
+
+        case 'hash':
+          ret = await redis.hset(mainKey, key, val);
+          break;
+        case 'set':
+          //ret = await redis.sadd(mainKey, val);
+          break;
+        case 'zset':
+          //ret = await redis.zadd(mainKey, val, key);
+          break;
+        default:
+          console.log('type is wrong');
+          return;
+      }
+
+      if (ret > 0 || ret == 'OK') {
+        return true;
+      }
+
+      return false;
+    };
+
+
+
+
     console.log(`RedisMiddleware type=${action.type}`);
     let isSuccess;
 
@@ -483,8 +519,14 @@ const RedisMiddleware = () => {
         return isSuccess;
 
       case 'selected/editSubKey':
-        console.log('TODO : editSubKey impl');
-        break;
+        isSuccess = await editSubKey(
+          action.payload.mainKey,
+          action.payload.type,
+          action.payload.key,
+          action.payload.val
+        );
+        await selectKeyAndAdd(action.payload.mainKey);
+        return isSuccess;
 
       default:
         next(action);

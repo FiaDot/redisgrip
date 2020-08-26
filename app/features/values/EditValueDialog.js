@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { addSubKey, delSubKey } from '../servers/selectedSlice';
+import { addSubKey, delSubKey, editSubKey } from '../servers/selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -72,6 +72,14 @@ export default function EditValueDialog() {
 
   const { open, key, val } = inputs;
 
+  // useEffect(() => {
+  //
+  //   return () => {
+  //
+  //   };
+  // }, []);
+
+
   const onChange = (e) => {
     const { name, value } = e.target;
 
@@ -92,9 +100,11 @@ export default function EditValueDialog() {
   const onSubmit = async () => {
     // TODO : dispatch
 
-    console.log(
-      `TODO : onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`
+    const ret = await dispatch(
+      editSubKey({ mainKey: selectKey, type: selectType, key, val })
     );
+
+    console.log(`onSubmit ${key} ${val} ret=${ret}`);
 
     handleClose();
   };
@@ -158,7 +168,12 @@ export default function EditValueDialog() {
 
   return (
     <>
-      { ShowButton(false) }
+      {/* eslint-disable-next-line no-nested-ternary */}
+      {selectType === 'string'
+        ? ShowButton(false)
+        : selectSubKey === null
+        ? ShowButton(true)
+        : ShowButton(false)}
 
       <Dialog
         open={open}
