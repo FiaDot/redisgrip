@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { addSubKey, delSubKey } from '../servers/selectedSlice';
+import { addSubKey, delSubKey, editSubKey } from '../servers/selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -56,6 +56,12 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
+const initialState = {
+  open: false,
+  key: '',
+  val: '',
+};
+
 export default function EditValueDialog() {
   const classes = useStyles();
 
@@ -64,11 +70,7 @@ export default function EditValueDialog() {
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
-  const [inputs, setInputs] = useState({
-    open: false,
-    key: '',
-    val: '',
-  });
+  const [inputs, setInputs] = useState(initialState);
 
   const { open, key, val } = inputs;
 
@@ -82,20 +84,42 @@ export default function EditValueDialog() {
   };
 
   const handleClickOpen = () => {
-    setInputs({ ...inputs, open: true });
+    setInputs({ ...inputs, open: true});
   };
 
   const handleClose = () => {
-    setInputs({ ...inputs, open: false });
+    setInputs({ ...initialState });
+    // setInputs({ ...inputs, open: false });
   };
 
   const onSubmit = async () => {
-    // TODO : dispatch
+    let ret = '';
 
-    console.log(
-      `TODO : onEditSubKey ${selectKey} ${selectType} ${selectSubKey}`
-    );
+    switch (selectType) {
+      case 'string':
+      case 'hash':
+      case 'list':
+        ret = await dispatch(
+          editSubKey({ mainKey: selectKey, type: selectType, key, val })
+        );
+        break;
 
+      case 'zset':
+      case 'set':
+        ret = await dispatch(
+          editSubKey({
+            mainKey: selectKey,
+            type: selectType,
+            key: selectSubKey,
+            val,
+          })
+        );
+        break;
+
+      default:
+    }
+
+    console.log(`onSubmit ${key} ${val} ret=${ret}`);
     handleClose();
   };
 
@@ -123,10 +147,10 @@ export default function EditValueDialog() {
       case 'string':
       case 'list':
       case 'set':
+      case 'zset':
         return false;
 
       case 'hash':
-      case 'zset':
         return true;
 
       default:
@@ -150,22 +174,26 @@ export default function EditValueDialog() {
   };
 
   const ShowTitle = (text) => {
-    return (
-      <DialogTitle id="form-dialog-add-sub-key">
-        {text}
-      </DialogTitle>
-    )};
+    return <DialogTitle id="form-dialog-add-sub-key">{text}</DialogTitle>;
+  };
 
   return (
     <>
-      { ShowButton(false) }
+      {/* eslint-disable-next-line no-nested-ternary */}
+      {selectType === 'string'
+        ? ShowButton(false)
+        : selectSubKey === null
+        ? ShowButton(true)
+        : ShowButton(false)}
 
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-edit-sub-key"
       >
-        { ShowTitle(selectType === 'string' ? "Edit String" : "Edit Sub Key/Value") }
+        {ShowTitle(
+          selectType === 'string' ? 'Edit String' : 'Edit Sub Key/Value'
+        )}
 
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
@@ -181,6 +209,7 @@ export default function EditValueDialog() {
               value={key}
               onChange={onChange}
               fullWidth
+              autoFocus
               className={classes.formSpecing}
             />
           ) : (
@@ -196,6 +225,7 @@ export default function EditValueDialog() {
             value={val}
             onChange={onChange}
             fullWidth
+            autoFocus
             className={classes.formSpecing}
           />
         </DialogContent>

@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import { clearStorage, delServer } from './serversSlice';
-import { deselectServer, isSelectedServer } from './selectedSlice';
+import { deselectKey, deselectServer, isSelectedServer } from './selectedSlice';
 import { clearKeys } from '../keys/keysSlice';
 import { disconnected } from './connectionSlice';
 import AddServerDialog from './AddServerDialog';
@@ -79,6 +79,8 @@ export default function ServerToolbar(props) {
     console.log('called disconnect');
 
     dispatch(disconnected());
+    dispatch(deselectKey());
+    dispatch(clearKeys());
     // key, value 삭제
     // dispatch(clearKeys());
   };

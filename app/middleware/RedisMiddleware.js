@@ -230,19 +230,19 @@ const RedisMiddleware = () => {
 
       switch (type) {
         case 'string':
-          ret = await redis.set(key, '');
+          ret = await redis.set(key, 'tmp');
           break;
         case 'list':
-          ret = await redis.lpush(key, '');
+          ret = await redis.lpush(key, 'tmp');
           break;
         case 'hash':
-          ret = await redis.hset(key, '', '');
+          ret = await redis.hset(key, 'tmp_key', 'tmp_value');
           break;
         case 'set':
-          ret = await redis.sadd(key, '');
+          ret = await redis.sadd(key, 'tmp');
           break;
         case 'zset':
-          ret = await redis.zadd(key, 0, '');
+          ret = await redis.zadd(key, 0, 'tmp');
           break;
         default:
           console.log('wrong type');
@@ -400,6 +400,47 @@ const RedisMiddleware = () => {
       return false;
     };
 
+    const editSubKey = async (mainKey, type, key, val) => {
+      console.log(`editSubKey ${mainKey} / ${type} / ${key} / ${val}`);
+      let ret = 'FAILED';
+
+      switch (type) {
+        case 'string':
+          ret = await redis.set(mainKey, val);
+          break;
+
+        case 'list':
+          // ret = await redis.lpush(mainKey, val);
+          break;
+
+        case 'hash':
+          ret = await redis.hset(mainKey, key, val);
+          break;
+
+        case 'set':
+          ret = await redis.srem(mainKey, key);
+          ret = await redis.sadd(mainKey, val);
+          break;
+
+        case 'zset':
+          ret = await redis.zrem(mainKey, key);
+          ret = await redis.zadd(mainKey, key, val);
+          break;
+        default:
+          console.log('type is wrong');
+          return;
+      }
+
+      if (ret > 0 || ret == 'OK') {
+        return true;
+      }
+
+      return false;
+    };
+
+
+
+
     console.log(`RedisMiddleware type=${action.type}`);
     let isSuccess;
 
@@ -483,8 +524,14 @@ const RedisMiddleware = () => {
         return isSuccess;
 
       case 'selected/editSubKey':
-        console.log('TODO : editSubKey impl');
-        break;
+        isSuccess = await editSubKey(
+          action.payload.mainKey,
+          action.payload.type,
+          action.payload.key,
+          action.payload.val
+        );
+        await selectKeyAndAdd(action.payload.mainKey);
+        return isSuccess;
 
       default:
         next(action);
