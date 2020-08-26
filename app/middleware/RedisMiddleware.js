@@ -256,20 +256,20 @@ const RedisMiddleware = () => {
       return false;
     };
 
-    const selectKey = async (key) => {
+    const selectKeyAndAdd = async (key) => {
       const type = await redis.type(key);
       // console.log(`called onSelectKey ${key}=${type}`);
 
       switch (type) {
         case 'string': {
           const value = await redis.get(key);
-          console.log(`called onSelectKey ${key}=${value}`);
+          console.log(`called selectKeyAndAdd ${key}=${value}`);
           store.dispatch(addString({ key, value }));
           break;
         }
         case 'zset': {
           const count = await redis.zcard(key);
-          console.log(`called onSelectKey ${key}=${count}`);
+          console.log(`called selectKeyAndAdd ${key}=${count}`);
           const data = await redis.zrange(key, 0, count, 'WITHSCORES');
           console.log(`zset len=${data.length},data=${data} `);
 
@@ -281,7 +281,7 @@ const RedisMiddleware = () => {
         case 'list': {
           const len = await redis.llen(key);
           const data = await redis.lrange(key, 0, len);
-          console.log(`called onSelectKey ${key}=${data}`);
+          console.log(`called selectKeyAndAdd ${key}=${data}`);
           store.dispatch(
             addList({ key, values: await makeValuePairArray(data) })
           );
@@ -290,7 +290,7 @@ const RedisMiddleware = () => {
         case 'set': {
           const len = await redis.scard(key);
           const data = await redis.sscan(key, 0, 'count', 10000);
-          console.log(`called onSelectKey ${key}=${data}`);
+          console.log(`called selectKeyAndAdd ${key}=${data}`);
           store.dispatch(
             addSet({ key, values: await makeValuePairArray(data[1]) })
           );
@@ -299,14 +299,14 @@ const RedisMiddleware = () => {
         case 'hash': {
           const len = await redis.hlen(key);
           const data = await redis.hscan(key, 0, 'COUNT', 10000);
-          console.log(`called onSelectKey ${key}=${data}`);
+          console.log(`called selectKeyAndAdd ${key}=${data}`);
           const kv = await makeKeyValueFromHash(data[1]);
           // console.log(kv);
           store.dispatch(addHash({ key, values: kv }));
           break;
         }
         default:
-          console.log('not matched type');
+          console.log('selectKeyAndAdd not matched type');
           return null;
       }
 
@@ -457,7 +457,7 @@ const RedisMiddleware = () => {
         break;
 
       case 'selected/selectKey':
-        const type = await selectKey(action.payload.key);
+        const type = await selectKeyAndAdd(action.payload.key);
         action.payload.type = type;
         next(action);
         break;
@@ -469,7 +469,7 @@ const RedisMiddleware = () => {
           action.payload.key,
           action.payload.val
         );
-        await selectKey(action.payload.mainKey);
+        await selectKeyAndAdd(action.payload.mainKey);
         return isSuccess;
 
       case 'selected/delSubKey':
@@ -479,7 +479,7 @@ const RedisMiddleware = () => {
           action.payload.key
         );
 
-        await selectKey(action.payload.mainKey);
+        await selectKeyAndAdd(action.payload.mainKey);
         return isSuccess;
 
       case 'selected/editSubKey':

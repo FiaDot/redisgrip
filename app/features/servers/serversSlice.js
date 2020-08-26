@@ -18,6 +18,7 @@ const serversSlice = createSlice({
       return [];
     },
     addServer: (state, action) => {
+      console.log('addServer in serverSlice');
       return [...state, action.payload];
     },
     delServer: (state, action) => {
@@ -55,13 +56,12 @@ export default serversSlice.reducer;
 // 저장소에서 목록 불러오기
 export const loadStorage = () => {
   return (dispatch, getState) => {
-    dispatch(clearServers());
-
     storage.getAll(function (error, data) {
       if (error) throw error;
 
       const keys = Object.keys(data);
-      keys.map(key => {
+      // eslint-disable-next-line array-callback-return
+      keys.map((key) => {
         dispatch(addServer(data[key]));
       });
     });

@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
-import { loadStorage } from './serversSlice';
+import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
@@ -68,6 +68,7 @@ export default function ServerList(props) {
   useEffect(() => {
     console.log('loaded ServerList');
 
+    dispatch(clearServers());
     // 서버 목록 불러오기
     dispatch(loadStorage());
 
