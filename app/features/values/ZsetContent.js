@@ -19,6 +19,7 @@ export default function ZsetContent() {
   const records = useSelector((state) => state.zsetContent.records);
 
   const dispatch = useDispatch();
+  const selectedKey = useSelector((state) => state.selected.selectKey);
   const selectedSubKey = useSelector((state) => state.selected.selectSubKey);
 
   const handleClick = (event, name) => {
@@ -86,13 +87,15 @@ export default function ZsetContent() {
   return (
     <div className={classes.root}>
       {records.map((record) =>
-        record.values.map((value, index) =>
-          showKey(
-            record.key,
-            value,
-            index === 0 ? showRecord : showHistoryRecord
-          )
-        )
+        record.key === selectedKey
+          ? record.values.map((value, index) =>
+              showKey(
+                record.key,
+                value,
+                index === 0 ? showRecord : showHistoryRecord
+              )
+            )
+          : ''
       )}
 
       <ValueDialog />
