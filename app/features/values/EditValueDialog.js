@@ -56,6 +56,12 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
+const initialState = {
+  open: false,
+  key: '',
+  val: '',
+};
+
 export default function EditValueDialog() {
   const classes = useStyles();
 
@@ -64,20 +70,9 @@ export default function EditValueDialog() {
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
-  const [inputs, setInputs] = useState({
-    open: false,
-    key: '',
-    val: '',
-  });
+  const [inputs, setInputs] = useState(initialState);
 
   const { open, key, val } = inputs;
-
-  // useEffect(() => {
-  //
-  //   return () => {
-  //
-  //   };
-  // }, []);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -89,11 +84,12 @@ export default function EditValueDialog() {
   };
 
   const handleClickOpen = () => {
-    setInputs({ ...inputs, open: true });
+    setInputs({ ...inputs, open: true});
   };
 
   const handleClose = () => {
-    setInputs({ ...inputs, open: false });
+    setInputs({ ...initialState });
+    // setInputs({ ...inputs, open: false });
   };
 
   const onSubmit = async () => {
@@ -124,7 +120,6 @@ export default function EditValueDialog() {
     }
 
     console.log(`onSubmit ${key} ${val} ret=${ret}`);
-
     handleClose();
   };
 
@@ -214,6 +209,7 @@ export default function EditValueDialog() {
               value={key}
               onChange={onChange}
               fullWidth
+              autoFocus
               className={classes.formSpecing}
             />
           ) : (
@@ -229,6 +225,7 @@ export default function EditValueDialog() {
             value={val}
             onChange={onChange}
             fullWidth
+            autoFocus
             className={classes.formSpecing}
           />
         </DialogContent>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -53,6 +53,12 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
+const initialState = {
+  open: false,
+  key: '',
+  val: '',
+};
+
 export default function AddValueDialog() {
   const classes = useStyles();
 
@@ -61,11 +67,12 @@ export default function AddValueDialog() {
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
-  const [inputs, setInputs] = useState({
-    open: false,
-    key: '',
-    val: '',
-  });
+  const [inputs, setInputs] = useState(initialState);
+  // const [inputs, setInputs] = useState({
+  //   open: false,
+  //   key: '',
+  //   val: '',
+  // });
 
   const { open, key, val } = inputs;
 
@@ -83,7 +90,8 @@ export default function AddValueDialog() {
   };
 
   const handleClose = () => {
-    setInputs({ ...inputs, open: false });
+    setInputs({ ...initialState });
+    //setInputs({ ...inputs, open: false });
   };
 
   const onSubmit = async () => {
@@ -93,6 +101,8 @@ export default function AddValueDialog() {
 
     console.log(`onSubmit ${key} ${val} ret=${ret}`);
 
+    setInputs({ ...inputs, key: '' });
+    setInputs({ ...inputs, val: '' });
     handleClose();
   };
 
@@ -175,6 +185,7 @@ export default function AddValueDialog() {
               value={key}
               onChange={onChange}
               fullWidth
+              autoFocus
               className={classes.formSpecing}
             />
           ) : (
@@ -190,6 +201,7 @@ export default function AddValueDialog() {
             value={val}
             onChange={onChange}
             fullWidth
+            autoFocus
             className={classes.formSpecing}
           />
         </DialogContent>
