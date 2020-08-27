@@ -173,16 +173,6 @@ const RedisMiddleware = () => {
           redis.disconnect();
         }
 
-        // connectionOptions = {
-        //   host: '52.79.194.253',
-        //   port: 6379,
-        //   password: 'asdf1234!',
-        //   connectTimeout: 10000,
-        //   maxRetriesPerRequest: null,
-        // };
-        //
-        // redis = await connectToRedis(connectionOptions);
-
         const options = {
           sshActive: config.sshActive,
           ssh: {
