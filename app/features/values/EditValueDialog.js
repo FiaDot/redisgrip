@@ -84,7 +84,7 @@ export default function EditValueDialog() {
   };
 
   const handleClickOpen = () => {
-    setInputs({ ...inputs, open: true});
+    setInputs({ ...inputs, open: true });
   };
 
   const handleClose = () => {
@@ -94,26 +94,23 @@ export default function EditValueDialog() {
 
   const onSubmit = async () => {
     let ret = '';
+    const state = { mainKey: selectKey, type: selectType, key: selectSubKey, val };
 
     switch (selectType) {
       case 'string':
       case 'hash':
       case 'list':
-        ret = await dispatch(
-          editSubKey({ mainKey: selectKey, type: selectType, key, val })
-        );
+        ret = await dispatch(editSubKey(state));
+        break;
+
+      case 'set':
+        console.log(`EditValueDialog set ${JSON.stringify(state)}`);
+        ret = await dispatch(editSubKey(state));
         break;
 
       case 'zset':
-      case 'set':
-        ret = await dispatch(
-          editSubKey({
-            mainKey: selectKey,
-            type: selectType,
-            key: selectSubKey,
-            val,
-          })
-        );
+        console.log(`EditValueDialog zset ${JSON.stringify(state)}`);
+        ret = await dispatch(editSubKey(state));
         break;
 
       default:
