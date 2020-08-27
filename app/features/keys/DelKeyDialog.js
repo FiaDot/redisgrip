@@ -58,8 +58,8 @@ export default function DelKeyDialog() {
 
   const onSubmit = async () => {
     await dispatch(delKey({ key: selectKey }));
-    handleClose();
     await dispatch(scanKeys());
+    handleClose();
   };
 
   return (

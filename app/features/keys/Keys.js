@@ -108,7 +108,7 @@ export default function Keys() {
   const selectedKey = useSelector((state) => state.selected.selectKey);
 
   const onSelectKey = async (key) => {
-    dispatch(selectKey({key}));
+    dispatch(selectKey({ key }));
   };
 
   const scan = async () => {

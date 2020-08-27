@@ -10,7 +10,8 @@ const keysSlice = createSlice({
   reducers: {
     scanKeys: (state, action) => {},
     clearKeys: (state, action) => {
-      return [];
+      state = [];
+      return state;
     },
     addKey: (state, action) => {
       return [...state, action.payload];
@@ -19,8 +20,8 @@ const keysSlice = createSlice({
       return state.concat(action.payload);
     },
     delKey: (state, action) => {
-      state.filter((server) => server !== action.payload);
-      return state;
+      console.log(`keySlice payload=${action.payload}`);
+      return state.filter((key) => key !== action.payload);
     },
   },
 });
