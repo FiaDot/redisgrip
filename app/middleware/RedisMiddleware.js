@@ -19,7 +19,7 @@ import { addHash } from '../features/values/hashContentSlice';
 
 const RedisMiddleware = () => {
   let redis = null;
-  let connectionOptions = {
+  const connectionOptions = {
     host: '52.79.194.253',
     port: 6379,
     password: 'asdf1234!',
@@ -72,7 +72,7 @@ const RedisMiddleware = () => {
       `called connectToRedisViaSSH options=${JSON.stringify(options)}`
     );
 
-    if (!options.ssh) {
+    if (!options.sshActive) {
       console.log('direct access connectToRedis');
 
       const redisInst = await connectToRedis({
@@ -84,6 +84,8 @@ const RedisMiddleware = () => {
       });
       return redisInst;
     }
+
+    console.log('ssh access connectToRedis');
     const sshConnection = await connectToSSH({
       host: options.ssh.host,
       port: options.ssh.port,
@@ -171,34 +173,36 @@ const RedisMiddleware = () => {
           redis.disconnect();
         }
 
-        connectionOptions = {
-          host: '52.79.194.253',
-          port: 6379,
-          password: 'asdf1234!',
-          connectTimeout: 10000,
-          maxRetriesPerRequest: null,
+        // connectionOptions = {
+        //   host: '52.79.194.253',
+        //   port: 6379,
+        //   password: 'asdf1234!',
+        //   connectTimeout: 10000,
+        //   maxRetriesPerRequest: null,
+        // };
+        //
+        // redis = await connectToRedis(connectionOptions);
+
+        const options = {
+          sshActive: config.sshActive,
+          ssh: {
+            host: config.sshHost,
+            port: config.sshPort,
+            username: config.sshUsername,
+            privateKey: config.pemFilePath,
+            passphrase: config.pemPassphrase,
+          },
+          redis: {
+            host: config.host,
+            port: config.port,
+            password: config.pwd,
+            connectTimeout: 10000,
+            maxRetriesPerRequest: null,
+          },
         };
 
-        redis = await connectToRedis(connectionOptions);
+        redis = await connectToRedisViaSSH(options);
         redis.error = onError();
-
-        // redis = await connectToRedisViaSSH(options);
-        // redis = await connectToRedisViaSSH({
-        //   // ssh: {
-        //   //   host: null,
-        //   //   port: null,
-        //   //   username: null,
-        //   //   privateKey: null,
-        //   //   passphrase: null,
-        //   // },
-        //   redis: {
-        //     host: '52.79.194.253',
-        //     port: 6379,
-        //     password: 'asdf1234!',
-        //     connectTimeout: 10000,
-        //     maxRetriesPerRequest: null,
-        //   },
-        // });
 
         const pingReply = await redis.ping();
         if (pingReply !== 'PONG') {
@@ -380,7 +384,7 @@ const RedisMiddleware = () => {
         //   ret = await redis.set(selectKey, val);
         //   break;
         case 'list':
-          //ret = await redis.lremindex(mainKey, key);
+          // ret = await redis.lremindex(mainKey, key);
           await redis.lset(mainKey, key, 'deleted');
           await redis.lrem(mainKey, 1, 'deleted');
           break;
@@ -442,18 +446,15 @@ const RedisMiddleware = () => {
       return false;
     };
 
-
-
-
     console.log(`RedisMiddleware type=${action.type}`);
     let isSuccess;
 
-    if (null != redis) {
-        try {
-          const alive = await redis.ping();
-        } catch (err) {
-          await connect(connectionOptions);
-        }
+    if (redis != null) {
+      try {
+        const alive = await redis.ping();
+      } catch (err) {
+        await connect(connectionOptions);
+      }
     }
 
     switch (action.type) {
@@ -529,7 +530,7 @@ const RedisMiddleware = () => {
         if (null == (await selectKeyAndAdd(action.payload.mainKey))) {
           await store.dispatch(delKey(action.payload.mainKey));
           await store.dispatch(deselectKey());
-        }*/
+        } */
         return isSuccess;
 
       case 'selected/editSubKey':
