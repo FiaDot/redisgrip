@@ -195,7 +195,7 @@ const RedisMiddleware = () => {
           redis: {
             host: config.host,
             port: config.port,
-            password: config.pwd,
+            password: config.password,
             connectTimeout: 10000,
             maxRetriesPerRequest: null,
           },

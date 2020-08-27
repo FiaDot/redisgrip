@@ -71,7 +71,7 @@ export default function AddServer() {
   //   alias: generate({ words: 2, number: true }).dashed,
   //   host: 'localhost',
   //   port: 6379,
-  //   pwd: '',
+  //   password: '',
   //   sshHost: '',
   //   sshPort: '',
   //   sshUsername: '',
@@ -85,7 +85,7 @@ export default function AddServer() {
     alias: generate({ words: 2, number: true }).dashed,
     host: '52.79.194.253',
     port: 6379,
-    pwd: 'asdf1234!',
+    password: 'asdf1234!',
     sshActive: false,
     sshHost: '',
     sshPort: '',
@@ -102,7 +102,7 @@ export default function AddServer() {
     alias,
     host,
     port,
-    pwd,
+    password,
     sshActive,
     sshHost,
     sshPort,
@@ -146,7 +146,7 @@ export default function AddServer() {
         alias,
         host,
         port,
-        pwd,
+        password,
         sshActive,
         sshHost,
         sshPort,
@@ -185,7 +185,7 @@ export default function AddServer() {
         alias,
         host,
         port,
-        pwd,
+        password,
         sshActive,
         sshHost,
         sshPort,
@@ -278,8 +278,8 @@ export default function AddServer() {
             margin="normal"
             fullWidth
             label="Password"
-            name="pwd"
-            value={pwd}
+            name="password"
+            value={password}
             onChange={onChange}
           />
 
