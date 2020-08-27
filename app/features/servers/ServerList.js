@@ -47,10 +47,14 @@ const ServerListMemo = React.memo(function serverList({
           onClick={(event) => onSelectServer(serverId)}
           onDoubleClick={(event) => onConnectServer(serverId)}
         >
-          <StorageOutlinedIcon
-            color={connectedId === serverId ? 'secondary' : 'primary'}
-            style={{ paddingRight: 10 }}
-          />
+          {connectedId === serverId
+            ? <DesktopMacOutlinedIcon color="secondary" style={{ paddingRight: 10 }} />
+            : <DesktopAccessDisabledOutlinedIcon color="primary" style={{ paddingRight: 10 }} />
+          }
+          {/*<StorageOutlinedIcon*/}
+          {/*  color={connectedId === serverId ? 'secondary' : 'primary'}*/}
+          {/*  style={{ paddingRight: 10 }}*/}
+          {/*/>*/}
           <ListItemText primary={serverAlias} />
         </ListItem>
       </Grid>
