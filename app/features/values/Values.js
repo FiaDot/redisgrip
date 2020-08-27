@@ -22,7 +22,7 @@ import StringContent from './StringContent';
 import ZsetContent from './ZsetContent';
 import ListContent from './ListContent';
 import SetContent from './SetContent';
-import { deselectKey } from '../servers/selectedSlice';
+import { deselectKey, selectKey } from '../servers/selectedSlice';
 import AddKeyDialog from '../keys/AddKeyDialog';
 import { clearHash } from './hashContentSlice';
 import { clearList } from './listContentSlice';
@@ -79,7 +79,7 @@ export default function Values() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const selectKey = useSelector((state) => state.selected.selectKey);
+  const selectMainKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
 
   const clear = () => {
@@ -107,6 +107,8 @@ export default function Values() {
       default:
         console.log('type is wrong');
     }
+
+    dispatch(selectKey({ key: selectMainKey }));
   };
 
   const onDeselectKey = () => {
@@ -116,7 +118,7 @@ export default function Values() {
   function KeyInfo() {
     return (
       <Paper elevation={3} className={classes.keyBar}>
-        <Tooltip TransitionComponent={Zoom} title="Clear">
+        <Tooltip TransitionComponent={Zoom} title="Deselect">
           <IconButton
             type="submit"
             className={classes.iconButton}
@@ -146,7 +148,7 @@ export default function Values() {
         <Divider className={classes.keyBarDivider} orientation="vertical" />
 
         <Typography variant="subtitle1" display="block" gutterBottom>
-          {selectKey}
+          {selectMainKey}
         </Typography>
 
         <Divider className={classes.keyBarDivider} orientation="vertical" />
@@ -237,7 +239,7 @@ export default function Values() {
       {/*  </Paper> */}
       {/* </div>/!*<div className={classes.paper}>*!/ */}
 
-      {selectKey ? KeyInfo() : ''}
+      {selectMainKey ? KeyInfo() : ''}
 
       {/* key 타입에 따른 value 출력 */}
       {selectType === 'string' ? <StringContent /> : ''}
