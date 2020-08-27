@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
     // zIndex : 1000,
     // display: 'flex',
     // flexWrap: 'wrap',
@@ -47,9 +47,6 @@ const useStyles = makeStyles((theme) => ({
     //   minWidth: 300,
     //   backgroundColor: theme.palette.background.paper,
     // },
-  },
-  title: {
-    fontSize: 14,
   },
 }));
 
