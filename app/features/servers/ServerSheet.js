@@ -8,7 +8,6 @@ import ServerList from './ServerList';
 import Keys from '../keys/Keys';
 import Values from '../values/Values';
 import { connectToServer } from './connectionSlice';
-import { selectServer } from './selectedSlice';
 
 const drawerLeftWidth = 320;
 
@@ -59,18 +58,15 @@ export default function ServerSheet() {
 
   const servers = useSelector((state) => state.servers);
   const selectedSeverId = useSelector((state) => state.selected.id);
-  const connectedId = useSelector((state) => state.connections.config.id);
+  // const connectedId = useSelector((state) => state.connections.config.id);
 
   const dispatch = useDispatch();
-  const onSelectServer = (id) => dispatch(selectServer(id));
 
   const connect = async () => {
     // 선택된 서버 목록의 id를 통해 실제 접속할 서버의 정보를 가져오도록!!!!
     // console.log(`selectedSeverId=${selectedSeverId}`);
     // console.log(`connectedId=${connectedId}`);
-    const server = servers.find(
-      (record) => record.id === selectedSeverId
-    );
+    const server = servers.find((record) => record.id === selectedSeverId);
     // console.log(`server=${JSON.stringify(server)}`);
     dispatch(connectToServer(server));
   };
@@ -103,7 +99,6 @@ export default function ServerSheet() {
       >
         <Values />
       </Drawer>
-
     </div>
   );
 }
