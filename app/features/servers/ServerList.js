@@ -5,7 +5,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
-import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -38,8 +37,6 @@ const ServerListMemo = React.memo(function serverList({
     // eslint-disable-next-line react/jsx-filename-extension
     <Grid container spacing={0} key={serverId}>
       <Grid item xs={12}>
-        {connectedId} / {serverId}
-
         <ListItem
           button
           selected={selected === serverId}
@@ -48,13 +45,9 @@ const ServerListMemo = React.memo(function serverList({
           onDoubleClick={(event) => onConnectServer(serverId)}
         >
           {connectedId === serverId
-            ? <DesktopMacOutlinedIcon color="secondary" style={{ paddingRight: 10 }} />
-            : <DesktopAccessDisabledOutlinedIcon color="primary" style={{ paddingRight: 10 }} />
+            ? <DesktopMacOutlinedIcon fontSize="large" color="secondary" style={{ paddingRight: 10 }} />
+            : <DesktopAccessDisabledOutlinedIcon fontSize="large" color="primary" style={{ paddingRight: 10 }} />
           }
-          {/*<StorageOutlinedIcon*/}
-          {/*  color={connectedId === serverId ? 'secondary' : 'primary'}*/}
-          {/*  style={{ paddingRight: 10 }}*/}
-          {/*/>*/}
           <ListItemText primary={serverAlias} />
         </ListItem>
       </Grid>

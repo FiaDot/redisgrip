@@ -76,6 +76,11 @@ export default function ServerToolbar(props) {
     console.log('called editServer');
   };
 
+  const onConnect = () => {
+    console.log(`ServerToolBar onConnect() isConnected=${isConnected}`);
+    props.connect();
+  };
+
   const disconnect = () => {
     console.log('called disconnect');
 
@@ -144,12 +149,11 @@ export default function ServerToolbar(props) {
             variant="contained"
             className={classes.button}
             // onClick={isSelected ? connect : null}
-            onClick={(event) => props.connect()}
-            disabled={isConnecting}
+            onClick={isConnected ? null : onConnect}
           >
             <LinkOutlinedIcon
               className={classes.buttonIcon}
-              color={isSelected ? 'primary' : 'disabled'}
+              color={isSelected && !isConnected ? 'primary' : 'disabled'}
             />
           </IconButton>
         </Tooltip>
@@ -188,11 +192,7 @@ export default function ServerToolbar(props) {
     </div>
   );
 
-  const DisabledToolbar2 = () => (
-    <div>
-      test
-    </div>
-  );
+  const DisabledToolbar2 = () => <div>test</div>;
 
   const DisabledToolbar = () => (
     <div>

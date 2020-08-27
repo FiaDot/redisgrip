@@ -451,12 +451,12 @@ const RedisMiddleware = () => {
         if (isSuccess) {
           await scanKeys();
           await monitoring();
-          store.dispatch(connectSuccess());
+          await store.dispatch(connectSuccess());
         } else {
-          store.dispatch(connectFailed());
+          await store.dispatch(connectFailed());
         }
 
-        store.dispatch(setShowResult(true));
+        await store.dispatch(setShowResult(true));
         break;
 
       case 'connections/testConnection':
@@ -466,12 +466,12 @@ const RedisMiddleware = () => {
         isSuccess = await connect(action.payload);
 
         if (isSuccess) {
-          store.dispatch(connectSuccess());
+          await store.dispatch(connectSuccess());
         } else {
-          store.dispatch(connectFailed());
+          await store.dispatch(connectFailed());
         }
 
-        store.dispatch(setShowResult(true));
+        await store.dispatch(setShowResult(true));
         return isSuccess;
 
       case 'connections/disconnected':

@@ -29,6 +29,7 @@ const connectionSlice = createSlice({
     disconnected: (state, action) => {
       // state.instances.filter((server) => server.id !== action.payload.id);
       state.connectResult = false;
+      state.config.id = null;
     },
     startConnecting: (state, action) => {
       state.isConnecting = true;
