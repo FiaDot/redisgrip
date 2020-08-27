@@ -20,8 +20,10 @@ const keysSlice = createSlice({
       return state.concat(action.payload);
     },
     delKey: (state, action) => {
-      console.log(`keySlice payload=${action.payload}`);
-      return state.filter((key) => key !== action.payload);
+      console.log(`keySlice payload=${JSON.stringify(action.payload)}`);
+      // eslint-disable-next-line no-param-reassign
+      state = state.filter((key) => key !== action.payload.key);
+      return state;
     },
   },
 });

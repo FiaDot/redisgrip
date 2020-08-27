@@ -330,13 +330,9 @@ const RedisMiddleware = () => {
 
     const onDelKey = async (key) => {
       const ret = await redis.del(key);
+      console.log(`RedisMiddleWare onDelKey key=${key}, ret=${ret}`);
 
-      // await store.dispatch(scanKeys());
-
-      // DO NOT CALL : recursive
-      // await store.dispatch(delKey(key));
-
-      if (ret === 1) {
+      if (ret > 0 || ret == 'OK') {
         return true;
       }
       return false;
@@ -502,8 +498,9 @@ const RedisMiddleware = () => {
         break;
 
       case 'keys/delKey':
-        await onDelKey(action.payload);
-        break;
+        isSuccess = await onDelKey(action.payload.key);
+        next(action);
+        return isSuccess;
 
       case 'selected/selectKey':
         const type = await selectKeyAndAdd(action.payload.key);
