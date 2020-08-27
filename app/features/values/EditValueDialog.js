@@ -137,24 +137,24 @@ export default function EditValueDialog() {
     return 'wrong';
   };
 
-  const needKey = () => {
-    // TODO : memo
-
-    switch (selectType) {
-      case 'string':
-      case 'list':
-      case 'set':
-      case 'zset':
-        return false;
-
-      case 'hash':
-        return true;
-
-      default:
-        console.log('type is wrong');
-    }
-    return false;
-  };
+  // const needKey = () => {
+  //   // TODO : memo
+  //
+  //   switch (selectType) {
+  //     case 'string':
+  //     case 'list':
+  //     case 'set':
+  //     case 'zset':
+  //       return false;
+  //
+  //     case 'hash':
+  //       return false;
+  //
+  //     default:
+  //       console.log('type is wrong');
+  //   }
+  //   return false;
+  // };
 
   const ShowButton = (isDisabled) => {
     return (
@@ -195,23 +195,23 @@ export default function EditValueDialog() {
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
 
-          {needKey() ? (
-            <TextField
-              autoFocus
-              size="small"
-              variant="outlined"
-              margin="normal"
-              label="Name"
-              name="key"
-              value={key}
-              onChange={onChange}
-              fullWidth
-              autoFocus
-              className={classes.formSpecing}
-            />
-          ) : (
-            ''
-          )}
+          {/*{needKey() ? (*/}
+          {/*  <TextField*/}
+          {/*    autoFocus*/}
+          {/*    size="small"*/}
+          {/*    variant="outlined"*/}
+          {/*    margin="normal"*/}
+          {/*    label="Name"*/}
+          {/*    name="key"*/}
+          {/*    value={key}*/}
+          {/*    onChange={onChange}*/}
+          {/*    fullWidth*/}
+          {/*    autoFocus*/}
+          {/*    className={classes.formSpecing}*/}
+          {/*  />*/}
+          {/*) : (*/}
+          {/*  ''*/}
+          {/*)}*/}
 
           <TextField
             size="small"
