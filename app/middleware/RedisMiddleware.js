@@ -3,7 +3,6 @@ import Redis from 'ioredis';
 import net from 'net';
 import moment from 'moment';
 import {
-  connected,
   connectFailed,
   connectSuccess,
   setShowResult, startConnecting,
@@ -197,13 +196,9 @@ const RedisMiddleware = () => {
         const pingReply = await redis.ping();
         if (pingReply !== 'PONG') {
           console.log('ping error');
-          store.dispatch(connectFailed());
           return false;
         }
         console.log('pong ok');
-
-        store.dispatch(connected(connectionOptions));
-        // store.dispatch(connectSuccess());
         return true;
       } catch (err) {
         console.log(err);

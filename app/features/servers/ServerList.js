@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
@@ -8,12 +8,14 @@ import Grid from '@material-ui/core/Grid';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import DesktopAccessDisabledOutlinedIcon from '@material-ui/icons/DesktopAccessDisabledOutlined';
+import DesktopMacOutlinedIcon from '@material-ui/icons/DesktopMacOutlined';
 import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 import ServersToolbar from './ServerToolbar';
 import { setShowResult } from './connectionSlice';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -36,6 +38,8 @@ const ServerListMemo = React.memo(function serverList({
     // eslint-disable-next-line react/jsx-filename-extension
     <Grid container spacing={0} key={serverId}>
       <Grid item xs={12}>
+        {connectedId} / {serverId}
+
         <ListItem
           button
           selected={selected === serverId}
@@ -103,7 +107,6 @@ export default function ServerList(props) {
     dispatch(setShowResult(false));
   };
 
-
   return (
     <>
       <Backdrop className={classes.backdrop} open={isConnecting}>
@@ -133,17 +136,16 @@ export default function ServerList(props) {
           ? ''
           : servers.map((server) => (
               <ServerListMemo
-                key={server.id}
-                serverId={server.id}
-                serverAlias={server.alias}
-                selected={selected.id}
-                connectedId={connectedId}
-                onSelectServer={onSelectServer}
-                onConnectServer={onConnectServer}
-              />
-          ))}
+              key={server.id}
+              serverId={server.id}
+              serverAlias={server.alias}
+              selected={selected.id}
+              connectedId={connectedId}
+              onSelectServer={onSelectServer}
+              onConnectServer={onConnectServer}
+            />
+            ))}
       </List>
     </>
-
   );
 }

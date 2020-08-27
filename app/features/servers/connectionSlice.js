@@ -26,9 +26,6 @@ const connectionSlice = createSlice({
     connectToServer: (state, action) => {
       state.config = action.payload;
     },
-    connected: (state, action) => {
-      state.config = action.payload;
-    },
     disconnected: (state, action) => {
       // state.instances.filter((server) => server.id !== action.payload.id);
       state.connectResult = false;
@@ -46,6 +43,7 @@ const connectionSlice = createSlice({
     connectFailed: (state, action) => {
       state.isConnecting = false;
       state.connectResult = false;
+      state.config.id = null;
     },
     setShowResult: (state, action) => {
       state.showResult = action.payload;
@@ -56,7 +54,6 @@ const connectionSlice = createSlice({
 export const {
   testConnection,
   connectToServer,
-  connected,
   disconnected,
   startConnecting,
   stopConnecting,
