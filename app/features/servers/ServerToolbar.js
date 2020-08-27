@@ -20,7 +20,11 @@ import { disconnected } from './connectionSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: '100%',
+    // width: 500,
+    // maxWidth: 360,
     backgroundColor: theme.palette.background.default,
+    overflowY: 'scroll',
   },
   button: {
     // width: 32,
@@ -33,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
+    // zIndex : 1000,
     // display: 'flex',
     // flexWrap: 'wrap',
     // '& > *': {
@@ -53,7 +58,6 @@ export default function ServerToolbar(props) {
 
   const selectedId = useSelector((state) => state.selected.id);
   const isSelected = useSelector(isSelectedServer);
-
   const isConnected = useSelector((state) => state.connections.connectResult);
 
   const dispatch = useDispatch();
@@ -69,12 +73,6 @@ export default function ServerToolbar(props) {
     console.log('called editServer');
   };
 
-  const connect = () => {
-    console.log('called connect');
-    // dispatch(connectToServer());
-
-    // props.connect();
-  };
 
   const disconnect = () => {
     console.log('called disconnect');
@@ -82,8 +80,6 @@ export default function ServerToolbar(props) {
     dispatch(disconnected());
     dispatch(deselectKey());
     dispatch(clearKeys());
-    // key, value 삭제
-    // dispatch(clearKeys());
   };
 
   const clear = () => {

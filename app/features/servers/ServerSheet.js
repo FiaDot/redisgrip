@@ -83,7 +83,7 @@ export default function ServerSheet() {
         }}
         anchor="left"
       >
-        <ServersToolbar connect={connect} />
+        {/*<ServersToolbar connect={connect} />*/}
         <ServerList connect={connect} />
       </Drawer>
 

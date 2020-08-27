@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
@@ -6,8 +6,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
+import ServersToolbar from './ServerToolbar';
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -91,20 +94,30 @@ export default function ServerList(props) {
   };
 
   return (
-    <List component="nav" aria-label="servers">
-      {servers.length === 0
-        ? ''
-        : servers.map((server) => (
-            <ServerListMemo
-              key={server.id}
-              serverId={server.id}
-              serverAlias={server.alias}
-              selected={selected.id}
-              connectedId={connectedId}
-              onSelectServer={onSelectServer}
-              onConnectServer={onConnectServer}
-            />
+    <>
+      <Backdrop className={classes.backdrop} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+
+      <ServersToolbar connect={props.connect} />
+
+      <List component="nav" aria-label="servers">
+        {servers.length === 0
+          ? ''
+          : servers.map((server) => (
+              <ServerListMemo
+                key={server.id}
+                serverId={server.id}
+                serverAlias={server.alias}
+                selected={selected.id}
+                connectedId={connectedId}
+                onSelectServer={onSelectServer}
+                onConnectServer={onConnectServer}
+              />
           ))}
-    </List>
+      </List>
+    </>
+
   );
 }
