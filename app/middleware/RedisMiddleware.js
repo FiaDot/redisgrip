@@ -6,8 +6,8 @@ import {
   connected,
   connectFailed,
   connectSuccess,
-  setShowResult,
-  stopConnecting,
+  setShowResult, startConnecting,
+  stopConnecting
 } from '../features/servers/connectionSlice';
 import { addKeys, clearKeys, delKey } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
@@ -460,10 +460,14 @@ const RedisMiddleware = () => {
         } else {
           store.dispatch(connectFailed());
         }
-        // store.dispatch(setShowResult(true));
+
+        store.dispatch(setShowResult(true));
         break;
 
       case 'connections/testConnection':
+        // await store.dispatch(startConnecting());
+        next(action);
+
         isSuccess = await connect(action.payload);
 
         if (isSuccess) {

@@ -17,11 +17,14 @@ import { clearStorage, delServer } from './serversSlice';
 import { deselectKey, deselectServer, isSelectedServer } from './selectedSlice';
 import { clearKeys } from '../keys/keysSlice';
 import { disconnected } from './connectionSlice';
-import AddServerDialog from './AddServerDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: '100%',
+    // width: 500,
+    // maxWidth: 360,
     backgroundColor: theme.palette.background.default,
+    overflowY: 'scroll',
   },
   button: {
     // width: 32,
@@ -34,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
+    // zIndex: 3000,
     // display: 'flex',
     // flexWrap: 'wrap',
     // '& > *': {
@@ -44,8 +48,10 @@ const useStyles = makeStyles((theme) => ({
     //   backgroundColor: theme.palette.background.paper,
     // },
   },
-  title: {
-    fontSize: 14,
+  paperDisabled: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.action.disabledBackground, // theme.palette.secondary.main,
+    // backgroundColor: theme.palette.background.paper,
   },
 }));
 
@@ -54,8 +60,8 @@ export default function ServerToolbar(props) {
 
   const selectedId = useSelector((state) => state.selected.id);
   const isSelected = useSelector(isSelectedServer);
-
   const isConnected = useSelector((state) => state.connections.connectResult);
+  const isConnecting = useSelector((state) => state.connections.isConnecting);
 
   const dispatch = useDispatch();
   const onDelServer = (id) => dispatch(delServer(id));
@@ -70,29 +76,187 @@ export default function ServerToolbar(props) {
     console.log('called editServer');
   };
 
-  const connect = () => {
-    console.log('called connect');
-    // dispatch(connectToServer());
-
-    // props.connect();
-  };
-
   const disconnect = () => {
     console.log('called disconnect');
 
     dispatch(disconnected());
     dispatch(deselectKey());
     dispatch(clearKeys());
-    // key, value 삭제
-    // dispatch(clearKeys());
   };
 
   const clear = () => {
     dispatch(clearStorage());
   };
 
+  const EnabledToolbar = () => (
+    <div className={classes.paper}>
+      <Paper elevation={3}>
+        {/* Add */}
+        <Tooltip TransitionComponent={Zoom} title="Add">
+          <IconButton
+            // variant="contained"
+            className={classes.button}
+            // onClick={add}
+            component={Link}
+            to="/AddServer"
+            disabled={isConnecting}
+          >
+            <AddBoxOutlinedIcon
+              className={classes.buttonIcon}
+              color={!isConnecting ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Del */}
+        <Tooltip TransitionComponent={Zoom} title="Delete">
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            onClick={isSelected ? del : null}
+            disabled={isConnecting}
+          >
+            <IndeterminateCheckBoxOutlinedIcon
+              className={classes.buttonIcon}
+              color={isSelected ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Edit */}
+        <Tooltip TransitionComponent={Zoom} title="Edit">
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            onClick={isSelected ? edit : null}
+            disabled={isConnecting}
+          >
+            <EditOutlinedIcon
+              className={classes.buttonIcon}
+              color={isSelected ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Connect */}
+        <Tooltip TransitionComponent={Zoom} title="Connect">
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            // onClick={isSelected ? connect : null}
+            onClick={(event) => props.connect()}
+            disabled={isConnecting}
+          >
+            <LinkOutlinedIcon
+              className={classes.buttonIcon}
+              color={isSelected ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Disconnect */}
+        <Tooltip TransitionComponent={Zoom} title="Disconnect">
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            onClick={isConnected ? disconnect : null}
+            disabled={isConnecting}
+          >
+            <LinkOffOutlinedIcon
+              className={classes.buttonIcon}
+              color={isConnected ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Clear */}
+        <Tooltip
+          className={classes.tooltip}
+          TransitionComponent={Zoom}
+          title="Clear"
+        >
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            onClick={clear}
+            disabled={isConnecting}
+          >
+            <ClearAllIcon className={classes.buttonIcon} color="secondary" />
+          </IconButton>
+        </Tooltip>
+      </Paper>
+    </div>
+  );
+
+  const DisabledToolbar2 = () => (
+    <div>
+      test
+    </div>
+  );
+
+  const DisabledToolbar = () => (
+    <div>
+      <Paper elevation={3} className={classes.paperDisabled}>
+        {/* Add */}
+        <Tooltip TransitionComponent={Zoom} title="Add">
+          <IconButton className={classes.button} disabled>
+            <AddBoxOutlinedIcon
+              className={classes.buttonIcon}
+              color="disabled"
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Del */}
+        <Tooltip TransitionComponent={Zoom} title="Delete">
+          <IconButton variant="contained" className={classes.button} disabled>
+            <IndeterminateCheckBoxOutlinedIcon
+              className={classes.buttonIcon}
+              color="disabled"
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Edit */}
+        <Tooltip TransitionComponent={Zoom} title="Edit">
+          <IconButton variant="contained" className={classes.button} disabled>
+            <EditOutlinedIcon className={classes.buttonIcon} color="disabled" />
+          </IconButton>
+        </Tooltip>
+
+        {/* Connect */}
+        <Tooltip TransitionComponent={Zoom} title="Connect">
+          <IconButton variant="contained" className={classes.button} disabled>
+            <LinkOutlinedIcon className={classes.buttonIcon} color="disabled" />
+          </IconButton>
+        </Tooltip>
+
+        {/* Disconnect */}
+        <Tooltip TransitionComponent={Zoom} title="Disconnect">
+          <IconButton variant="contained" className={classes.button} disabled>
+            <LinkOffOutlinedIcon
+              className={classes.buttonIcon}
+              color="disabled"
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Clear */}
+        <Tooltip
+          className={classes.tooltip}
+          TransitionComponent={Zoom}
+          title="Clear"
+        >
+          <IconButton variant="contained" className={classes.button} disabled>
+            <ClearAllIcon className={classes.buttonIcon} color="disabled" />
+          </IconButton>
+        </Tooltip>
+      </Paper>
+    </div>
+  );
+
   return (
-    <div className={classes.root}>
+    <div>
       <Typography
         className={classes.title}
         color="textSecondary"
@@ -102,98 +266,7 @@ export default function ServerToolbar(props) {
         Connections
       </Typography>
 
-      <div className={classes.paper}>
-        <Paper elevation={3}>
-          {/* Add */}
-          {/*<AddServerDialog />*/}
-          <Tooltip TransitionComponent={Zoom} title="Add">
-            <IconButton
-              // variant="contained"
-              className={classes.button}
-              // onClick={add}
-              component={Link}
-              to="/AddServer"
-            >
-              <AddBoxOutlinedIcon
-                className={classes.buttonIcon}
-                color="primary"
-              />
-            </IconButton>
-          </Tooltip>
-
-          {/* Del */}
-          <Tooltip TransitionComponent={Zoom} title="Delete">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={isSelected ? del : null}
-            >
-              <IndeterminateCheckBoxOutlinedIcon
-                className={classes.buttonIcon}
-                color={isSelected ? 'primary' : 'disabled'}
-              />
-            </IconButton>
-          </Tooltip>
-
-          {/* Edit */}
-          <Tooltip TransitionComponent={Zoom} title="Edit">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={isSelected ? edit : null}
-            >
-              <EditOutlinedIcon
-                className={classes.buttonIcon}
-                color={isSelected ? 'primary' : 'disabled'}
-              />
-            </IconButton>
-          </Tooltip>
-
-          {/* Connect */}
-          <Tooltip TransitionComponent={Zoom} title="Connect">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              // onClick={isSelected ? connect : null}
-              onClick={(event) => props.connect()}
-            >
-              <LinkOutlinedIcon
-                className={classes.buttonIcon}
-                color={isSelected ? 'primary' : 'disabled'}
-              />
-            </IconButton>
-          </Tooltip>
-
-          {/* Disconnect */}
-          <Tooltip TransitionComponent={Zoom} title="Disconnect">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={isConnected ? disconnect : null}
-            >
-              <LinkOffOutlinedIcon
-                className={classes.buttonIcon}
-                color={isConnected ? 'primary' : 'disabled'}
-              />
-            </IconButton>
-          </Tooltip>
-
-          {/* Clear */}
-          <Tooltip
-            className={classes.tooltip}
-            TransitionComponent={Zoom}
-            title="Clear"
-          >
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={clear}
-            >
-              <ClearAllIcon className={classes.buttonIcon} color="secondary" />
-            </IconButton>
-          </Tooltip>
-        </Paper>
-      </div>
+      {isConnecting ? DisabledToolbar() : EnabledToolbar()}
     </div>
   );
 }

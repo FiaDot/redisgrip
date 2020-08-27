@@ -61,7 +61,7 @@ export default function AddServer() {
   // redux
   const dispatch = useDispatch();
 
-  const disabled = useSelector((state) => state.connections.isConnecting);
+  const isConnecting = useSelector((state) => state.connections.isConnecting);
   const connectResult = useSelector((state) => state.connections.connectResult);
   const showResult = useSelector((state) => state.connections.showResult);
 
@@ -200,7 +200,7 @@ export default function AddServer() {
     <Redirect push to="/servers" />
   ) : (
     <Container component="main" maxWidth="xs">
-      <Backdrop className={classes.backdrop} open={disabled}>
+      <Backdrop className={classes.backdrop} open={isConnecting}>
         <CircularProgress color="inherit" />
       </Backdrop>
 
@@ -239,7 +239,7 @@ export default function AddServer() {
             name="alias"
             value={alias}
             onChange={onChange}
-            disabled={disabled}
+            disabled={isConnecting}
           />
 
           <Grid container spacing={1}>
@@ -254,6 +254,7 @@ export default function AddServer() {
                 name="host"
                 value={host}
                 onChange={onChange}
+                disabled={isConnecting}
               />
             </Grid>
 
@@ -268,6 +269,7 @@ export default function AddServer() {
                 name="port"
                 value={port}
                 onChange={onChange}
+                disabled={isConnecting}
               />
             </Grid>
           </Grid>
@@ -281,6 +283,7 @@ export default function AddServer() {
             name="password"
             value={password}
             onChange={onChange}
+            disabled={isConnecting}
           />
 
           <Typography component="h1" variant="h6" align="center">
@@ -294,6 +297,7 @@ export default function AddServer() {
                 onChange={onChangeCheckbox}
                 name="sshActive"
                 inputProps={{ 'aria-label': 'primary checkbox' }}
+                disabled={isConnecting}
               />
             }
             label="SSH Enable"
@@ -310,6 +314,7 @@ export default function AddServer() {
                 name="sshHost"
                 value={sshHost}
                 onChange={onChange}
+                disabled={isConnecting}
               />
             </Grid>
 
@@ -323,6 +328,7 @@ export default function AddServer() {
                 name="sshPort"
                 value={sshPort}
                 onChange={onChange}
+                disabled={isConnecting}
               />
             </Grid>
           </Grid>
@@ -338,6 +344,7 @@ export default function AddServer() {
                 name="sshUsername"
                 value={sshUsername}
                 onChange={onChange}
+                disabled={isConnecting}
               />
             </Grid>
           </Grid>
@@ -353,6 +360,7 @@ export default function AddServer() {
                 name="pemFilePath"
                 value={pemFilePath}
                 onChange={onChange}
+                disabled={isConnecting}
               />
             </Grid>
 
@@ -363,7 +371,7 @@ export default function AddServer() {
                 color="primary"
                 component="label"
                 className={classes.submit}
-                disabled={disabled}
+                disabled={isConnecting}
               >
                 <input
                   type="file"
@@ -371,6 +379,7 @@ export default function AddServer() {
                   style={{ display: 'none' }}
                   name="pemFilePath"
                   onChange={onAddPemFile}
+                  disabled={isConnecting}
                 />
               </Button>
             </Grid>
@@ -385,6 +394,7 @@ export default function AddServer() {
             name="pemPassphrase"
             value={pemPassphrase}
             onChange={onChange}
+            disabled={isConnecting}
           />
 
           <Grid container spacing={2}>
@@ -395,7 +405,7 @@ export default function AddServer() {
                 variant="contained"
                 color="primary"
                 onClick={onTestConnection}
-                disabled={disabled}
+                disabled={isConnecting}
               >
                 Test
               </Button>
@@ -411,7 +421,7 @@ export default function AddServer() {
                 color="primary"
                 className={classes.submit}
                 onClick={onSubmit}
-                disabled={disabled}
+                disabled={isConnecting}
               >
                 Add
               </Button>
@@ -426,7 +436,7 @@ export default function AddServer() {
                 className={classes.submit}
                 component={Link}
                 to="/servers"
-                disabled={disabled}
+                disabled={isConnecting}
               >
                 Cancel
               </Button>
