@@ -162,7 +162,7 @@ const RedisMiddleware = () => {
     };
 
     const onError = (event) => {
-      console.log(event);
+      console.log(`RedisMiddleware onError= ${event}`);
     };
 
     const connect = async (config) => {
