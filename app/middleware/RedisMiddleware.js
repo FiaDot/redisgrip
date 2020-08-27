@@ -410,7 +410,7 @@ const RedisMiddleware = () => {
           break;
 
         case 'list':
-          // ret = await redis.lpush(mainKey, val);
+          ret = await redis.lset(mainKey, key, val);
           break;
 
         case 'hash':

@@ -96,20 +96,23 @@ export default function EditValueDialog() {
     let ret = '';
     const state = { mainKey: selectKey, type: selectType, key: selectSubKey, val };
 
+    console.log(`EditValueDialog ${selectType} ${JSON.stringify(state)}`);
+
     switch (selectType) {
       case 'string':
       case 'hash':
+        ret = await dispatch(editSubKey(state));
+        break;
+
       case 'list':
         ret = await dispatch(editSubKey(state));
         break;
 
       case 'set':
-        console.log(`EditValueDialog set ${JSON.stringify(state)}`);
         ret = await dispatch(editSubKey(state));
         break;
 
       case 'zset':
-        console.log(`EditValueDialog zset ${JSON.stringify(state)}`);
         ret = await dispatch(editSubKey(state));
         break;
 
