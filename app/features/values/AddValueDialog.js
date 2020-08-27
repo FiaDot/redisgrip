@@ -53,11 +53,6 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-const initialState = {
-  open: false,
-  key: '',
-  val: '',
-};
 
 export default function AddValueDialog() {
   const classes = useStyles();
@@ -66,6 +61,12 @@ export default function AddValueDialog() {
   const selectKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
+
+  const initialState = {
+    open: false,
+    key: '',
+    val: '',
+  };
 
   const [inputs, setInputs] = useState(initialState);
   // const [inputs, setInputs] = useState({

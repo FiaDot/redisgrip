@@ -35,15 +35,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 export default function AddKeyDialog() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [inputs, setInputs] = useState({
+  const initialState = {
     open: false,
     type: 'string',
     key: '',
-  });
+  };
+
+  const [inputs, setInputs] = useState(initialState);
 
   const { open, type, key } = inputs;
 
@@ -62,6 +65,7 @@ export default function AddKeyDialog() {
 
   const handleClose = () => {
     setInputs({ ...inputs, open: false });
+    setInputs({ ...initialState });
   };
 
   const onSubmit = async () => {
