@@ -3,7 +3,6 @@ import Redis from 'ioredis';
 import net from 'net';
 import moment from 'moment';
 import {
-  connected,
   connectFailed,
   connectSuccess,
   setShowResult, startConnecting,
@@ -197,13 +196,9 @@ const RedisMiddleware = () => {
         const pingReply = await redis.ping();
         if (pingReply !== 'PONG') {
           console.log('ping error');
-          store.dispatch(connectFailed());
           return false;
         }
         console.log('pong ok');
-
-        store.dispatch(connected(connectionOptions));
-        // store.dispatch(connectSuccess());
         return true;
       } catch (err) {
         console.log(err);
@@ -456,12 +451,12 @@ const RedisMiddleware = () => {
         if (isSuccess) {
           await scanKeys();
           await monitoring();
-          store.dispatch(connectSuccess());
+          await store.dispatch(connectSuccess());
         } else {
-          store.dispatch(connectFailed());
+          await store.dispatch(connectFailed());
         }
 
-        store.dispatch(setShowResult(true));
+        await store.dispatch(setShowResult(true));
         break;
 
       case 'connections/testConnection':
@@ -471,12 +466,12 @@ const RedisMiddleware = () => {
         isSuccess = await connect(action.payload);
 
         if (isSuccess) {
-          store.dispatch(connectSuccess());
+          await store.dispatch(connectSuccess());
         } else {
-          store.dispatch(connectFailed());
+          await store.dispatch(connectFailed());
         }
 
-        store.dispatch(setShowResult(true));
+        await store.dispatch(setShowResult(true));
         return isSuccess;
 
       case 'connections/disconnected':

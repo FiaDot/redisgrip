@@ -1,19 +1,20 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
-import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import DesktopAccessDisabledOutlinedIcon from '@material-ui/icons/DesktopAccessDisabledOutlined';
+import DesktopMacOutlinedIcon from '@material-ui/icons/DesktopMacOutlined';
 import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 import ServersToolbar from './ServerToolbar';
 import { setShowResult } from './connectionSlice';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -43,10 +44,10 @@ const ServerListMemo = React.memo(function serverList({
           onClick={(event) => onSelectServer(serverId)}
           onDoubleClick={(event) => onConnectServer(serverId)}
         >
-          <StorageOutlinedIcon
-            color={connectedId === serverId ? 'secondary' : 'primary'}
-            style={{ paddingRight: 10 }}
-          />
+          {connectedId === serverId
+            ? <DesktopMacOutlinedIcon fontSize="large" color="secondary" style={{ paddingRight: 10 }} />
+            : <DesktopAccessDisabledOutlinedIcon fontSize="large" color="primary" style={{ paddingRight: 10 }} />
+          }
           <ListItemText primary={serverAlias} />
         </ListItem>
       </Grid>
@@ -103,7 +104,6 @@ export default function ServerList(props) {
     dispatch(setShowResult(false));
   };
 
-
   return (
     <>
       <Backdrop className={classes.backdrop} open={isConnecting}>
@@ -133,17 +133,16 @@ export default function ServerList(props) {
           ? ''
           : servers.map((server) => (
               <ServerListMemo
-                key={server.id}
-                serverId={server.id}
-                serverAlias={server.alias}
-                selected={selected.id}
-                connectedId={connectedId}
-                onSelectServer={onSelectServer}
-                onConnectServer={onConnectServer}
-              />
-          ))}
+              key={server.id}
+              serverId={server.id}
+              serverAlias={server.alias}
+              selected={selected.id}
+              connectedId={connectedId}
+              onSelectServer={onSelectServer}
+              onConnectServer={onConnectServer}
+            />
+            ))}
       </List>
     </>
-
   );
 }
