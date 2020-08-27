@@ -65,25 +65,13 @@ export default function ServerSheet() {
   const onSelectServer = (id) => dispatch(selectServer(id));
 
   const connect = async () => {
-    //console.log(`servers=${JSON.stringify(servers)}`);
-    console.log(`selectedSeverId=${selectedSeverId}`);
-    console.log(`connectedId=${connectedId}`);
-
+    // 선택된 서버 목록의 id를 통해 실제 접속할 서버의 정보를 가져오도록!!!!
+    // console.log(`selectedSeverId=${selectedSeverId}`);
+    // console.log(`connectedId=${connectedId}`);
     const server = servers.find(
       (record) => record.id === selectedSeverId
     );
-
-    console.log(`server=${JSON.stringify(server)}`);
-    // TODO : 선택된 서버 목록의 id를 통해 실제 접속할 서버의 정보를 가져오도록!!!!
-
-    // const options = {
-    //   host: '52.79.194.253',
-    //   port: 6379,
-    //   password: 'asdf1234!',
-    //   connectTimeout: 10000,
-    //   maxRetriesPerRequest: null,
-    // };
-    //
+    // console.log(`server=${JSON.stringify(server)}`);
     dispatch(connectToServer(server));
   };
 
