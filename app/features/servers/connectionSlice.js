@@ -17,7 +17,12 @@ const connectionSlice = createSlice({
     config: {},
   },
   reducers: {
-    testConnection: (state, action) => {},
+    testConnection: (state, action) => {
+      state.config = action.payload;
+      state.connectResult = false;
+      state.connectResult = false;
+      state.isConnecting = true;
+    },
     connectToServer: (state, action) => {
       state.config = action.payload;
     },
@@ -35,9 +40,11 @@ const connectionSlice = createSlice({
       state.isConnecting = false;
     },
     connectSuccess: (state, action) => {
+      state.isConnecting = false;
       state.connectResult = true;
     },
     connectFailed: (state, action) => {
+      state.isConnecting = false;
       state.connectResult = false;
     },
     setShowResult: (state, action) => {
