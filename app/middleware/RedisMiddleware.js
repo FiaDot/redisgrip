@@ -460,7 +460,8 @@ const RedisMiddleware = () => {
         } else {
           store.dispatch(connectFailed());
         }
-        // store.dispatch(setShowResult(true));
+
+        store.dispatch(setShowResult(true));
         break;
 
       case 'connections/testConnection':

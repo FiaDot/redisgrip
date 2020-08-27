@@ -11,6 +11,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 import ServersToolbar from './ServerToolbar';
+import { setShowResult } from './connectionSlice';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -68,8 +71,11 @@ export default function ServerList(props) {
 
   const servers = useSelector((state) => state.servers);
   const selected = useSelector((state) => state.selected);
-
   const connectedId = useSelector((state) => state.connections.config.id);
+
+  const isConnecting = useSelector((state) => state.connections.isConnecting);
+  const connectResult = useSelector((state) => state.connections.connectResult);
+  const showResult = useSelector((state) => state.connections.showResult);
 
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
@@ -93,8 +99,33 @@ export default function ServerList(props) {
     props.connect();
   };
 
+  const onAlertClose = () => {
+    dispatch(setShowResult(false));
+  };
+
+
   return (
     <>
+      <Backdrop className={classes.backdrop} open={isConnecting}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={showResult}
+        onClose={onAlertClose}
+        autoHideDuration={3000}
+        // message={connectResult ? 'Success' : 'Failed'}
+        key="bottom center"
+      >
+        <Alert
+          onClose={onAlertClose}
+          severity={connectResult ? 'success' : 'error'}
+        >
+          Connection {connectResult ? 'Success' : 'Failed'}
+        </Alert>
+      </Snackbar>
+
       <ServersToolbar connect={props.connect} />
 
       <List component="nav" aria-label="servers">

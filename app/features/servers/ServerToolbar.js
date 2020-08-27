@@ -56,6 +56,7 @@ export default function ServerToolbar(props) {
   const selectedId = useSelector((state) => state.selected.id);
   const isSelected = useSelector(isSelectedServer);
   const isConnected = useSelector((state) => state.connections.connectResult);
+  const isConnecting = useSelector((state) => state.connections.isConnecting);
 
   const dispatch = useDispatch();
   const onDelServer = (id) => dispatch(delServer(id));
@@ -84,7 +85,7 @@ export default function ServerToolbar(props) {
   };
 
   return (
-    <div className={classes.root}>
+    <div>
       <Typography
         className={classes.title}
         color="textSecondary"
@@ -104,6 +105,7 @@ export default function ServerToolbar(props) {
               // onClick={add}
               component={Link}
               to="/AddServer"
+              disabled={isConnecting}
             >
               <AddBoxOutlinedIcon
                 className={classes.buttonIcon}
@@ -118,6 +120,7 @@ export default function ServerToolbar(props) {
               variant="contained"
               className={classes.button}
               onClick={isSelected ? del : null}
+              disabled={isConnecting}
             >
               <IndeterminateCheckBoxOutlinedIcon
                 className={classes.buttonIcon}
@@ -132,6 +135,7 @@ export default function ServerToolbar(props) {
               variant="contained"
               className={classes.button}
               onClick={isSelected ? edit : null}
+              disabled={isConnecting}
             >
               <EditOutlinedIcon
                 className={classes.buttonIcon}
@@ -147,6 +151,7 @@ export default function ServerToolbar(props) {
               className={classes.button}
               // onClick={isSelected ? connect : null}
               onClick={(event) => props.connect()}
+              disabled={isConnecting}
             >
               <LinkOutlinedIcon
                 className={classes.buttonIcon}
@@ -161,6 +166,7 @@ export default function ServerToolbar(props) {
               variant="contained"
               className={classes.button}
               onClick={isConnected ? disconnect : null}
+              disabled={isConnecting}
             >
               <LinkOffOutlinedIcon
                 className={classes.buttonIcon}
@@ -179,6 +185,7 @@ export default function ServerToolbar(props) {
               variant="contained"
               className={classes.button}
               onClick={clear}
+              disabled={isConnecting}
             >
               <ClearAllIcon className={classes.buttonIcon} color="secondary" />
             </IconButton>

@@ -7,7 +7,7 @@ import ServersToolbar from './ServerToolbar';
 import ServerList from './ServerList';
 import Keys from '../keys/Keys';
 import Values from '../values/Values';
-import { connectToServer } from './connectionSlice';
+import { connectToServer, startConnecting, stopConnecting } from './connectionSlice';
 
 const drawerLeftWidth = 320;
 
@@ -63,6 +63,9 @@ export default function ServerSheet() {
   const dispatch = useDispatch();
 
   const connect = async () => {
+
+    await dispatch(startConnecting());
+
     // 선택된 서버 목록의 id를 통해 실제 접속할 서버의 정보를 가져오도록!!!!
     // console.log(`selectedSeverId=${selectedSeverId}`);
     // console.log(`connectedId=${connectedId}`);
