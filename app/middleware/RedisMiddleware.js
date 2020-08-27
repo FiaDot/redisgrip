@@ -424,8 +424,9 @@ const RedisMiddleware = () => {
 
         case 'zset':
           ret = await redis.zrem(mainKey, key);
-          ret = await redis.zadd(mainKey, key, val);
+          ret = await redis.zadd(mainKey, val, key);
           break;
+
         default:
           console.log('type is wrong');
           return;
