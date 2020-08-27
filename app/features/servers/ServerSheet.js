@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -8,6 +8,7 @@ import ServerList from './ServerList';
 import Keys from '../keys/Keys';
 import Values from '../values/Values';
 import { connectToServer } from './connectionSlice';
+import { selectServer } from './selectedSlice';
 
 const drawerLeftWidth = 320;
 
@@ -55,18 +56,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ServerSheet() {
   const classes = useStyles();
+
+  const servers = useSelector((state) => state.servers);
+  const selectedSeverId = useSelector((state) => state.selected.id);
+  const connectedId = useSelector((state) => state.connections.config.id);
+
   const dispatch = useDispatch();
+  const onSelectServer = (id) => dispatch(selectServer(id));
 
   const connect = async () => {
-    const options = {
-      host: '52.79.194.253',
-      port: 6379,
-      password: 'asdf1234!',
-      connectTimeout: 10000,
-      maxRetriesPerRequest: null,
-    };
+    //console.log(`servers=${JSON.stringify(servers)}`);
+    console.log(`selectedSeverId=${selectedSeverId}`);
+    console.log(`connectedId=${connectedId}`);
 
-    dispatch(connectToServer(options));
+    const server = servers.find(
+      (record) => record.id === selectedSeverId
+    );
+
+    console.log(`server=${JSON.stringify(server)}`);
+    // TODO : 선택된 서버 목록의 id를 통해 실제 접속할 서버의 정보를 가져오도록!!!!
+
+    // const options = {
+    //   host: '52.79.194.253',
+    //   port: 6379,
+    //   password: 'asdf1234!',
+    //   connectTimeout: 10000,
+    //   maxRetriesPerRequest: null,
+    // };
+    //
+    dispatch(connectToServer(server));
   };
 
   return (

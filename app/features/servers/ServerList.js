@@ -66,7 +66,7 @@ export default function ServerList(props) {
   const servers = useSelector((state) => state.servers);
   const selected = useSelector((state) => state.selected);
 
-  const connectedId = useSelector( (state) => state.connections.config.id);
+  const connectedId = useSelector((state) => state.connections.config.id);
 
   const dispatch = useDispatch();
   const onSelectServer = (id) => dispatch(selectServer(id));
