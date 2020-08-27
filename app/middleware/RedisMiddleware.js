@@ -9,9 +9,9 @@ import {
   setShowResult,
   stopConnecting,
 } from '../features/servers/connectionSlice';
-import { addKeys, clearKeys } from '../features/keys/keysSlice';
+import { addKeys, clearKeys, delKey } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
-import { selectKey } from '../features/servers/selectedSlice';
+import { deselectKey, selectKey } from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
@@ -307,6 +307,8 @@ const RedisMiddleware = () => {
         }
         default:
           console.log('selectKeyAndAdd not matched type');
+          await store.dispatch(delKey(key));
+          await store.dispatch(deselectKey());
           return null;
       }
 
@@ -326,10 +328,11 @@ const RedisMiddleware = () => {
       });
     };
 
-    const delKey = async (key) => {
+    const onDelKey = async (key) => {
       const ret = await redis.del(key);
+      console.log(`RedisMiddleWare onDelKey key=${key}, ret=${ret}`);
 
-      if (ret === 1) {
+      if (ret > 0 || ret == 'OK') {
         return true;
       }
       return false;
@@ -495,8 +498,9 @@ const RedisMiddleware = () => {
         break;
 
       case 'keys/delKey':
-        await delKey(action.payload.key);
-        break;
+        isSuccess = await onDelKey(action.payload.key);
+        next(action);
+        return isSuccess;
 
       case 'selected/selectKey':
         const type = await selectKeyAndAdd(action.payload.key);
@@ -520,8 +524,12 @@ const RedisMiddleware = () => {
           action.payload.type,
           action.payload.key
         );
-
+        /*
         await selectKeyAndAdd(action.payload.mainKey);
+        if (null == (await selectKeyAndAdd(action.payload.mainKey))) {
+          await store.dispatch(delKey(action.payload.mainKey));
+          await store.dispatch(deselectKey());
+        }*/
         return isSuccess;
 
       case 'selected/editSubKey':

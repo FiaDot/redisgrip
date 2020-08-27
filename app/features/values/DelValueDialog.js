@@ -18,7 +18,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { addSubKey, delSubKey } from '../servers/selectedSlice';
+import { addSubKey, delSubKey, selectKey } from '../servers/selectedSlice';
+import { delKey } from '../keys/keysSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -60,7 +61,7 @@ export default function DelValueDialog() {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const selectKey = useSelector((state) => state.selected.selectKey);
+  const selectMainKey = useSelector((state) => state.selected.selectKey);
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
@@ -91,11 +92,13 @@ export default function DelValueDialog() {
 
   const onSubmit = async () => {
     const ret = await dispatch(
-      delSubKey({ mainKey: selectKey, type: selectType, key: selectSubKey })
+      delSubKey({ mainKey: selectMainKey, type: selectType, key: selectSubKey })
     );
 
+    await dispatch(selectKey({ key: selectMainKey }));
+
     console.log(
-      `onDeleteSubKey ${selectKey} ${selectType} ${selectSubKey} ret=${ret}`
+      `onDeleteSubKey ${selectMainKey} ${selectType} ${selectSubKey} ret=${ret}`
     );
 
     handleClose();

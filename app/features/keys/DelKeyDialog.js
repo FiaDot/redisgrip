@@ -13,6 +13,7 @@ import Zoom from '@material-ui/core/Zoom';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { useSelector, useDispatch } from 'react-redux';
 import { delKey, scanKeys } from './keysSlice';
+import { deselectKey } from '../servers/selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -57,9 +58,10 @@ export default function DelKeyDialog() {
   };
 
   const onSubmit = async () => {
+    console.log(`DelKeyDialog onSubmit key=${selectKey}`);
     await dispatch(delKey({ key: selectKey }));
+    await dispatch(deselectKey());
     handleClose();
-    await dispatch(scanKeys());
   };
 
   return (

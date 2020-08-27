@@ -10,7 +10,8 @@ const keysSlice = createSlice({
   reducers: {
     scanKeys: (state, action) => {},
     clearKeys: (state, action) => {
-      return [];
+      state = [];
+      return state;
     },
     addKey: (state, action) => {
       return [...state, action.payload];
@@ -19,7 +20,9 @@ const keysSlice = createSlice({
       return state.concat(action.payload);
     },
     delKey: (state, action) => {
-      state.filter((server) => server !== action.payload);
+      console.log(`keySlice payload=${JSON.stringify(action.payload)}`);
+      // eslint-disable-next-line no-param-reassign
+      state = state.filter((key) => key !== action.payload.key);
       return state;
     },
   },
