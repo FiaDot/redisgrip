@@ -23,6 +23,8 @@ import {
   stopConnecting,
   testConnection,
 } from './connectionSlice';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -63,32 +65,48 @@ export default function AddServer() {
   const connectResult = useSelector((state) => state.connections.connectResult);
   const showResult = useSelector((state) => state.connections.showResult);
 
-  // local
-  const [inputs, setInputs] = useState({
+  // TODO : final!!
+  // const initialState = {
+  //   redirect: false,
+  //   alias: generate({ words: 2, number: true }).dashed,
+  //   host: 'localhost',
+  //   port: 6379,
+  //   password: '',
+  //   sshHost: '',
+  //   sshPort: '',
+  //   sshUsername: '',
+  //   : '',
+  //   pemFilePath: '',
+  //   pemPassphrase: '',
+  // };
+
+  const initialState = {
     redirect: false,
     alias: generate({ words: 2, number: true }).dashed,
-    host: 'localhost',
+    host: '52.79.194.253',
     port: 6379,
-    // TODO : password로 변경 필요!
-    pwd: 'pwd',
-    sshHost: 'sshlocalhost',
-    sshPort: '22',
-    sshUsername: 'ubuntu',
-    sshPassword: '1',
-    pemFilePath: '2',
-    pemPassphrase: '3',
-  });
+    password: 'asdf1234!',
+    sshActive: false,
+    sshHost: '',
+    sshPort: '',
+    sshUsername: '',
+    pemFilePath: '',
+    pemPassphrase: '',
+  };
+
+  // local
+  const [inputs, setInputs] = useState(initialState);
 
   const {
     redirect,
     alias,
     host,
     port,
-    pwd,
+    password,
+    sshActive,
     sshHost,
     sshPort,
     sshUsername,
-    sshPassword,
     pemFilePath,
     pemPassphrase,
   } = inputs;
@@ -112,6 +130,14 @@ export default function AddServer() {
     });
   };
 
+  const onChangeCheckbox = (e) => {
+    setInputs({
+      ...inputs,
+      sshActive: e.target.checked,
+    });
+  };
+
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -120,11 +146,11 @@ export default function AddServer() {
         alias,
         host,
         port,
-        pwd,
+        password,
+        sshActive,
         sshHost,
         sshPort,
         sshUsername,
-        sshPassword,
         pemFilePath,
         pemPassphrase,
       })
@@ -159,11 +185,11 @@ export default function AddServer() {
         alias,
         host,
         port,
-        pwd,
+        password,
+        sshActive,
         sshHost,
         sshPort,
         sshUsername,
-        sshPassword,
         pemFilePath,
         pemPassphrase,
       })
@@ -197,6 +223,11 @@ export default function AddServer() {
       <CssBaseline />
       <div className={classes.paper}>
         <form className={classes.form} noValidate>
+
+          <Typography component="h1" variant="h6" align="center">
+            Redis
+          </Typography>
+
           <TextField
             size="small"
             variant="outlined"
@@ -247,14 +278,26 @@ export default function AddServer() {
             margin="normal"
             fullWidth
             label="Password"
-            name="pwd"
-            value={pwd}
+            name="password"
+            value={password}
             onChange={onChange}
           />
 
           <Typography component="h1" variant="h6" align="center">
             SSH
           </Typography>
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={sshActive}
+                onChange={onChangeCheckbox}
+                name="sshActive"
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+            }
+            label="SSH Enable"
+          />
 
           <Grid container spacing={1}>
             <Grid item xs={12} sm={9}>
@@ -285,7 +328,7 @@ export default function AddServer() {
           </Grid>
 
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <TextField
                 size="small"
                 variant="outlined"
@@ -294,19 +337,6 @@ export default function AddServer() {
                 label="SSH Username"
                 name="sshUsername"
                 value={sshUsername}
-                onChange={onChange}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                size="small"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                label="SSH Pasword"
-                name="sshPassword"
-                value={sshPassword}
                 onChange={onChange}
               />
             </Grid>
