@@ -95,11 +95,6 @@ export default function ServerList(props) {
 
   return (
     <>
-      <Backdrop className={classes.backdrop} open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-
-
       <ServersToolbar connect={props.connect} />
 
       <List component="nav" aria-label="servers">

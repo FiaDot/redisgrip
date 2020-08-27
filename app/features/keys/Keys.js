@@ -20,6 +20,9 @@ import AddKeyDialog from './AddKeyDialog';
 import DelKeyDialog from './DelKeyDialog';
 import Badge from '@material-ui/core/Badge';
 import withStyles from '@material-ui/core/styles/withStyles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,6 +120,8 @@ export default function Keys() {
 
   return (
     <div className={classes.root}>
+      <CssBaseline />
+
       <Typography
         className={classes.title}
         color="textSecondary"

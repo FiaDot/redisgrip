@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     margin: theme.spacing(1),
-    // backgroundColor: theme.palette.background.paper,
-    // zIndex : 1000,
+    backgroundColor: theme.palette.background.paper,
+    // zIndex: 3000,
     // display: 'flex',
     // flexWrap: 'wrap',
     // '& > *': {
