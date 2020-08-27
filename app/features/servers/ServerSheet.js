@@ -58,7 +58,7 @@ export default function ServerSheet() {
 
   const servers = useSelector((state) => state.servers);
   const selectedSeverId = useSelector((state) => state.selected.id);
-  // const connectedId = useSelector((state) => state.connections.config.id);
+  const isConnected = useSelector((state) => state.connections.connectResult);
 
   const dispatch = useDispatch();
 
@@ -86,22 +86,26 @@ export default function ServerSheet() {
         }}
         anchor="left"
       >
-        {/*<ServersToolbar connect={connect} />*/}
         <ServerList connect={connect} />
       </Drawer>
 
       <Keys />
 
-      <Drawer
-        className={classes.drawerRight}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaperRight,
-        }}
-        anchor="right"
-      >
-        <Values />
-      </Drawer>
+      {isConnected ?
+        <Drawer
+          className={classes.drawerRight}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaperRight,
+          }}
+          anchor="right"
+        >
+          <Values />
+        </Drawer>
+        : ''
+      }
+
+
     </div>
   );
 }
