@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import CardMedia from '@material-ui/core/CardMedia';
+import cardicon_path from './cardicon.png';
 
 const drawerLeftWidth = 320;
 
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardKey: {
     width: 400,
-    height: 200,
+    height: 300,
     alignContent: 'center',
     alignItems: 'center',
     // display: 'flex',
@@ -107,8 +108,8 @@ export default function ServerSheet() {
             <CardMedia
               component="img"
               alt="Contemplative Reptile"
-              height="140"
-              image="/resources/icon_512.png"
+              height="200"
+              image={cardicon_path}
               title="Contemplative Reptile"
             />
             <CardContent>
