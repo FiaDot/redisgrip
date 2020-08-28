@@ -129,19 +129,19 @@ export default function ServerToolbar(props) {
         </Tooltip>
 
         {/* Edit */}
-        <Tooltip TransitionComponent={Zoom} title="Edit">
-          <IconButton
-            variant="contained"
-            className={classes.button}
-            onClick={isSelected ? edit : null}
-            disabled={isConnecting}
-          >
-            <EditOutlinedIcon
-              className={classes.buttonIcon}
-              color={isSelected ? 'primary' : 'disabled'}
-            />
-          </IconButton>
-        </Tooltip>
+        {/*<Tooltip TransitionComponent={Zoom} title="Edit">*/}
+        {/*  <IconButton*/}
+        {/*    variant="contained"*/}
+        {/*    className={classes.button}*/}
+        {/*    onClick={isSelected ? edit : null}*/}
+        {/*    disabled={isConnecting}*/}
+        {/*  >*/}
+        {/*    <EditOutlinedIcon*/}
+        {/*      className={classes.buttonIcon}*/}
+        {/*      color={isSelected ? 'primary' : 'disabled'}*/}
+        {/*    />*/}
+        {/*  </IconButton>*/}
+        {/*</Tooltip>*/}
 
         {/* Connect */}
         <Tooltip TransitionComponent={Zoom} title="Connect">
