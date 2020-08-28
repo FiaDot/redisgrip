@@ -3,11 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import ServersToolbar from './ServerToolbar';
 import ServerList from './ServerList';
 import Keys from '../keys/Keys';
 import Values from '../values/Values';
-import { connectToServer, startConnecting, stopConnecting } from './connectionSlice';
+import { connectToServer, startConnecting } from './connectionSlice';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import CardMedia from '@material-ui/core/CardMedia';
 
 const drawerLeftWidth = 320;
 
@@ -51,6 +57,18 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
   },
+  cardKey: {
+    width: 400,
+    height: 200,
+    alignContent: 'center',
+    alignItems: 'center',
+    // display: 'flex',
+    justifyContent: 'center',
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)'
+  },
 }));
 
 export default function ServerSheet() {
@@ -59,6 +77,7 @@ export default function ServerSheet() {
   const servers = useSelector((state) => state.servers);
   const selectedSeverId = useSelector((state) => state.selected.id);
   const isConnected = useSelector((state) => state.connections.connectResult);
+  const isConnecting = useSelector((state) => state.connections.isConnecting);
 
   const dispatch = useDispatch();
 
@@ -73,6 +92,56 @@ export default function ServerSheet() {
     // console.log(`server=${JSON.stringify(server)}`);
     dispatch(connectToServer(server));
   };
+
+
+  function showKeys() {
+    return (
+      <Keys />
+    );
+  };
+
+  function showKeysCard() {
+    return (
+      <Container fixed>
+          <Card className={classes.cardKey}>
+            <CardMedia
+              component="img"
+              alt="Contemplative Reptile"
+              height="140"
+              image="/resources/icon_512.png"
+              title="Contemplative Reptile"
+            />
+            <CardContent>
+              <Typography className={classes.title} color="textSecondary" gutterBottom>
+                No connected server
+              </Typography>
+              <Typography variant="h5" component="h2">
+                Please double click a server in list.
+              </Typography>
+
+            </CardContent>
+            <CardActions>
+            </CardActions>
+          </Card>
+      </Container>
+    );
+  }
+
+
+  function showValues() {
+    return (
+      <Drawer
+        className={classes.drawerRight}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaperRight
+        }}
+        anchor="right"
+      >
+        <Values />
+      </Drawer>
+    );
+  }
 
   return (
     <div className={classes.root}>
@@ -89,23 +158,8 @@ export default function ServerSheet() {
         <ServerList connect={connect} />
       </Drawer>
 
-      <Keys />
-
-      {isConnected ?
-        <Drawer
-          className={classes.drawerRight}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaperRight,
-          }}
-          anchor="right"
-        >
-          <Values />
-        </Drawer>
-        : ''
-      }
-
-
+      {isConnected && !isConnecting ? showKeys() : showKeysCard()}
+      {isConnected && !isConnecting ? showValues() : ''}
     </div>
   );
 }
