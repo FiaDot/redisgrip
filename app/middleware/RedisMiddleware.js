@@ -496,7 +496,7 @@ const RedisMiddleware = () => {
         const type = await selectKeyAndAdd(action.payload.key);
         action.payload.type = type;
         next(action);
-        break;
+        return type;
 
       case 'selected/addSubKey':
         isSuccess = await addSubKey(

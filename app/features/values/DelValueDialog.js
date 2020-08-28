@@ -105,8 +105,10 @@ export default function DelValueDialog() {
 
     handleClose();
 
-    await dispatch(deselectKey());
-    await dispatch(cleanupKey({key:mainKey}));
+    if (null == (await dispatch(selectKey({ key: mainKey })))) {
+      await dispatch(deselectKey());
+      await dispatch(cleanupKey({ key: mainKey }));
+    }
   };
 
   const getValueName = () => {
