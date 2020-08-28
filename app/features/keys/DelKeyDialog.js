@@ -70,7 +70,7 @@ export default function DelKeyDialog() {
         <IconButton
           variant="contained"
           className={classes.button}
-          onClick={handleClickOpen}
+          onClick={selectKey ? handleClickOpen : null}
         >
 
           <DeleteOutlineIcon color={selectKey ? 'primary' : 'disabled'} />
