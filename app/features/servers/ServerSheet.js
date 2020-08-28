@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
   },
   cardKey: {
+    // maxWidth: 400,
     width: 400,
     height: 300,
     alignContent: 'center',
@@ -66,9 +67,16 @@ const useStyles = makeStyles((theme) => ({
     // display: 'flex',
     justifyContent: 'center',
     position: 'absolute',
-    left: '50%',
+    left: '60%',
     top: '50%',
     transform: 'translate(-50%, -50%)'
+  },
+  media: {
+    //height: '50%',
+    // paddingTop: '56.25%', // 16:9
+    //width : 200,
+    height: 200,
+    // align: 'center',
   },
 }));
 
@@ -106,15 +114,15 @@ export default function ServerSheet() {
       <Container fixed>
           <Card className={classes.cardKey}>
             <CardMedia
+              className={classes.media}
               component="img"
-              alt="Contemplative Reptile"
-              height="200"
+              // height="200"
               image={cardicon_path}
-              title="Contemplative Reptile"
+              title="notice"
             />
             <CardContent>
               <Typography className={classes.title} color="textSecondary" gutterBottom>
-                No connected server
+                  No connected server
               </Typography>
               <Typography variant="h5" component="h2">
                 Please double click a server in list.

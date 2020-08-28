@@ -32,6 +32,8 @@ import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import CardMedia from '@material-ui/core/CardMedia';
+import cardicon_path from '../servers/cardicon.png';
 
 // import { remote } from 'electron';
 
@@ -78,8 +80,9 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
   },
   cardValue: {
+    // maxWidth: 345,
     width: 400,
-    height: 200,
+    height: 300,
     alignContent: 'center',
     alignItems: 'center',
     // display: 'flex',
@@ -88,6 +91,13 @@ const useStyles = makeStyles((theme) => ({
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)'
+  },
+  media: {
+    //height: '50%',
+    // paddingTop: '56.25%', // 16:9
+    //width : 200,
+    height: 200,
+    // align: 'center',
   },
 }));
 
@@ -181,6 +191,13 @@ export default function Values() {
     return (
       <Container fixed>
         <Card className={classes.cardValue}>
+          <CardMedia
+            className={classes.media}
+            component="img"
+            // height="200"
+            image={cardicon_path}
+            title="notice"
+          />
           <CardContent>
             <Typography className={classes.title} color="textSecondary" gutterBottom>
               No selected key
