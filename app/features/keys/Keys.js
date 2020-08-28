@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     // width: 500,
     //maxWidth: 360,
     backgroundColor: theme.palette.background.default,
-    overflowY: 'scroll',
+    //overflowY: 'scroll',
   },
   //button: {
   //   margin: theme.spacing(0),
