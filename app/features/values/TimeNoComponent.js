@@ -10,7 +10,8 @@ export default function TimeNoComponent(props) {
 
   return (
     <Paper elevation={3} className={classes.dateTab}>
-      <Typography variant="caption">{time} [No.{no}]</Typography>
+      <Typography variant="caption">{time} </Typography>
+      <Typography variant="caption" color="primary">[No.{no}]</Typography>
     </Paper>
   );
 };

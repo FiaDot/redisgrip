@@ -15,8 +15,22 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import CardMedia from '@material-ui/core/CardMedia';
 import cardicon_path from './cardicon.png';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import { ThemeProvider } from '@material-ui/styles';
 
 const drawerLeftWidth = 320;
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#EE313f', // '#FF0000', e0313f
+    },
+    secondary: {
+      main: '#000000',
+    },
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -153,22 +167,25 @@ export default function ServerSheet() {
   }
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <div className={classes.root}>
+        <CssBaseline />
 
-      <Drawer
-        className={classes.drawerLeft}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaperLeft,
-        }}
-        anchor="left"
-      >
-        <ServerList connect={connect} />
-      </Drawer>
+        <Drawer
+          className={classes.drawerLeft}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaperLeft,
+          }}
+          anchor="left"
+        >
+          <ServerList connect={connect} />
+        </Drawer>
 
-      {isConnected && !isConnecting ? showKeys() : showKeysCard()}
-      {isConnected && !isConnecting ? showValues() : ''}
-    </div>
+        {isConnected && !isConnecting ? showKeys() : showKeysCard()}
+        {isConnected && !isConnecting ? showValues() : ''}
+      </div>
+    </ThemeProvider>
+
   );
 }
