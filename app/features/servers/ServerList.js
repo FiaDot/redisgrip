@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
@@ -15,6 +15,9 @@ import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 import ServersToolbar from './ServerToolbar';
 import { setShowResult } from './connectionSlice';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -25,7 +28,34 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
+
+const serverInfoTooltip = (server) => {
+  const redis =`HOST=${server.host}:${server.port}`;
+
+  if ( server.sshActive ) {
+    const ssh = `SSH=${server.sshHost}:${server.sshPort}`;
+    return redis + ssh;
+  }
+
+  return redis;
+};
+
+const serverTooltip = (server) => (
+  <Fragment>
+    <Typography variant="caption" display="block" gutterBottom>
+      {`REDIS= ${server.host}:${server.port}`}
+    </Typography>
+
+    {server.sshActive ?
+      <Typography variant="caption" display="block" gutterBottom>
+        {`SSH= ${server.sshHost}:${server.sshPort}`}
+      </Typography>
+      : ''}
+  </Fragment>
+);
+
 const ServerListMemo = React.memo(function serverList({
+  server,
   serverId,
   serverAlias,
   selected,
@@ -37,19 +67,21 @@ const ServerListMemo = React.memo(function serverList({
     // eslint-disable-next-line react/jsx-filename-extension
     <Grid container spacing={0} key={serverId}>
       <Grid item xs={12}>
-        <ListItem
-          button
-          selected={selected === serverId}
-          key={serverId}
-          onClick={(event) => onSelectServer(serverId)}
-          onDoubleClick={(event) => onConnectServer(serverId)}
-        >
-          {connectedId === serverId
-            ? <DesktopMacOutlinedIcon fontSize="large" color="secondary" style={{ paddingRight: 10 }} />
-            : <DesktopAccessDisabledOutlinedIcon fontSize="large" color="primary" style={{ paddingRight: 10 }} />
-          }
-          <ListItemText primary={serverAlias} />
-        </ListItem>
+        <Tooltip TransitionComponent={Zoom} title={serverTooltip(server)}>
+          <ListItem
+            button
+            selected={selected === serverId}
+            key={serverId}
+            onClick={(event) => onSelectServer(serverId)}
+            onDoubleClick={(event) => onConnectServer(serverId)}
+          >
+            {connectedId === serverId
+              ? <DesktopMacOutlinedIcon fontSize="large" color="secondary" style={{ paddingRight: 10 }} />
+              : <DesktopAccessDisabledOutlinedIcon fontSize="large" color="primary" style={{ paddingRight: 10 }} />
+            }
+            <ListItemText primary={serverAlias} />
+          </ListItem>
+        </Tooltip>
       </Grid>
     </Grid>
   );
@@ -133,13 +165,14 @@ export default function ServerList(props) {
           ? ''
           : servers.map((server) => (
               <ServerListMemo
-              key={server.id}
-              serverId={server.id}
-              serverAlias={server.alias}
-              selected={selected.id}
-              connectedId={connectedId}
-              onSelectServer={onSelectServer}
-              onConnectServer={onConnectServer}
+                server={server}
+                key={server.id}
+                serverId={server.id}
+                serverAlias={server.alias}
+                selected={selected.id}
+                connectedId={connectedId}
+                onSelectServer={onSelectServer}
+                onConnectServer={onConnectServer}
             />
             ))}
       </List>
