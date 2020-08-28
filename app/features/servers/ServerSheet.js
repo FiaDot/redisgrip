@@ -13,6 +13,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import CardMedia from '@material-ui/core/CardMedia';
 
 const drawerLeftWidth = 320;
 
@@ -103,6 +104,13 @@ export default function ServerSheet() {
     return (
       <Container fixed>
           <Card className={classes.cardKey}>
+            <CardMedia
+              component="img"
+              alt="Contemplative Reptile"
+              height="140"
+              image="/resources/icon_512.png"
+              title="Contemplative Reptile"
+            />
             <CardContent>
               <Typography className={classes.title} color="textSecondary" gutterBottom>
                 No connected server
