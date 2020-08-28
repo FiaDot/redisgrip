@@ -76,8 +76,8 @@ const ServerListMemo = React.memo(function serverList({
             onDoubleClick={(event) => onConnectServer(serverId)}
           >
             {connectedId === serverId
-              ? <DesktopMacOutlinedIcon fontSize="large" color="secondary" style={{ paddingRight: 10 }} />
-              : <DesktopAccessDisabledOutlinedIcon fontSize="large" color="primary" style={{ paddingRight: 10 }} />
+              ? <DesktopMacOutlinedIcon fontSize="large" color="primary" style={{ paddingRight: 10 }} />
+              : <DesktopAccessDisabledOutlinedIcon fontSize="large" color="secondary" style={{ paddingRight: 10 }} />
             }
             <ListItemText primary={serverAlias} />
           </ListItem>

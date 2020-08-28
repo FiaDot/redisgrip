@@ -23,6 +23,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import DesktopMacOutlinedIcon from '@material-ui/icons/DesktopMacOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,7 +91,7 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
               {/*<StyledBadge badgeContent={4} max={9} color="secondary">*/}
                 <VpnKeyOutlinedIcon
                   color="primary"
-                  style={{ paddingRight: 10 }}
+                  style={{ paddingRight: 10, fontSize: 32 }}
                 />
               {/*</StyledBadge>*/}
               <ListItemText primary={key} />

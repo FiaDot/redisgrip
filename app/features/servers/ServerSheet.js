@@ -23,6 +23,12 @@ const drawerLeftWidth = 320;
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
+    primary: {
+      main: '#EE313f', // '#FF0000', e0313f
+    },
+    secondary: {
+      main: '#000000',
+    },
   },
 });
 

@@ -4,7 +4,6 @@ const useValueStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     //maxWidth: 360,
-    backgroundColor: theme.palette.background.default,
   },
   buttons: {
     padding: 5,
@@ -24,7 +23,7 @@ const useValueStyles = makeStyles((theme) => ({
     //width: '100%',
     //minWidth: 200,
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
+    //backgroundColor: theme.palette.background.paper,
   },
   textField: {
     width: '80%',
