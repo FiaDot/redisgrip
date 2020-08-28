@@ -8,7 +8,7 @@ import {
   setShowResult, startConnecting,
   stopConnecting
 } from '../features/servers/connectionSlice';
-import { addKeys, clearKeys, delKey } from '../features/keys/keysSlice';
+import { addKeys, cleanupKey, clearKeys, delKey } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
 import { deselectKey, selectKey } from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
@@ -296,8 +296,8 @@ const RedisMiddleware = () => {
         }
         default:
           console.log('selectKeyAndAdd not matched type');
-          await store.dispatch(delKey(key));
-          await store.dispatch(deselectKey());
+          //await store.dispatch(deselectKey());
+          // await store.dispatch(cleanupKey({key}));
           return null;
       }
 
@@ -514,12 +514,12 @@ const RedisMiddleware = () => {
           action.payload.type,
           action.payload.key
         );
-        /*
+
         await selectKeyAndAdd(action.payload.mainKey);
-        if (null == (await selectKeyAndAdd(action.payload.mainKey))) {
-          await store.dispatch(delKey(action.payload.mainKey));
-          await store.dispatch(deselectKey());
-        } */
+        // if (null == (await selectKeyAndAdd(action.payload.mainKey))) {
+        //   await store.dispatch(delKey(action.payload.mainKey));
+        //   await store.dispatch(deselectKey());
+        // }
         return isSuccess;
 
       case 'selected/editSubKey':

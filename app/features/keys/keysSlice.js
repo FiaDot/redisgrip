@@ -25,6 +25,13 @@ const keysSlice = createSlice({
       state = state.filter((key) => key !== action.payload.key);
       return state;
     },
+    cleanupKey: (state, action) => {
+      // 이미 삭제된 키
+      console.log(`cleanupKey in keySlice payload=${JSON.stringify(action.payload)}`);
+      // eslint-disable-next-line no-param-reassign
+      state = state.filter((key) => key !== action.payload.key);
+      return state;
+    }
   },
 });
 
@@ -34,6 +41,7 @@ export const {
   addKey,
   addKeys,
   delKey,
+  cleanupKey,
 } = keysSlice.actions;
 
 export default keysSlice.reducer;
