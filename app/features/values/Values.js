@@ -28,6 +28,10 @@ import { clearHash } from './hashContentSlice';
 import { clearList } from './listContentSlice';
 import { clearSet } from './setContentSlice';
 import { clearZset } from './zsetContentSlice';
+import Container from '@material-ui/core/Container';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 
 // import { remote } from 'electron';
 
@@ -72,6 +76,18 @@ const useStyles = makeStyles((theme) => ({
   keyBarDivider: {
     height: 28,
     margin: 4,
+  },
+  cardValue: {
+    width: 400,
+    height: 200,
+    alignContent: 'center',
+    alignItems: 'center',
+    // display: 'flex',
+    justifyContent: 'center',
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)'
   },
 }));
 
@@ -161,6 +177,26 @@ export default function Values() {
     );
   }
 
+  function showNoSelectKey() {
+    return (
+      <Container fixed>
+        <Card className={classes.cardValue}>
+          <CardContent>
+            <Typography className={classes.title} color="textSecondary" gutterBottom>
+              No selected key
+            </Typography>
+            <Typography variant="h5" component="h2">
+              Please click a key.
+            </Typography>
+
+          </CardContent>
+          <CardActions>
+          </CardActions>
+        </Card>
+      </Container>
+    );
+  };
+
   return (
     <div className={classes.root}>
       <Typography
@@ -239,7 +275,7 @@ export default function Values() {
       {/*  </Paper> */}
       {/* </div>/!*<div className={classes.paper}>*!/ */}
 
-      {selectMainKey ? KeyInfo() : ''}
+      {selectMainKey ? KeyInfo() : showNoSelectKey() }
 
       {/* key 타입에 따른 value 출력 */}
       {selectType === 'string' ? <StringContent /> : ''}
