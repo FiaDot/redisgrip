@@ -25,12 +25,28 @@ import {
 } from './connectionSlice';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { ThemeProvider } from '@material-ui/styles';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const generate = require('project-name-generator');
+
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#EE313f', // '#FF0000', e0313f
+    },
+    secondary: {
+      main: '#000000',
+    },
+  },
+});
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -199,251 +215,253 @@ export default function AddServer() {
   return redirect ? (
     <Redirect push to="/servers" />
   ) : (
-    <Container component="main" maxWidth="xs">
-      <Backdrop className={classes.backdrop} open={isConnecting}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <Backdrop className={classes.backdrop} open={isConnecting}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
 
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={showResult}
-        onClose={onAlertClose}
-        autoHideDuration={3000}
-        // message={connectResult ? 'Success' : 'Failed'}
-        key="bottom center"
-      >
-        <Alert
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={showResult}
           onClose={onAlertClose}
-          severity={connectResult ? 'success' : 'error'}
+          autoHideDuration={3000}
+          // message={connectResult ? 'Success' : 'Failed'}
+          key="bottom center"
         >
-          Connection {connectResult ? 'Success' : 'Failed'}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={onAlertClose}
+            severity={connectResult ? 'success' : 'error'}
+          >
+            Connection {connectResult ? 'Success' : 'Failed'}
+          </Alert>
+        </Snackbar>
 
-      <CssBaseline />
-      <div className={classes.paper}>
-        <form className={classes.form} noValidate>
+        <CssBaseline />
+        <div className={classes.paper}>
+          <form className={classes.form} noValidate>
 
-          <Typography component="h1" variant="h6" align="center">
-            Redis
-          </Typography>
+            <Typography component="h1" variant="h6" align="center">
+              Redis
+            </Typography>
 
-          <TextField
-            size="small"
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            autoFocus
-            label="Alias"
-            name="alias"
-            value={alias}
-            onChange={onChange}
-            disabled={isConnecting}
-          />
+            <TextField
+              size="small"
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              autoFocus
+              label="Alias"
+              name="alias"
+              value={alias}
+              onChange={onChange}
+              disabled={isConnecting}
+            />
 
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={9}>
-              <TextField
-                size="small"
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="Host Address"
-                name="host"
-                value={host}
-                onChange={onChange}
-                disabled={isConnecting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
-                size="small"
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="Port"
-                name="port"
-                value={port}
-                onChange={onChange}
-                disabled={isConnecting}
-              />
-            </Grid>
-          </Grid>
-
-          <TextField
-            size="small"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            label="Password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            disabled={isConnecting}
-          />
-
-          <Typography component="h1" variant="h6" align="center">
-            SSH
-          </Typography>
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={sshActive}
-                onChange={onChangeCheckbox}
-                name="sshActive"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-                disabled={isConnecting}
-              />
-            }
-            label="SSH Enable"
-          />
-
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={9}>
-              <TextField
-                size="small"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                label="SSH Host"
-                name="sshHost"
-                value={sshHost}
-                onChange={onChange}
-                disabled={isConnecting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
-                size="small"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                label="SSH Port"
-                name="sshPort"
-                value={sshPort}
-                onChange={onChange}
-                disabled={isConnecting}
-              />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                size="small"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                label="SSH Username"
-                name="sshUsername"
-                value={sshUsername}
-                onChange={onChange}
-                disabled={isConnecting}
-              />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={10}>
-              <TextField
-                size="small"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                label="Pem File Path"
-                name="pemFilePath"
-                value={pemFilePath}
-                onChange={onChange}
-                disabled={isConnecting}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={2}>
-              <Button
-                startIcon={<SearchIcon />}
-                variant="contained"
-                color="primary"
-                component="label"
-                className={classes.submit}
-                disabled={isConnecting}
-              >
-                <input
-                  type="file"
-                  accept=".pem"
-                  style={{ display: 'none' }}
-                  name="pemFilePath"
-                  onChange={onAddPemFile}
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={9}>
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Host Address"
+                  name="host"
+                  value={host}
+                  onChange={onChange}
                   disabled={isConnecting}
                 />
-              </Button>
-            </Grid>
-          </Grid>
+              </Grid>
 
-          <TextField
-            size="small"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            label="Pem Passphrase"
-            name="pemPassphrase"
-            value={pemPassphrase}
-            onChange={onChange}
-            disabled={isConnecting}
-          />
-
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
-              <Button
-                startIcon={<ReplayOutlinedIcon />}
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={onTestConnection}
-                disabled={isConnecting}
-              >
-                Test
-              </Button>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={8}>
-              <Button
-                startIcon={<AddCircleIcon />}
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={onSubmit}
-                disabled={isConnecting}
-              >
-                Add
-              </Button>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Port"
+                  name="port"
+                  value={port}
+                  onChange={onChange}
+                  disabled={isConnecting}
+                />
+              </Grid>
             </Grid>
 
-            <Grid item xs={12} sm={4}>
-              <Button
-                startIcon={<CancelIcon />}
-                fullWidth
-                variant="contained"
-                color="secondary"
-                className={classes.submit}
-                component={Link}
-                to="/servers"
-                disabled={isConnecting}
-              >
-                Cancel
-              </Button>
+            <TextField
+              size="small"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              label="Password"
+              name="password"
+              value={password}
+              onChange={onChange}
+              disabled={isConnecting}
+            />
+
+            <Typography component="h1" variant="h6" align="center">
+              SSH
+            </Typography>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={sshActive}
+                  onChange={onChangeCheckbox}
+                  name="sshActive"
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
+                  disabled={isConnecting}
+                />
+              }
+              label="SSH Enable"
+            />
+
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={9}>
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  label="SSH Host"
+                  name="sshHost"
+                  value={sshHost}
+                  onChange={onChange}
+                  disabled={isConnecting}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  label="SSH Port"
+                  name="sshPort"
+                  value={sshPort}
+                  onChange={onChange}
+                  disabled={isConnecting}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-    </Container>
+
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  label="SSH Username"
+                  name="sshUsername"
+                  value={sshUsername}
+                  onChange={onChange}
+                  disabled={isConnecting}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={10}>
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  label="Pem File Path"
+                  name="pemFilePath"
+                  value={pemFilePath}
+                  onChange={onChange}
+                  disabled={isConnecting}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={2}>
+                <Button
+                  startIcon={<SearchIcon />}
+                  variant="contained"
+                  color="primary"
+                  component="label"
+                  className={classes.submit}
+                  disabled={isConnecting}
+                >
+                  <input
+                    type="file"
+                    accept=".pem"
+                    style={{ display: 'none' }}
+                    name="pemFilePath"
+                    onChange={onAddPemFile}
+                    disabled={isConnecting}
+                  />
+                </Button>
+              </Grid>
+            </Grid>
+
+            <TextField
+              size="small"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              label="Pem Passphrase"
+              name="pemPassphrase"
+              value={pemPassphrase}
+              onChange={onChange}
+              disabled={isConnecting}
+            />
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12}>
+                <Button
+                  startIcon={<ReplayOutlinedIcon />}
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={onTestConnection}
+                  disabled={isConnecting}
+                >
+                  Test
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={8}>
+                <Button
+                  startIcon={<AddCircleIcon />}
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={onSubmit}
+                  disabled={isConnecting}
+                >
+                  Add
+                </Button>
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <Button
+                  startIcon={<CancelIcon />}
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  className={classes.submit}
+                  component={Link}
+                  to="/servers"
+                  disabled={isConnecting}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </div>
+      </Container>
+    </ThemeProvider>
   );
 }
