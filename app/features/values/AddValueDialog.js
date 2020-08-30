@@ -109,7 +109,7 @@ export default function AddValueDialog() {
 
       if (!Number.isInteger(val)) {
         // console.log('not integer');
-        enqueueSnackbar('Score must be a number.', { variant: 'error', autoHideDuration: 2000 });
+        enqueueSnackbar('Score must be a number.', { variant: 'error', autoHideDuration: 3000 });
         return;
       }
     }
@@ -222,7 +222,6 @@ export default function AddValueDialog() {
             value={val}
             onChange={onChange}
             fullWidth
-            autoFocus
             className={classes.formSpecing}
           />
         </DialogContent>
