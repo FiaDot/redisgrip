@@ -15,12 +15,8 @@ import Zoom from '@material-ui/core/Zoom';
 import AddIcon from '@material-ui/icons/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
-import { addSubKey } from '../servers/selectedSlice';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import Popup from '../popup/Popup';
-import { showPopup } from '../popup/popupSlice';
 import { useSnackbar } from 'notistack';
+import { addSubKey } from '../servers/selectedSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -185,8 +181,6 @@ export default function AddValueDialog() {
   return (
     <>
       {ShowButton(selectType === 'string')}
-
-      <Popup />
 
       <Dialog
         open={open}

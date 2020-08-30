@@ -88,12 +88,12 @@ const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
               key={key}
               onClick={(event) => onSelectKey(key)}
             >
-              {/*<StyledBadge badgeContent={4} max={9} color="secondary">*/}
+              <Badge color="primary" variant="dot" invisible={false}>
                 <VpnKeyOutlinedIcon
                   color="primary"
                   style={{ paddingRight: 10, fontSize: 32 }}
                 />
-              {/*</StyledBadge>*/}
+              </Badge>
               <ListItemText primary={key} />
             </ListItem>
             {/*<Divider variant="middle" component="li" />*/}
