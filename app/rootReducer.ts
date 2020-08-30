@@ -13,6 +13,7 @@ import hashContentReducer from './features/values/hashContentSlice';
 import zsetContentReducer from './features/values/zsetContentSlice';
 import listContentReducer from './features/values/listContentSlice';
 import setContentReducer from './features/values/setContentSlice';
+import popupReducer from './features/popup/popupSlice';
 
 export default function createRootReducer(history: History) {
   return combineReducers({
@@ -27,5 +28,6 @@ export default function createRootReducer(history: History) {
     zsetContent: zsetContentReducer,
     listContent: listContentReducer,
     setContent: setContentReducer,
+    popup: popupReducer,
   });
 }

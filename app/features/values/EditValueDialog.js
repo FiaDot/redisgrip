@@ -115,6 +115,9 @@ export default function EditValueDialog() {
         break;
 
       case 'zset':
+
+        // TODO : 값 타입
+
         ret = await dispatch(editSubKey(state));
         break;
 

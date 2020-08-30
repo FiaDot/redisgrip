@@ -16,6 +16,11 @@ import AddIcon from '@material-ui/icons/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import { addSubKey } from '../servers/selectedSlice';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import Popup from '../popup/Popup';
+import { showPopup } from '../popup/popupSlice';
+
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -96,6 +101,16 @@ export default function AddValueDialog() {
   };
 
   const onSubmit = async () => {
+    if (selectType === 'zset') {
+      // console.log(`AddValueDialog type=${selectType},key=${key},val=${val}`);
+
+      if (!Number.isInteger(val)) {
+        console.log('not integer');
+        dispatch(showPopup({ message: 'score must be number' }));
+        return;
+      }
+    }
+
     const ret = await dispatch(
       addSubKey({ mainKey: selectKey, type: selectType, key, val })
     );
@@ -164,6 +179,8 @@ export default function AddValueDialog() {
   return (
     <>
       {ShowButton(selectType === 'string')}
+
+      <Popup />
 
       <Dialog
         open={open}
