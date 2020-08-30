@@ -16,6 +16,12 @@ import AddIcon from '@material-ui/icons/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import { addSubKey } from '../servers/selectedSlice';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import Popup from '../popup/Popup';
+import { showPopup } from '../popup/popupSlice';
+import { useSnackbar } from 'notistack';
+
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -62,6 +68,8 @@ export default function AddValueDialog() {
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const initialState = {
     open: false,
     key: '',
@@ -96,6 +104,19 @@ export default function AddValueDialog() {
   };
 
   const onSubmit = async () => {
+    if (selectType === 'zset') {
+
+      if (!(Number.isInteger(Number(val)) && Number(val) > 0) ) {
+        // console.log(`AddValueDialog wrong type type=${selectType},key=${key},val=${val} `);
+
+        enqueueSnackbar('Score must be a number.', {
+          variant: 'error',
+          autoHideDuration: 3000,
+        });
+        return;
+      }
+    }
+
     const ret = await dispatch(
       addSubKey({ mainKey: selectKey, type: selectType, key, val })
     );
@@ -165,6 +186,8 @@ export default function AddValueDialog() {
     <>
       {ShowButton(selectType === 'string')}
 
+      <Popup />
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -202,7 +225,6 @@ export default function AddValueDialog() {
             value={val}
             onChange={onChange}
             fullWidth
-            autoFocus
             className={classes.formSpecing}
           />
         </DialogContent>

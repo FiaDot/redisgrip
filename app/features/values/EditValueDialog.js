@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { useSnackbar } from 'notistack';
 import { addSubKey, delSubKey, editSubKey } from '../servers/selectedSlice';
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +57,6 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-
 export default function EditValueDialog() {
   const classes = useStyles();
 
@@ -65,6 +65,7 @@ export default function EditValueDialog() {
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
+  const { enqueueSnackbar } = useSnackbar();
 
   const initialState = {
     open: false,
@@ -96,7 +97,12 @@ export default function EditValueDialog() {
 
   const onSubmit = async () => {
     let ret = '';
-    const state = { mainKey: selectKey, type: selectType, key: selectSubKey, val };
+    const state = {
+      mainKey: selectKey,
+      type: selectType,
+      key: selectSubKey,
+      val,
+    };
 
     console.log(`EditValueDialog ${selectType} ${JSON.stringify(state)}`);
 
@@ -115,6 +121,14 @@ export default function EditValueDialog() {
         break;
 
       case 'zset':
+        if (!(Number.isInteger(Number(val)) && Number(val) > 0) ) {
+          enqueueSnackbar('Score must be a number.', {
+            variant: 'error',
+            autoHideDuration: 3000,
+          });
+          return;
+        }
+
         ret = await dispatch(editSubKey(state));
         break;
 
@@ -200,23 +214,23 @@ export default function EditValueDialog() {
         <DialogContent className={classes.form}>
           <DialogContentText>{/* New Key... */}</DialogContentText>
 
-          {/*{needKey() ? (*/}
-          {/*  <TextField*/}
-          {/*    autoFocus*/}
-          {/*    size="small"*/}
-          {/*    variant="outlined"*/}
-          {/*    margin="normal"*/}
-          {/*    label="Name"*/}
-          {/*    name="key"*/}
-          {/*    value={key}*/}
-          {/*    onChange={onChange}*/}
-          {/*    fullWidth*/}
-          {/*    autoFocus*/}
-          {/*    className={classes.formSpecing}*/}
-          {/*  />*/}
-          {/*) : (*/}
-          {/*  ''*/}
-          {/*)}*/}
+          {/* {needKey() ? ( */}
+          {/*  <TextField */}
+          {/*    autoFocus */}
+          {/*    size="small" */}
+          {/*    variant="outlined" */}
+          {/*    margin="normal" */}
+          {/*    label="Name" */}
+          {/*    name="key" */}
+          {/*    value={key} */}
+          {/*    onChange={onChange} */}
+          {/*    fullWidth */}
+          {/*    autoFocus */}
+          {/*    className={classes.formSpecing} */}
+          {/*  /> */}
+          {/* ) : ( */}
+          {/*  '' */}
+          {/* )} */}
 
           <TextField
             size="small"
