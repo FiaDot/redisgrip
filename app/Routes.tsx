@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import routes from './constants/routes.json';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
+import { SnackbarProvider } from 'notistack';
 
 // Lazily load routes and code split with webpacck
 const LazyCounterPage = React.lazy(() =>
@@ -42,13 +43,15 @@ const AddServerPage = (props: Record<string, any>) => (
 
 export default function Routes() {
   return (
-    <App>
-      <Switch>
-        <Route path={routes.COUNTER} component={CounterPage} />
-        <Route path={routes.REDISGRIP} component={RedisGripPage} />
-        <Route path={routes.ADDSERVER} component={AddServerPage} />
-        <Route path={routes.HOME} component={HomePage} />
-      </Switch>
-    </App>
+    <SnackbarProvider maxSnack={3}>
+      <App>
+        <Switch>
+          <Route path={routes.COUNTER} component={CounterPage} />
+          <Route path={routes.REDISGRIP} component={RedisGripPage} />
+          <Route path={routes.ADDSERVER} component={AddServerPage} />
+          <Route path={routes.HOME} component={HomePage} />
+        </Switch>
+      </App>
+    </SnackbarProvider>
   );
 }

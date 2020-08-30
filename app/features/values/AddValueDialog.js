@@ -20,6 +20,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import Popup from '../popup/Popup';
 import { showPopup } from '../popup/popupSlice';
+import { useSnackbar } from 'notistack';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -67,6 +68,8 @@ export default function AddValueDialog() {
   const selectType = useSelector((state) => state.selected.selectType);
   const selectSubKey = useSelector((state) => state.selected.selectSubKey);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const initialState = {
     open: false,
     key: '',
@@ -105,8 +108,8 @@ export default function AddValueDialog() {
       // console.log(`AddValueDialog type=${selectType},key=${key},val=${val}`);
 
       if (!Number.isInteger(val)) {
-        console.log('not integer');
-        dispatch(showPopup({ message: 'score must be number' }));
+        // console.log('not integer');
+        enqueueSnackbar('Score must be a number.', { variant: 'error', autoHideDuration: 2000 });
         return;
       }
     }
