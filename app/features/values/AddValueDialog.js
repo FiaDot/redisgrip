@@ -105,11 +105,14 @@ export default function AddValueDialog() {
 
   const onSubmit = async () => {
     if (selectType === 'zset') {
-      // console.log(`AddValueDialog type=${selectType},key=${key},val=${val}`);
 
-      if (!Number.isInteger(val)) {
-        // console.log('not integer');
-        enqueueSnackbar('Score must be a number.', { variant: 'error', autoHideDuration: 3000 });
+      if (!(Number.isInteger(Number(val)) && Number(val) > 0) ) {
+        // console.log(`AddValueDialog wrong type type=${selectType},key=${key},val=${val} `);
+
+        enqueueSnackbar('Score must be a number.', {
+          variant: 'error',
+          autoHideDuration: 3000,
+        });
         return;
       }
     }

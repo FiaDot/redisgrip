@@ -43,7 +43,7 @@ const AddServerPage = (props: Record<string, any>) => (
 
 export default function Routes() {
   return (
-    <SnackbarProvider maxSnack={3}>
+
       <App>
         <Switch>
           <Route path={routes.COUNTER} component={CounterPage} />
@@ -52,6 +52,6 @@ export default function Routes() {
           <Route path={routes.HOME} component={HomePage} />
         </Switch>
       </App>
-    </SnackbarProvider>
+
   );
 }

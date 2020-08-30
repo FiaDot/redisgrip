@@ -17,6 +17,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import cardicon_path from './cardicon.png';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { ThemeProvider } from '@material-ui/styles';
+import { SnackbarProvider } from 'notistack';
 
 const drawerLeftWidth = 320;
 
@@ -168,24 +169,25 @@ export default function ServerSheet() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <CssBaseline />
+      <SnackbarProvider maxSnack={3}>
+        <div className={classes.root}>
+          <CssBaseline />
 
-        <Drawer
-          className={classes.drawerLeft}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaperLeft,
-          }}
-          anchor="left"
-        >
-          <ServerList connect={connect} />
-        </Drawer>
+          <Drawer
+            className={classes.drawerLeft}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaperLeft,
+            }}
+            anchor="left"
+          >
+            <ServerList connect={connect} />
+          </Drawer>
 
-        {isConnected && !isConnecting ? showKeys() : showKeysCard()}
-        {isConnected && !isConnecting ? showValues() : ''}
-      </div>
+          {isConnected && !isConnecting ? showKeys() : showKeysCard()}
+          {isConnected && !isConnecting ? showValues() : ''}
+        </div>
+      </SnackbarProvider>
     </ThemeProvider>
-
   );
 }
