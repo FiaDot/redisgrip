@@ -8,7 +8,7 @@ import {
   setShowResult, startConnecting,
   stopConnecting
 } from '../features/servers/connectionSlice';
-import { addKeys, cleanupKey, clearKeys, delKey } from '../features/keys/keysSlice';
+import { addKeyCount, addKeys, cleanupKey, clearKeys, delKey, resetKeyCount } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
 import { deselectKey, selectKey } from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
@@ -137,19 +137,30 @@ const RedisMiddleware = () => {
 
   return (store) => (next) => async (action) => {
     const reduceRedisOp = (args) => {
+      console.log(`reduceRedisOp ${args}`);
       // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
 
       const op = args.split(',');
 
       switch (op[0]) {
-        case 'SET':
+        case 'SET': // string
           // op[1] // key
           // op[2] // value
           store.dispatch(addString({ key: op[1], value: op[2] }));
           break;
-        default:
+
+        case 'DEL': // string
+          store.dispatch(cleanupKey({ key: op[1] }));
+          return;
+
+        case 'HSETNX': // hash
           break;
+
+        default:
+          return;
       }
+
+      store.dispatch(addKeyCount({ key: op[1] }));
     };
 
     const parseMonitorLog = (time, args, source, database) => {
@@ -245,6 +256,10 @@ const RedisMiddleware = () => {
       return false;
     };
 
+    const onResetKeyCount = async (key) => {
+      store.dispatch(resetKeyCount(key));
+    };
+
     const selectKeyAndAdd = async (key) => {
       const type = await redis.type(key);
       // console.log(`called onSelectKey ${key}=${type}`);
@@ -296,8 +311,6 @@ const RedisMiddleware = () => {
         }
         default:
           console.log('selectKeyAndAdd not matched type');
-          //await store.dispatch(deselectKey());
-          // await store.dispatch(cleanupKey({key}));
           return null;
       }
 
@@ -481,6 +494,13 @@ const RedisMiddleware = () => {
 
       case 'keys/addKey':
         isSuccess = await addKey(action.payload.key, action.payload.type);
+
+        if (isSuccess) {
+          await selectKeyAndAdd(action.payload.key);
+          await store.dispatch(selectKey({ key: action.payload.key }));
+        }
+
+        next(action);
         return isSuccess;
 
       case 'keys/scanKeys':
@@ -493,8 +513,12 @@ const RedisMiddleware = () => {
         return isSuccess;
 
       case 'selected/selectKey':
+        await onResetKeyCount(action.payload.key);
+
+        // eslint-disable-next-line no-case-declarations
         const type = await selectKeyAndAdd(action.payload.key);
         action.payload.type = type;
+
         next(action);
         return type;
 

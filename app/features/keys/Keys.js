@@ -24,6 +24,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DesktopMacOutlinedIcon from '@material-ui/icons/DesktopMacOutlined';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,27 +76,66 @@ const StyledBadge = withStyles((theme) => ({
     padding: '0 4px',
   },
 }))(Badge);
+//
+// const NormalItem = (key, onSelectKey, selectedKey) = (
+//   <ListItem
+//     button
+//     selected={selectedKey === key.key}
+//     key={key.key}
+//     onClick={(event) => onSelectKey(key.key)}
+//   >
+//     <StyledBadge badgeContent={key.count} max={9} color="secondary">
+//       {/*<Badge color="primary" variant="dot" invisible={false}>*/}
+//       <VpnKeyOutlinedIcon
+//         color={key.delete ? 'secondary' : 'primary'}
+//         style={{ paddingRight: 10, fontSize: 32 }}
+//       />
+//       {/*</Badge>*/}
+//     </StyledBadge>
+//     <ListItemText primary={key.key} />
+//   </ListItem>
+// );
 
 const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
   return (
     <div>
       {keys.map((key) => (
-        <Grid container spacing={0} key={key}>
+        <Grid container spacing={0} key={key.key}>
           <Grid item xs={12}>
-            <ListItem
-              button
-              selected={selectedKey === key}
-              key={key}
-              onClick={(event) => onSelectKey(key)}
-            >
-              <Badge color="primary" variant="dot" invisible={false}>
-                <VpnKeyOutlinedIcon
-                  color="primary"
-                  style={{ paddingRight: 10, fontSize: 32 }}
-                />
-              </Badge>
-              <ListItemText primary={key} />
-            </ListItem>
+            {/*{NormalItem(key, onSelectKey, selectedKey)}*/}
+
+            {key.deleted ?
+              <ListItem
+                key={key.key}
+              >
+                <StyledBadge badgeContent={0} max={9} color="secondary">
+                  {/*<Badge color="primary" variant="dot" invisible={false}>*/}
+                  <DeleteForeverOutlinedIcon
+                    color={"secondary"}
+                    style={{ paddingRight: 10, fontSize: 32 }}
+                  />
+                  {/*</Badge>*/}
+                </StyledBadge>
+                <ListItemText primary={key.key + ' [DELETED]'} />
+              </ListItem>
+              :
+              <ListItem
+                button
+                selected={selectedKey === key.key}
+                key={key.key}
+                onClick={(event) => onSelectKey(key.key)}
+              >
+                <StyledBadge badgeContent={key.count} max={9} color="secondary">
+                  {/*<Badge color="primary" variant="dot" invisible={false}>*/}
+                  <VpnKeyOutlinedIcon
+                    color={key.delete ? 'secondary' : 'primary'}
+                    style={{ paddingRight: 10, fontSize: 32 }}
+                  />
+                  {/*</Badge>*/}
+                </StyledBadge>
+                <ListItemText primary={key.key}/>
+              </ListItem>
+            }
             {/*<Divider variant="middle" component="li" />*/}
           </Grid>
         </Grid>

@@ -72,7 +72,7 @@ export default function AddKeyDialog() {
     console.log(`onSubmit ${type} ${key}`);
     await dispatch(addKey({ key, type }));
     handleClose();
-    dispatch(scanKeys());
+    // dispatch(scanKeys());
   };
 
   return (
