@@ -152,7 +152,7 @@ export default function Keys() {
   const selectedKey = useSelector((state) => state.selected.selectKey);
 
   const initialState = {
-    group: false,
+    group: true,
   };
 
   const [inputs, setInputs] = useState(initialState);

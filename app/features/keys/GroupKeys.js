@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
@@ -13,6 +13,10 @@ import ForumIcon from '@material-ui/icons/Forum';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import { useDispatch, useSelector } from 'react-redux';
+import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
+import { selectKey } from '../servers/selectedSlice';
 
 const useTreeItemStyles = makeStyles((theme) => ({
   root: {
@@ -66,7 +70,14 @@ const useTreeItemStyles = makeStyles((theme) => ({
 
 function StyledTreeItem(props) {
   const classes = useTreeItemStyles();
-  const { labelText, labelIcon: LabelIcon, labelInfo, color, bgColor, ...other } = props;
+  const {
+    labelText,
+    labelIcon: LabelIcon,
+    labelInfo,
+    color,
+    bgColor,
+    ...other
+  } = props;
 
   return (
     <TreeItem
@@ -114,8 +125,74 @@ const useStyles = makeStyles({
   },
 });
 
-export default function GmailTreeView() {
+export default function GroupKeys() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const keys = useSelector((state) => state.keys);
+  const selectedKey = useSelector((state) => state.selected.selectKey);
+
+  const onSelectKey = async (key) => {
+    await dispatch(selectKey({ key }));
+  };
+
+  const sample = [
+    { key: 'a123', count: 1, deleted: false },
+    { key: 'bfds', count: 1, deleted: false },
+    { key: 'c_1', count: 1, deleted: false },
+    { key: 'c_2', count: 1, deleted: false },
+    { key: 'd_1', count: 1, deleted: false },
+    { key: 'd_2', count: 1, deleted: false },
+  ];
+
+  const getGroups = () => {
+    const tmp = sample.reduce((acc, item) => {
+      const prefix = item.key.split('_')[0];
+      // console.log(`prefix=${JSON.stringify(prefix)}`);
+
+      if (!acc[prefix]) {
+        acc[prefix] = [];
+      }
+      acc[prefix].push(item);
+      return acc;
+    }, {});
+
+    // console.log(typeof tmp);
+    // console.log(tmp);
+
+    return tmp;
+  };
+
+  //const groups = getGroups();
+  const newGroups = useMemo(() => getGroups(), [sample]);
+
+  useEffect(() => {
+
+    // let groups = sample.map((record) => {
+    //   const arr = record.key.split('_');
+    //   if ( null == arr[0] )
+    //     return record.key;
+    //   return arr[0];
+    // });
+    // // a,b,c,c,d,d,
+    // console.log(`groups=${groups}`);
+
+    // groups = sample.reduce((acc, item) => {
+    //   const prefix = item.key.split('_')[0];
+    //   // console.log(`prefix=${JSON.stringify(prefix)}`);
+    //
+    //   if (!acc[prefix]) {
+    //     acc[prefix] = [];
+    //   }
+    //   acc[prefix].push(item);
+    //   return acc;
+    // }, {});
+    // console.log(group);
+
+
+    return () => {
+    };
+  }, []);
 
   return (
     <TreeView
@@ -125,43 +202,40 @@ export default function GmailTreeView() {
       defaultExpandIcon={<ArrowRightIcon />}
       defaultEndIcon={<div style={{ width: 24 }} />}
     >
-      <StyledTreeItem nodeId="1" labelText="All Mail" labelIcon={MailIcon} />
-      <StyledTreeItem nodeId="2" labelText="Trash" labelIcon={DeleteIcon} />
-      <StyledTreeItem nodeId="3" labelText="Categories" labelIcon={Label}>
+    { Object.entries(newGroups).map(([key, value], index) => (
         <StyledTreeItem
-          nodeId="5"
-          labelText="Social"
-          labelIcon={SupervisorAccountIcon}
-          labelInfo="90"
-          color="#1a73e8"
-          bgColor="#e8f0fe"
-        />
-        <StyledTreeItem
-          nodeId="6"
-          labelText="Updates"
-          labelIcon={InfoIcon}
-          labelInfo="2,294"
-          color="#e3742f"
-          bgColor="#fcefe3"
-        />
-        <StyledTreeItem
-          nodeId="7"
-          labelText="Forums"
-          labelIcon={ForumIcon}
-          labelInfo="3,566"
-          color="#a250f5"
-          bgColor="#f3e8fd"
-        />
-        <StyledTreeItem
-          nodeId="8"
-          labelText="Promotions"
-          labelIcon={LocalOfferIcon}
-          labelInfo="733"
-          color="#3c8039"
-          bgColor="#e6f4ea"
-        />
-      </StyledTreeItem>
-      <StyledTreeItem nodeId="4" labelText="History" labelIcon={Label} />
+          nodeId={`${key}_${index}`}
+          labelText={key}
+          labelIcon={VpnKeyOutlinedIcon}
+        >
+          {
+            value.length > 1 ?
+              value.map((record) => (
+                <StyledTreeItem
+                  nodeId={record.key}
+                  labelText={record.key}
+                  labelIcon={VpnKeyOutlinedIcon}
+                />))
+            : ''
+          }
+
+        </StyledTreeItem>
+      ))
+    }
     </TreeView>
+
+    //
+    //
+    //
+    //   {/*{sample.map((record) => (*/}
+    //   {/*  <StyledTreeItem*/}
+    //   {/*    nodeId={record.key}*/}
+    //   {/*    labelText={record.key}*/}
+    //   {/*    onLabelClick={(event) => onSelectKey(record.key)}*/}
+    //   {/*    // color="#FF0000"*/}
+    //   {/*    labelIcon={VpnKeyOutlinedIcon}*/}
+    //   {/*  />*/}
+    //   {/*))}*/}
+
   );
 }
