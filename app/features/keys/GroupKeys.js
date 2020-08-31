@@ -145,8 +145,8 @@ export default function GroupKeys() {
     { key: 'd_2', count: 1, deleted: false },
   ];
 
-  const getGroups = () => {
-    const tmp = sample.reduce((acc, item) => {
+  const getGroups = (param) => {
+    const tmp = param.reduce((acc, item) => {
       const prefix = item.key.split('_')[0];
       // console.log(`prefix=${JSON.stringify(prefix)}`);
 
@@ -164,7 +164,7 @@ export default function GroupKeys() {
   };
 
   //const groups = getGroups();
-  const newGroups = useMemo(() => getGroups(), [sample]);
+  const newGroups = useMemo(() => getGroups(keys), [keys]);
 
   useEffect(() => {
 
