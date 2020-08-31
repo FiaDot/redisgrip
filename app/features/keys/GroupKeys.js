@@ -133,6 +133,7 @@ export default function GroupKeys() {
   const selectedKey = useSelector((state) => state.selected.selectKey);
 
   const onSelectKey = async (key) => {
+    // console.log(`GroupKeys onSelectKey key=${key}`);
     await dispatch(selectKey({ key }));
   };
 
@@ -217,6 +218,7 @@ export default function GroupKeys() {
                 nodeId={record.key}
                 labelText={record.key}
                 labelIcon={VpnKeyOutlinedIcon}
+                onClick={(event) => onSelectKey(record.key)}
               />))
           : ''
         }
