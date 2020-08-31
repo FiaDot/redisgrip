@@ -204,25 +204,32 @@ export default function GroupKeys() {
       defaultEndIcon={<div style={{ width: 24 }} />}
     >
     { Object.entries(newGroups).map(([key, value], index) => (
-        <StyledTreeItem
-          key={`${key}_${index}`}
-          nodeId={index.toString()}
-          labelText={key}
-          labelIcon={VpnKeyOutlinedIcon}
-        >
-        {
-          value.length > 1 ?
-            value.map((record) => (
-              <StyledTreeItem
-                key={record.key}
-                nodeId={record.key}
-                labelText={record.key}
-                labelIcon={VpnKeyOutlinedIcon}
-                onClick={(event) => onSelectKey(record.key)}
-              />))
-          : ''
-        }
-        </StyledTreeItem>
+        value.length > 1 ?
+          <StyledTreeItem
+            key={`${key}_${index}`}
+            nodeId={index.toString()}
+            labelText={key}
+            labelIcon={Label}
+          >
+            {
+              value.map((record) => (
+                <StyledTreeItem
+                  key={record.key}
+                  nodeId={record.key}
+                  labelText={record.key}
+                  labelIcon={VpnKeyOutlinedIcon}
+                  onClick={(event) => onSelectKey(record.key)}
+                />))
+            }
+          </StyledTreeItem>
+        :
+          <StyledTreeItem
+            key={key}
+            nodeId={index.toString()}
+            labelText={key}
+            labelIcon={VpnKeyOutlinedIcon}
+            onClick={(event) => onSelectKey(key)}
+          />
       ))
     }
     </TreeView>
