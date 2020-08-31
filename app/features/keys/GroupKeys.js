@@ -197,28 +197,29 @@ export default function GroupKeys() {
   return (
     <TreeView
       className={classes.root}
-      defaultExpanded={['3']}
+      defaultExpanded={['0']}
       defaultCollapseIcon={<ArrowDropDownIcon />}
       defaultExpandIcon={<ArrowRightIcon />}
       defaultEndIcon={<div style={{ width: 24 }} />}
     >
     { Object.entries(newGroups).map(([key, value], index) => (
         <StyledTreeItem
-          nodeId={`${key}_${index}`}
+          key={`${key}_${index}`}
+          nodeId={index.toString()}
           labelText={key}
           labelIcon={VpnKeyOutlinedIcon}
         >
-          {
-            value.length > 1 ?
-              value.map((record) => (
-                <StyledTreeItem
-                  nodeId={record.key}
-                  labelText={record.key}
-                  labelIcon={VpnKeyOutlinedIcon}
-                />))
-            : ''
-          }
-
+        {
+          value.length > 1 ?
+            value.map((record) => (
+              <StyledTreeItem
+                key={record.key}
+                nodeId={record.key}
+                labelText={record.key}
+                labelIcon={VpnKeyOutlinedIcon}
+              />))
+          : ''
+        }
         </StyledTreeItem>
       ))
     }
