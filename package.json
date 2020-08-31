@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "1.2.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "redisgrip",
+  "productName": "RedisGrip",
+  "version": "0.1.0",
+  "description": "Redis GUI Client",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -52,8 +52,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "RedisGrip",
+    "appId": "com.redisgrip",
     "files": [
       "dist/",
       "node_modules/",
@@ -96,40 +96,30 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate",
+      "owner": "fiadot",
+      "repo": "redisgrip",
       "private": false
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/FiaDot/redisgrip.git"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "LEE GUN HO",
+    "email": "fiadot@gmail.com",
+    "url": "https://github.com/FiaDot/redisgrip"
   },
   "contributors": [
     {
-      "name": "Vikram Rangaraj",
-      "email": "vikr01@icloud.com",
-      "url": "https://github.com/vikr01"
-    },
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    },
-    {
-      "name": "John Tran",
-      "email": "jptran318@gmail.com",
-      "url": "https://github.com/jooohhn"
+      "name": "LEE GUN HO",
+      "email": "fiadot@gmail.com",
+      "url": "https://github.com/FiaDot"
     }
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/FiaDot/redisgrip/issues"
   },
   "keywords": [
     "electron",
@@ -141,9 +131,10 @@
     "sass",
     "webpack",
     "hot",
-    "reload"
+    "reload",
+    "redis"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/FiaDot/redisgrip",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
@@ -242,8 +233,8 @@
     "eslint-plugin-testcafe": "^0.2.1",
     "file-loader": "^6.0.0",
     "husky": "^4.2.5",
-    "jest": "^26.1.0",
     "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.1.0",
     "lint-staged": "^10.2.11",
     "mini-css-extract-plugin": "^0.9.0",
     "opencollective-postinstall": "^2.0.3",
@@ -273,12 +264,21 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@hot-loader/react-dom": "^16.13.0",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "@reduxjs/toolkit": "^1.4.0",
     "connected-react-router": "^6.6.1",
     "electron-debug": "^3.1.0",
+    "electron-json-storage": "^4.2.0",
     "electron-log": "^4.2.2",
     "electron-updater": "^4.3.1",
     "history": "4.7.2",
+    "immer": "^7.0.7",
+    "ioredis": "^4.17.3",
+    "moment": "^2.27.0",
+    "notistack": "^1.0.0",
+    "project-name-generator": "^2.1.7",
     "react": "^16.13.1",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.21",
@@ -286,7 +286,8 @@
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "source-map-support": "^0.5.19"
+    "source-map-support": "^0.5.19",
+    "ssh2": "^0.8.9"
   },
   "devEngines": {
     "node": ">=7.x",
