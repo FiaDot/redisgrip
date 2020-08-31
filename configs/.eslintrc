@@ -1,4 +1,5 @@
 {
+  "ignorePatterns": ["app/", "node_modules/"],
   "rules": {
     "no-console": "off",
     "global-require": "off",
