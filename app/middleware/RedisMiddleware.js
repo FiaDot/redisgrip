@@ -153,7 +153,26 @@ const RedisMiddleware = () => {
           store.dispatch(cleanupKey({ key: op[1] }));
           return;
 
-        case 'HSETNX': // hash
+        case 'HSETNX': // hash value add
+          break;
+        case 'HSET': // hash value edit
+          break;
+        case 'HDEL': // hash value del
+          break;
+
+        case 'LPUSH': // list add value
+          break;
+        case 'LREM': // list del value
+          break;
+
+        case 'ZADD': // zset add value
+          break;
+        case 'ZREM': // zrem del value
+          break;
+
+        case 'SADD': // set add
+          break;
+        case 'SREM': // set value del
           break;
 
         default:
