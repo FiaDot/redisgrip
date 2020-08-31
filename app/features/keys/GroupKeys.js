@@ -4,18 +4,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Typography from '@material-ui/core/Typography';
-import MailIcon from '@material-ui/icons/Mail';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Label from '@material-ui/icons/Label';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-import InfoIcon from '@material-ui/icons/Info';
-import ForumIcon from '@material-ui/icons/Forum';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import { useDispatch, useSelector } from 'react-redux';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
-import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import { selectKey } from '../servers/selectedSlice';
 
 const useTreeItemStyles = makeStyles((theme) => ({
@@ -130,7 +123,6 @@ export default function GroupKeys() {
   const dispatch = useDispatch();
 
   const keys = useSelector((state) => state.keys);
-  const selectedKey = useSelector((state) => state.selected.selectKey);
 
   const onSelectKey = async (key) => {
     // console.log(`GroupKeys onSelectKey key=${key}`);
@@ -158,42 +150,37 @@ export default function GroupKeys() {
       return acc;
     }, {});
 
-    // console.log(typeof tmp);
-    // console.log(tmp);
-
     return tmp;
   };
 
-  //const groups = getGroups();
   const newGroups = useMemo(() => getGroups(keys), [keys]);
 
-  useEffect(() => {
-
-    // let groups = sample.map((record) => {
-    //   const arr = record.key.split('_');
-    //   if ( null == arr[0] )
-    //     return record.key;
-    //   return arr[0];
-    // });
-    // // a,b,c,c,d,d,
-    // console.log(`groups=${groups}`);
-
-    // groups = sample.reduce((acc, item) => {
-    //   const prefix = item.key.split('_')[0];
-    //   // console.log(`prefix=${JSON.stringify(prefix)}`);
-    //
-    //   if (!acc[prefix]) {
-    //     acc[prefix] = [];
-    //   }
-    //   acc[prefix].push(item);
-    //   return acc;
-    // }, {});
-    // console.log(group);
-
-
-    return () => {
-    };
-  }, []);
+  // useEffect(() => {
+  //
+  //   // let groups = sample.map((record) => {
+  //   //   const arr = record.key.split('_');
+  //   //   if ( null == arr[0] )
+  //   //     return record.key;
+  //   //   return arr[0];
+  //   // });
+  //   // // a,b,c,c,d,d,
+  //   // console.log(`groups=${groups}`);
+  //
+  //   // groups = sample.reduce((acc, item) => {
+  //   //   const prefix = item.key.split('_')[0];
+  //   //   // console.log(`prefix=${JSON.stringify(prefix)}`);
+  //   //
+  //   //   if (!acc[prefix]) {
+  //   //     acc[prefix] = [];
+  //   //   }
+  //   //   acc[prefix].push(item);
+  //   //   return acc;
+  //   // }, {});
+  //   // console.log(group);
+  //
+  //   return () => {
+  //   };
+  // }, []);
 
   return (
     <TreeView
@@ -219,7 +206,8 @@ export default function GroupKeys() {
                   labelText={record.key}
                   labelIcon={VpnKeyOutlinedIcon}
                   onClick={(event) => onSelectKey(record.key)}
-                />))
+                />
+              ))
             }
           </StyledTreeItem>
         :
@@ -233,19 +221,5 @@ export default function GroupKeys() {
       ))
     }
     </TreeView>
-
-    //
-    //
-    //
-    //   {/*{sample.map((record) => (*/}
-    //   {/*  <StyledTreeItem*/}
-    //   {/*    nodeId={record.key}*/}
-    //   {/*    labelText={record.key}*/}
-    //   {/*    onLabelClick={(event) => onSelectKey(record.key)}*/}
-    //   {/*    // color="#FF0000"*/}
-    //   {/*    labelIcon={VpnKeyOutlinedIcon}*/}
-    //   {/*  />*/}
-    //   {/*))}*/}
-
   );
 }
