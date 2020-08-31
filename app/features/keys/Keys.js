@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
@@ -21,10 +21,10 @@ import DelKeyDialog from './DelKeyDialog';
 import Badge from '@material-ui/core/Badge';
 import withStyles from '@material-ui/core/styles/withStyles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import DesktopMacOutlinedIcon from '@material-ui/icons/DesktopMacOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import GroupKeys from './GroupKeys';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -151,6 +151,20 @@ export default function Keys() {
   const keys = useSelector((state) => state.keys);
   const selectedKey = useSelector((state) => state.selected.selectKey);
 
+  const initialState = {
+    group: false,
+  };
+
+  const [inputs, setInputs] = useState(initialState);
+
+  const { group } = inputs;
+
+  const handleChange = (event) => {
+    setInputs({ ...inputs, [event.target.name]: event.target.checked });
+    console.log(`group=${group}`);
+  };
+
+
   const onSelectKey = async (key) => {
     await dispatch(selectKey({ key }));
   };
@@ -203,6 +217,13 @@ export default function Keys() {
           {/*  </IconButton>*/}
           {/*</Tooltip>*/}
 
+          <FormControlLabel
+            control={
+              <Switch checked={group} onChange={handleChange} color="primary" name="group" />
+            }
+            label="Group"
+            labelPlacement="start"
+          />
         </Paper>
       </div>
 
@@ -210,13 +231,18 @@ export default function Keys() {
       {/*<SearchKey />*/}
 
       {/* Key List */}
-      <List component="nav" aria-label="keys">
-        {
-          keys.length <= 0
-            ? ''
-            : <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />
-        }
-      </List>
+      {group
+        ?
+          <GroupKeys />
+        :
+          <List component="nav" aria-label="keys">
+            {
+              keys.length <= 0
+                ? ''
+                : <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />
+            }
+          </List>
+      }
 
     </div>
   );
