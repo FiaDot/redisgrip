@@ -16,24 +16,23 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { createServer } from './serversSlice';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { ThemeProvider } from '@material-ui/styles';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import {
   setShowResult,
   startConnecting,
   stopConnecting,
   testConnection,
 } from './connectionSlice';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { ThemeProvider } from '@material-ui/styles';
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import { createServer } from './serversSlice';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const generate = require('project-name-generator');
-
 
 const theme = createMuiTheme({
   palette: {
@@ -46,7 +45,6 @@ const theme = createMuiTheme({
     },
   },
 });
-
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -99,9 +97,9 @@ export default function AddServer() {
   const initialState = {
     redirect: false,
     alias: generate({ words: 2, number: true }).dashed,
-    host: '52.79.194.253',
+    host: 'localhost',
     port: 6379,
-    password: 'asdf1234!',
+    password: '',
     sshActive: false,
     sshHost: '',
     sshPort: '',
@@ -152,7 +150,6 @@ export default function AddServer() {
       sshActive: e.target.checked,
     });
   };
-
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -240,7 +237,6 @@ export default function AddServer() {
         <CssBaseline />
         <div className={classes.paper}>
           <form className={classes.form} noValidate>
-
             <Typography component="h1" variant="h6" align="center">
               Redis
             </Typography>
