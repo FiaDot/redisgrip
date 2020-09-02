@@ -2,13 +2,22 @@ import { Client } from 'ssh2';
 import Redis from 'ioredis';
 import net from 'net';
 import moment from 'moment';
+import fs from 'fs';
 import {
   connectFailed,
   connectSuccess,
-  setShowResult, startConnecting,
-  stopConnecting
+  setShowResult,
+  startConnecting,
+  stopConnecting,
 } from '../features/servers/connectionSlice';
-import { addKeyCount, addKeys, cleanupKey, clearKeys, delKey, resetKeyCount } from '../features/keys/keysSlice';
+import {
+  addKeyCount,
+  addKeys,
+  cleanupKey,
+  clearKeys,
+  delKey,
+  resetKeyCount,
+} from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
 import { deselectKey, selectKey } from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
@@ -202,13 +211,15 @@ const RedisMiddleware = () => {
           redis.disconnect();
         }
 
+        const privateKey = fs.readFileSync(config.pemFilePath);
+
         const options = {
           sshActive: config.sshActive,
           ssh: {
             host: config.sshHost,
             port: config.sshPort,
             username: config.sshUsername,
-            privateKey: config.pemFilePath,
+            privateKey,
             passphrase: config.pemPassphrase,
           },
           redis: {
