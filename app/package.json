@@ -1,7 +1,7 @@
 {
   "name": "redisgrip",
   "productName": "RedisGrip",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "cross-platform Redis GUI Client",
   "main": "./main.prod.js",
   "author": {
