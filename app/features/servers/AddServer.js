@@ -102,7 +102,7 @@ export default function AddServer() {
     password: '',
     sshActive: false,
     sshHost: '',
-    sshPort: '',
+    sshPort: '22',
     sshUsername: '',
     pemFilePath: '',
     pemPassphrase: '',
