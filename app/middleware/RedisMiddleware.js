@@ -211,7 +211,11 @@ const RedisMiddleware = () => {
           redis.disconnect();
         }
 
-        const privateKey = fs.readFileSync(config.pemFilePath);
+        let privateKey = null;
+
+        if (config.pemFilePath) {
+          privateKey = fs.readFileSync(config.pemFilePath);
+        }
 
         const options = {
           sshActive: config.sshActive,
