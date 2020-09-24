@@ -14,9 +14,8 @@ import TimeNoComponent from './TimeNoComponent';
 import ValueDialog from './ValueDialog';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 
-export default function StringContent(props) {
+export default function StringContent() {
   const classes = useValueStyles();
-  const { redis } = props;
 
   const selectKey = useSelector((state) => state.selected.selectKey);
   const stringRecords = useSelector((state) => state.stringContent.records);
