@@ -150,35 +150,66 @@ export default function ServerSheet() {
     );
   }
 
+  function showValues() {
+    return (
+      <Drawer
+        className={classes.drawerRight}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaperRight
+        }}
+        anchor="right"
+      >
+        <Values />
+      </Drawer>
+    );
+  }
+
+
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
         <div className={classes.root}>
           <CssBaseline />
 
-          <SplitPane split="vertical" initialSizes={[30, 70]}>
-            <div>
-              <ServerList connect={connect} />
-            </div>
+          {/*<SplitPane split="vertical" initialSizes={[30, 70]}>*/}
+          {/*  <div>*/}
+          {/*    <ServerList connect={connect} />*/}
+          {/*  </div>*/}
 
-            {
-              isConnected && !isConnecting
-                ?
-                <SplitPane split="vertical" initialSizes={[40, 60]}>
-                  <div>
-                    <Keys />
-                  </div>
-                  <div>
-                    <Values />
-                  </div>
-                </SplitPane>
-                :
-                <div>
-                  { showKeysCard() }
-                </div>
-            }
+          {/*  {*/}
+          {/*    isConnected && !isConnecting*/}
+          {/*      ?*/}
+          {/*      <SplitPane split="vertical" initialSizes={[40, 60]}>*/}
+          {/*        <div>*/}
+          {/*          <Keys />*/}
+          {/*        </div>*/}
+          {/*        <div>*/}
+          {/*          <Values />*/}
+          {/*        </div>*/}
+          {/*      </SplitPane>*/}
+          {/*      :*/}
+          {/*      <div>*/}
+          {/*        { showKeysCard() }*/}
+          {/*      </div>*/}
+          {/*  }*/}
 
-          </SplitPane>
+          {/*</SplitPane>*/}
+
+          <Drawer
+            className={classes.drawerLeft}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaperLeft,
+            }}
+            anchor="left"
+          >
+            <ServerList connect={connect} />
+          </Drawer>
+
+          {isConnected && !isConnecting ? showKeys() : showKeysCard()}
+          {isConnected && !isConnecting ? showValues() : ''}
+
         </div>
       </SnackbarProvider>
     </ThemeProvider>
