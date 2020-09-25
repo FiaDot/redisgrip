@@ -4,9 +4,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
-import SaveAltOutlinedIcon from '@material-ui/icons/SaveAltOutlined';
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined';
 import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
+import fs from 'fs';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -21,7 +21,15 @@ export default function MigrationToolbar() {
   const classes = useStyles();
 
   const onExport = () => {
-      console.log('onExport');
+    console.log('onExport');
+
+    try {
+      fs.writeFileSync('myfile.txt', 'the text to write in the file', 'utf-8');
+    }
+    catch(e) {
+      console.log(`write file error=${e}`);
+      //alert('Failed to save the file !');
+    }
   };
 
   const onImport = () => {
