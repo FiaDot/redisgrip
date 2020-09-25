@@ -53,6 +53,36 @@ export default function MigrationToolbar() {
 
   const onImport = () => {
     console.log('onImport');
+
+    // TODO : file name generator
+    var options = {
+      title: 'Load Dump File',
+      defaultPath: 'my_filename',
+      buttonLabel: 'Load',
+      filters: [
+        { 'name': 'RedisGrip Dump', extensions: ['rgd',]},
+      ],
+    };
+
+    // TODO : load file path, overwrite option!
+    dialog.showOpenDialog(options).then(file => {
+      // fileNames is an array that contains all the selected
+      if(file === undefined){
+        console.log('No file selected');
+        return;
+      }
+
+      fs.readFile(file.filePaths[0].toString(), 'utf-8', (err, data) => {
+        if(err){
+          alert('An error ocurred reading the file :' + err.message);
+          return;
+        }
+
+        // Change how to handle the file content
+        console.log('The file content is : ' + data);
+      });
+    });
+
   };
 
 
