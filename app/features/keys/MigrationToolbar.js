@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined';
 import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 import fs from 'fs';
+const {dialog} = require('electron').remote;
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -23,13 +24,31 @@ export default function MigrationToolbar() {
   const onExport = () => {
     console.log('onExport');
 
-    try {
-      fs.writeFileSync('myfile.txt', 'the text to write in the file', 'utf-8');
-    }
-    catch(e) {
-      console.log(`write file error=${e}`);
-      //alert('Failed to save the file !');
-    }
+    // try {
+    //   fs.writeFileSync('myfile.txt', 'the text to write in the file', 'utf-8');
+    // }
+    // catch(e) {
+    //   console.log(`write file error=${e}`);
+    //   //alert('Failed to save the file !');
+    // }
+    //
+
+    // TODO : file name generator
+    var options = {
+      title: 'Save Dump File',
+      defaultPath: 'my_filename',
+      buttonLabel: 'Save',
+      filters: [
+        { 'name': 'RedisGrip Dump', extensions: ['rgd',]},
+      ],
+    };
+
+    dialog.showSaveDialog(options).then(file => {
+      if ( !file.canceled ) {
+        console.log(file.filePath.toString());
+        fs.writeFileSync(file.filePath.toString(), 'hello world', 'utf-8');
+      }
+    });
   };
 
   const onImport = () => {
