@@ -25,6 +25,7 @@ import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import GroupKeys from './GroupKeys';
+import MigrationToolbar from './MigrationToolbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -244,6 +245,7 @@ export default function Keys() {
           </List>
       }
 
+      <MigrationToolbar />
     </div>
   );
 }
