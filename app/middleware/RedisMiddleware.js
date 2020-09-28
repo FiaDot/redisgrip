@@ -24,7 +24,6 @@ import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
 import { addHash } from '../features/values/hashContentSlice';
-const dump = require('redis-dump-restore').dump;
 var readline = require('readline');
 
 
@@ -389,20 +388,23 @@ const RedisMiddleware = () => {
     const onExportKeys = async (filename, match) => {
       console.log(`RedisMiddleWare onExportKeys ${filename}`);
 
-      // dump로 하면 반환된 데이터가 가공되어 있어 restore가 안됨.
-      //const data = await redis.dump('aaa2');
+      fs.open(filename, 'w', async (err, fd) => {
 
-      const data = await redis.dumpBuffer('aaa2');
+        const key = 'aaa2';
+        const data = await redis.dumpBuffer(key);
+        const value = Buffer.from(data, 'binary').toString('base64');
 
-      console.log(`data len=${data.length}`);
-      console.log(data);
+        const kv = {key, value};
+        fs.appendFile(fd, JSON.stringify(kv) + '\n', (err) => {
+          if ( err )
+            console.log(err);
+        });
 
-      let b = Buffer.from(data);
+        fs.close(fd, function() {
+          console.log('wrote the file successfully');
+        });
+      });
 
-      for(var n=0;n<data.length;n++){
-        const v = numHex(b.readUInt8(n));
-        console.log(v);
-      }
     };
 
 
@@ -413,8 +415,6 @@ const RedisMiddleware = () => {
       var reader = readline.createInterface(instream, process.stdout);
 
       var count = 0;
-
-      let isKey = true;
 
       let key = '';
       let value = '';
@@ -427,18 +427,16 @@ const RedisMiddleware = () => {
         key = kv.key;
         value = Buffer.from(kv.value, 'base64');
 
-        // if (isKey) {
-        //   key = line;
-        // } else {
-        //   value = Buffer.from(line, 'base64');
-        // }
-        await redis.restore(key, 0, value);
-        isKey = !isKey;
+        try {
+          await redis.restore(key, 0, value);
+        } catch ( err ) {
+          console.log(`err=${err}`);
+        }
       });
 
       // 모두 읽어들였을 때 발생하는 이벤트
       reader.on('close', function(line) {
-        console.log('read done');
+        console.log(`read done count=${count}`);
       });
 
     };
