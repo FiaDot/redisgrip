@@ -24,6 +24,7 @@ import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
 import { addHash } from '../features/values/hashContentSlice';
+const dump = require('redis-dump-restore').dump;
 
 const RedisMiddleware = () => {
   let redis = null;
@@ -146,7 +147,7 @@ const RedisMiddleware = () => {
 
   return (store) => (next) => async (action) => {
     const reduceRedisOp = (args) => {
-      console.log(`reduceRedisOp ${args}`);
+      // console.log(`reduceRedisOp ${args}`);
       // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
 
       const op = args.split(',');
@@ -374,6 +375,61 @@ const RedisMiddleware = () => {
       return false;
     };
 
+
+
+    const onExportKeys = async (filename, match) => {
+      console.log(`RedisMiddleWare onExportKeys ${filename}`);
+
+      const dumpEx = dump(redis, '*');
+
+      fs.open(filename, 'w', (err, fd) => {
+        dumpEx
+          .on('data', async function (key, data, ttl) {
+            // Do something with data.
+            // Both key and data are Buffers with binary data.
+            // ttl is 0 if key expiration is not set, otherwise it is a positive value in milliseconds.
+
+            //console.log(`onExportKeys ${key}=${data} / ${ttl}`);
+
+            var base64data = Buffer.from(data, 'binary').toString('base64');
+            console.log(`onExportKeys encode ${key}=${base64data} / ${ttl}`);
+
+            var raw = Buffer.from(base64data, 'base64');
+            console.log(`onExportKeys decode ${key}=${raw} / ${ttl}`);
+
+            fs.appendFile(fd, key, (err) => {
+              if ( err )
+                console.log(err);
+            });
+
+            fs.appendFile(fd, '\n', (err) => {
+              if ( err )
+                console.log(err);
+            });
+
+            fs.appendFile(fd, base64data, (err) => {
+              if ( err )
+                console.log(err);
+            });
+
+            fs.appendFile(fd, '\n', (err) => {
+              if ( err )
+                console.log(err);
+            });
+          })
+          .on('error', function (err) {
+            // Handle error
+          })
+          .on('end', function () {
+            console.log('dump end!!');
+            // We're done!
+            fs.close(fd, function() {
+              console.log('wrote the file successfully');
+            });
+          });
+      });
+    };
+
     const addSubKey = async (mainKey, type, key, val) => {
       // console.log(`addSubKey ${type} / ${key} / ${val}`);
       let ret = 'OK';
@@ -545,6 +601,10 @@ const RedisMiddleware = () => {
         isSuccess = await onDelKey(action.payload.key);
         next(action);
         return isSuccess;
+
+      case 'keys/exportKeys':
+        await onExportKeys(action.payload.filename, action.payload.match);
+        break;
 
       case 'selected/selectKey':
         await onResetKeyCount(action.payload.key);

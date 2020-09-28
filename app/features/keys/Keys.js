@@ -13,7 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
-import { scanKeys } from './keysSlice';
+import { exportKeys, importKeys, scanKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
 import SearchKey from './SearchKey';
 import AddKeyDialog from './AddKeyDialog';
@@ -26,6 +26,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import GroupKeys from './GroupKeys';
 import MigrationToolbar from './MigrationToolbar';
+import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined';
+import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -170,6 +172,23 @@ export default function Keys() {
     await dispatch(selectKey({ key }));
   };
 
+  const onExportKeys = async () => {
+    dispatch(
+      exportKeys({
+        filename: '/Users/newtrocode/Downloads/dump.txt',
+        match: '*',
+      })
+    );
+  };
+
+  const onImportKeys = async () => {
+    dispatch(
+      importKeys({
+        filename: '/Users/newtrocode/Downloads/dump.txt'
+      })
+    );
+  }
+
   const scan = async () => {
     await dispatch(scanKeys());
   };
@@ -189,6 +208,31 @@ export default function Keys() {
 
       <div className={classes.paper}>
         <Paper elevation={3}>
+
+          {/* Export */}
+          <Tooltip TransitionComponent={Zoom} title="Export">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={(event) => onExportKeys()}
+            >
+              <BackupOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+
+          {/* Import */}
+          <Tooltip TransitionComponent={Zoom} title="Import">
+            <IconButton
+              variant="contained"
+              className={classes.button}
+              onClick={(event) => onImportKeys()}
+            >
+              <SystemUpdateAltOutlinedIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+
+
+
           {/* Refresh */}
           <Tooltip TransitionComponent={Zoom} title="Refresh">
             <IconButton
