@@ -12046,11 +12046,6 @@ redis-commands@1.5.0:
   resolved "https://registry.yarnpkg.com/redis-commands/-/redis-commands-1.5.0.tgz#80d2e20698fe688f227127ff9e5164a7dd17e785"
   integrity sha512-6KxamqpZ468MeQC3bkWmCB1fp56XL64D4Kf0zJSwDZbVLLm7KFkoIcHrgRvQ+sk8dnhySs7+yBg94yIkAK7aJg==
 
-redis-dump-restore@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/redis-dump-restore/-/redis-dump-restore-0.2.0.tgz#8566e036bbce99e5c262ac2d60659e97927effb1"
-  integrity sha1-hWbgNrvOmeXCYqwtYGWel5J+/7E=
-
 redis-errors@^1.0.0, redis-errors@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/redis-errors/-/redis-errors-1.2.0.tgz#eb62d2adb15e4eaf4610c04afe1529384250abad"
