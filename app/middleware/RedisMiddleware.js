@@ -388,23 +388,37 @@ const RedisMiddleware = () => {
     const onExportKeys = async (filename, match) => {
       console.log(`RedisMiddleWare onExportKeys ${filename}`);
 
-      fs.open(filename, 'w', async (err, fd) => {
-
-        const key = 'aaa2';
-        const data = await redis.dumpBuffer(key);
-        const value = Buffer.from(data, 'binary').toString('base64');
-
-        const kv = {key, value};
-        fs.appendFile(fd, JSON.stringify(kv) + '\n', (err) => {
-          if ( err )
-            console.log(err);
-        });
-
-        fs.close(fd, function() {
-          console.log('wrote the file successfully');
-        });
+      const stream = await redis.scanStream({
+        match,
+        count: 10000,
       });
 
+      // let lines = [];
+
+      fs.open(filename, 'w', async (err, fd) => {
+        stream.on('data', async function (keys) {
+
+          const promises = keys.map(async (key) => {
+            const data = await redis.dumpBuffer(key);
+            const value = Buffer.from(data, 'binary').toString('base64');
+            const kv = { key, value };
+            // lines.push(JSON.stringify(kv) + '\n');
+
+            fs.appendFile(fd, JSON.stringify(kv) + '\n', (err) => {
+              if ( err )
+                console.log(err);
+            });
+          });
+
+          await Promise.all(promises);
+          // console.log(lines);
+
+          fs.close(fd, function() {
+            console.log('wrote the file successfully');
+          });
+
+        });
+      });
     };
 
 
