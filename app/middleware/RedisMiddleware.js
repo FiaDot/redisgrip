@@ -377,39 +377,32 @@ const RedisMiddleware = () => {
       return false;
     };
 
-
+    function numHex(s)
+    {
+      var a = s.toString(16);
+      if ((a.length % 2) > 0) {
+        a = '0' + a;
+      }
+      return '0x' + a;
+    }
 
     const onExportKeys = async (filename, match) => {
       console.log(`RedisMiddleWare onExportKeys ${filename}`);
 
-      const dumpEx = dump(redis, '*');
+      // dump로 하면 반환된 데이터가 가공되어 있어 restore가 안됨.
+      //const data = await redis.dump('aaa2');
 
+      const data = await redis.dumpBuffer('aaa2');
 
-      fs.open(filename, 'w', (err, fd) => {
-        dumpEx
-          .on('data', async function (key, data, ttl) {
+      console.log(`data len=${data.length}`);
+      console.log(data);
 
-            const value = Buffer.from(data.slice(0, data.length-1), 'binary').toString('base64');
-            const kv = {key, value};
+      let b = Buffer.from(data);
 
-            // console.log(JSON.stringify(kv));
-            fs.appendFile(fd, JSON.stringify(kv) + '\n', (err) => {
-              if ( err )
-                console.log(err);
-            });
-          })
-          .on('error', function (err) {
-            // Handle error
-          })
-          .on('end', function () {
-
-            console.log('dump end!!');
-            // We're done!
-            fs.close(fd, function() {
-              console.log('wrote the file successfully');
-            });
-          });
-      });
+      for(var n=0;n<data.length;n++){
+        const v = numHex(b.readUInt8(n));
+        console.log(v);
+      }
     };
 
 
