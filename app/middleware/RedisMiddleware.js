@@ -25,6 +25,8 @@ import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
 import { addHash } from '../features/values/hashContentSlice';
 const dump = require('redis-dump-restore').dump;
+var readline = require('readline');
+
 
 const RedisMiddleware = () => {
   let redis = null;
@@ -382,37 +384,16 @@ const RedisMiddleware = () => {
 
       const dumpEx = dump(redis, '*');
 
+
       fs.open(filename, 'w', (err, fd) => {
         dumpEx
           .on('data', async function (key, data, ttl) {
-            // Do something with data.
-            // Both key and data are Buffers with binary data.
-            // ttl is 0 if key expiration is not set, otherwise it is a positive value in milliseconds.
 
-            //console.log(`onExportKeys ${key}=${data} / ${ttl}`);
+            const value = Buffer.from(data.slice(0, data.length-1), 'binary').toString('base64');
+            const kv = {key, value};
 
-            var base64data = Buffer.from(data, 'binary').toString('base64');
-            console.log(`onExportKeys encode ${key}=${base64data} / ${ttl}`);
-
-            var raw = Buffer.from(base64data, 'base64');
-            console.log(`onExportKeys decode ${key}=${raw} / ${ttl}`);
-
-            fs.appendFile(fd, key, (err) => {
-              if ( err )
-                console.log(err);
-            });
-
-            fs.appendFile(fd, '\n', (err) => {
-              if ( err )
-                console.log(err);
-            });
-
-            fs.appendFile(fd, base64data, (err) => {
-              if ( err )
-                console.log(err);
-            });
-
-            fs.appendFile(fd, '\n', (err) => {
+            // console.log(JSON.stringify(kv));
+            fs.appendFile(fd, JSON.stringify(kv) + '\n', (err) => {
               if ( err )
                 console.log(err);
             });
@@ -421,6 +402,7 @@ const RedisMiddleware = () => {
             // Handle error
           })
           .on('end', function () {
+
             console.log('dump end!!');
             // We're done!
             fs.close(fd, function() {
@@ -429,6 +411,46 @@ const RedisMiddleware = () => {
           });
       });
     };
+
+
+    const onImportKeys = async (filename) => {
+      console.log(`RedisMiddleWare onImportKeys ${filename}`);
+
+      var instream = fs.createReadStream(filename);
+      var reader = readline.createInterface(instream, process.stdout);
+
+      var count = 0;
+
+      let isKey = true;
+
+      let key = '';
+      let value = '';
+
+      // 한 줄씩 읽어들인 후에 발생하는 이벤트
+      reader.on('line', async function(line) {
+        count += 1;
+
+        const kv = JSON.parse(line);
+        key = kv.key;
+        value = Buffer.from(kv.value, 'base64');
+
+        // if (isKey) {
+        //   key = line;
+        // } else {
+        //   value = Buffer.from(line, 'base64');
+        // }
+        await redis.restore(key, 0, value);
+        isKey = !isKey;
+      });
+
+      // 모두 읽어들였을 때 발생하는 이벤트
+      reader.on('close', function(line) {
+        console.log('read done');
+      });
+
+    };
+
+
 
     const addSubKey = async (mainKey, type, key, val) => {
       // console.log(`addSubKey ${type} / ${key} / ${val}`);
@@ -604,6 +626,10 @@ const RedisMiddleware = () => {
 
       case 'keys/exportKeys':
         await onExportKeys(action.payload.filename, action.payload.match);
+        break;
+
+      case 'keys/importKeys':
+        await onImportKeys(action.payload.filename);
         break;
 
       case 'selected/selectKey':
