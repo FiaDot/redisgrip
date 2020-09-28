@@ -24,6 +24,8 @@ import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
 import { addHash } from '../features/values/hashContentSlice';
+var readline = require('readline');
+
 
 const RedisMiddleware = () => {
   let redis = null;
@@ -146,7 +148,7 @@ const RedisMiddleware = () => {
 
   return (store) => (next) => async (action) => {
     const reduceRedisOp = (args) => {
-      console.log(`reduceRedisOp ${args}`);
+      // console.log(`reduceRedisOp ${args}`);
       // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
 
       const op = args.split(',');
@@ -374,6 +376,87 @@ const RedisMiddleware = () => {
       return false;
     };
 
+    function numHex(s)
+    {
+      var a = s.toString(16);
+      if ((a.length % 2) > 0) {
+        a = '0' + a;
+      }
+      return '0x' + a;
+    }
+
+    const onExportKeys = async (filename, match) => {
+      console.log(`RedisMiddleWare onExportKeys ${filename}`);
+
+      const stream = await redis.scanStream({
+        match,
+        count: 10000,
+      });
+
+      // let lines = [];
+
+      fs.open(filename, 'w', async (err, fd) => {
+        stream.on('data', async function (keys) {
+
+          const promises = keys.map(async (key) => {
+            const data = await redis.dumpBuffer(key);
+            const value = Buffer.from(data, 'binary').toString('base64');
+            const kv = { key, value };
+            // lines.push(JSON.stringify(kv) + '\n');
+
+            fs.appendFile(fd, JSON.stringify(kv) + '\n', (err) => {
+              if ( err )
+                console.log(err);
+            });
+          });
+
+          await Promise.all(promises);
+          // console.log(lines);
+
+          fs.close(fd, function() {
+            console.log('wrote the file successfully');
+          });
+
+        });
+      });
+    };
+
+
+    const onImportKeys = async (filename) => {
+      console.log(`RedisMiddleWare onImportKeys ${filename}`);
+
+      var instream = fs.createReadStream(filename);
+      var reader = readline.createInterface(instream, process.stdout);
+
+      var count = 0;
+
+      let key = '';
+      let value = '';
+
+      // 한 줄씩 읽어들인 후에 발생하는 이벤트
+      reader.on('line', async function(line) {
+        count += 1;
+
+        const kv = JSON.parse(line);
+        key = kv.key;
+        value = Buffer.from(kv.value, 'base64');
+
+        try {
+          await redis.restore(key, 0, value);
+        } catch ( err ) {
+          console.log(`err=${err}`);
+        }
+      });
+
+      // 모두 읽어들였을 때 발생하는 이벤트
+      reader.on('close', function(line) {
+        console.log(`read done count=${count}`);
+      });
+
+    };
+
+
+
     const addSubKey = async (mainKey, type, key, val) => {
       // console.log(`addSubKey ${type} / ${key} / ${val}`);
       let ret = 'OK';
@@ -545,6 +628,14 @@ const RedisMiddleware = () => {
         isSuccess = await onDelKey(action.payload.key);
         next(action);
         return isSuccess;
+
+      case 'keys/exportKeys':
+        await onExportKeys(action.payload.filename, action.payload.match);
+        break;
+
+      case 'keys/importKeys':
+        await onImportKeys(action.payload.filename);
+        break;
 
       case 'selected/selectKey':
         await onResetKeyCount(action.payload.key);

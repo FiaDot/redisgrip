@@ -7,6 +7,8 @@ import IconButton from '@material-ui/core/IconButton';
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined';
 import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 import fs from 'fs';
+import { useDispatch } from 'react-redux';
+import { exportKeys } from './keysSlice';
 const {dialog} = require('electron').remote;
 
 const useStyles = makeStyles((theme) => ({
@@ -20,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MigrationToolbar() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const onExport = () => {
     console.log('onExport');
@@ -43,10 +46,14 @@ export default function MigrationToolbar() {
       ],
     };
 
-    dialog.showSaveDialog(options).then(file => {
+    dialog.showSaveDialog(options).then(async (file) => {
       if ( !file.canceled ) {
         console.log(file.filePath.toString());
-        fs.writeFileSync(file.filePath.toString(), 'hello world', 'utf-8');
+        //fs.writeFileSync(file.filePath.toString(), 'hello world', 'utf-8');
+
+        dispatch(
+          exportKeys({ filename: file.filePath.toString(), match: '*' })
+        );
       }
     });
   };
