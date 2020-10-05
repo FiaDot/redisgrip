@@ -153,6 +153,7 @@ export default function Keys() {
 
   const keys = useSelector((state) => state.keys);
   const selectedKey = useSelector((state) => state.selected.selectKey);
+  const countKey = useSelector((state) => state.selected.countKey);
 
   const initialState = {
     group: false,
@@ -203,7 +204,7 @@ export default function Keys() {
         gutterBottom
         align="center"
       >
-        Keys
+        Keys ({countKey})
       </Typography>
 
       <div className={classes.paper}>

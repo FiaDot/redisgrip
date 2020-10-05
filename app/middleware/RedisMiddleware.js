@@ -19,7 +19,7 @@ import {
   resetKeyCount,
 } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
-import { deselectKey, selectKey } from '../features/servers/selectedSlice';
+import { deselectKey, selectKey, setCountKey } from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
@@ -353,7 +353,15 @@ const RedisMiddleware = () => {
       return type;
     };
 
+    const countKey = async () => {
+      const count = await redis.dbsize();
+      console.log(`count=${count}`);
+      store.dispatch(setCountKey(count));
+    };
+
     const scanKeys = async () => {
+      await countKey();
+
       const stream = await redis.scanStream({
         match: '*',
         count: 10000,
@@ -617,6 +625,7 @@ const RedisMiddleware = () => {
           await store.dispatch(selectKey({ key: action.payload.key }));
         }
 
+        await countKey();
         next(action);
         return isSuccess;
 
@@ -626,6 +635,7 @@ const RedisMiddleware = () => {
 
       case 'keys/delKey':
         isSuccess = await onDelKey(action.payload.key);
+        await countKey();
         next(action);
         return isSuccess;
 

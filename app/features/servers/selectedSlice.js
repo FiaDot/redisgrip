@@ -11,6 +11,8 @@ const selectedSlice = createSlice({
     // 선택한 서버 id
     id: '',
     // checked: false,
+    // dbsize 호출해서 현재 DB의 전체 키 크기 반환
+    countKey: 0,
     // 키 이름, 타입, tll 등 있어야 함!
     selectKey: null,
     selectType: null,
@@ -45,6 +47,9 @@ const selectedSlice = createSlice({
       state.selectSubKey = null;
     },
     editSubKey: (state, action) => {},
+    setCountKey: (state, action) => {
+      state.countKey = action.payload;
+    },
   },
 });
 
@@ -58,6 +63,7 @@ export const {
   addSubKey,
   delSubKey,
   editSubKey,
+  setCountKey,
 } = selectedSlice.actions;
 export default selectedSlice.reducer;
 
