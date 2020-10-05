@@ -359,11 +359,13 @@ const RedisMiddleware = () => {
       store.dispatch(setCountKey(count));
     };
 
-    const scanKeys = async () => {
+    const scanKeys = async (match='*') => {
       await countKey();
 
+      console.log(`scanKeys match=${match}`);
+
       const stream = await redis.scanStream({
-        match: '*',
+        match,
         count: 10000,
       });
 
@@ -630,7 +632,7 @@ const RedisMiddleware = () => {
         return isSuccess;
 
       case 'keys/scanKeys':
-        await scanKeys();
+        await scanKeys(action.payload);
         break;
 
       case 'keys/delKey':

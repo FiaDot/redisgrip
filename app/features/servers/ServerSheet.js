@@ -20,7 +20,7 @@ import Values from '../values/Values';
 import Keys from '../keys/Keys';
 import ServerList from './ServerList';
 
-const drawerLeftWidth = 320;
+const drawerLeftWidth = 300;
 
 const theme = createMuiTheme({
   palette: {

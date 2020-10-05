@@ -28,6 +28,7 @@ import GroupKeys from './GroupKeys';
 import MigrationToolbar from './MigrationToolbar';
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined';
 import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -265,16 +266,25 @@ export default function Keys() {
 
           <FormControlLabel
             control={
-              <Switch checked={group} onChange={handleChange} color="primary" name="group" />
+              <Switch
+                checked={group}
+                onChange={handleChange}
+                color="primary"
+                name="group"
+              />
             }
-            label="Group"
+            label={
+              <Box component="div" fontSize={12}>
+                Group
+              </Box>
+            }
             labelPlacement="start"
           />
         </Paper>
       </div>
 
-      {/* Search bar TODO : IMPL*/}
-      {/*<SearchKey />*/}
+      {/* Search bar */}
+      <SearchKey />
 
       {/* Key List */}
       {group

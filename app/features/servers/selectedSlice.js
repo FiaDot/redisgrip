@@ -18,6 +18,7 @@ const selectedSlice = createSlice({
     selectType: null,
     // list, hash, set, zset 에서 선택한 항목
     selectSubKey: null,
+    matchPattern: '*',
   },
   reducers: {
     selectServer: (state, action) => {
@@ -50,6 +51,9 @@ const selectedSlice = createSlice({
     setCountKey: (state, action) => {
       state.countKey = action.payload;
     },
+    setMatchPattern: (state, action) => {
+      state.matchPattern = action.payload;
+    },
   },
 });
 
@@ -64,6 +68,7 @@ export const {
   delSubKey,
   editSubKey,
   setCountKey,
+  setMatchPattern,
 } = selectedSlice.actions;
 export default selectedSlice.reducer;
 
