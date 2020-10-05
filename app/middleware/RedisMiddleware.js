@@ -29,10 +29,9 @@ var readline = require('readline');
 
 const RedisMiddleware = () => {
   let redis = null;
-  const connectionOptions = {
-    host: '52.79.194.253',
+  let connectionOptions = {
+    host: '127.0.0.1',
     port: 6379,
-    password: 'asdf1234!',
     connectTimeout: 10000,
     maxRetriesPerRequest: null,
   };
@@ -589,6 +588,7 @@ const RedisMiddleware = () => {
         isSuccess = await connect(action.payload);
 
         if (isSuccess) {
+          connectionOptions = action.payload;
           await scanKeys();
           await monitoring();
           await store.dispatch(connectSuccess());
