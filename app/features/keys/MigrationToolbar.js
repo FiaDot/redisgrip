@@ -8,7 +8,7 @@ import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutli
 import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 import fs from 'fs';
 import { useDispatch } from 'react-redux';
-import { exportKeys } from './keysSlice';
+import { exportKeys, importKeys } from './keysSlice';
 const {dialog} = require('electron').remote;
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +39,7 @@ export default function MigrationToolbar() {
     // TODO : file name generator
     var options = {
       title: 'Save Dump File',
-      defaultPath: 'my_filename',
+      defaultPath: '',
       buttonLabel: 'Save',
       filters: [
         { 'name': 'RedisGrip Dump', extensions: ['rgd',]},
@@ -64,7 +64,7 @@ export default function MigrationToolbar() {
     // TODO : file name generator
     var options = {
       title: 'Load Dump File',
-      defaultPath: 'my_filename',
+      defaultPath: '',
       buttonLabel: 'Load',
       filters: [
         { 'name': 'RedisGrip Dump', extensions: ['rgd',]},
@@ -79,15 +79,22 @@ export default function MigrationToolbar() {
         return;
       }
 
-      fs.readFile(file.filePaths[0].toString(), 'utf-8', (err, data) => {
-        if(err){
-          alert('An error ocurred reading the file :' + err.message);
-          return;
-        }
+      // fs.readFile(file.filePaths[0].toString(), 'utf-8', (err, data) => {
+      //   if(err){
+      //     alert('An error ocurred reading the file :' + err.message);
+      //     return;
+      //   }
+      //
+      //   // Change how to handle the file content
+      //   console.log('The file content is : ' + data);
+      // });
 
-        // Change how to handle the file content
-        console.log('The file content is : ' + data);
-      });
+      dispatch(
+        importKeys({
+          filename: file.filePaths[0].toString()
+        })
+      );
+
     });
 
   };
