@@ -174,22 +174,22 @@ export default function Keys() {
     await dispatch(selectKey({ key }));
   };
 
-  const onExportKeys = async () => {
-    dispatch(
-      exportKeys({
-        filename: '/Users/newtrocode/Downloads/dump.txt',
-        match: '*',
-      })
-    );
-  };
-
-  const onImportKeys = async () => {
-    dispatch(
-      importKeys({
-        filename: '/Users/newtrocode/Downloads/dump.txt'
-      })
-    );
-  }
+  // const onExportKeysTest = async () => {
+  //   dispatch(
+  //     exportKeys({
+  //       filename: '/Users/newtrocode/Downloads/dump.txt',
+  //       match: '*',
+  //     })
+  //   );
+  // };
+  //
+  // const onImportKeysTest = async () => {
+  //   dispatch(
+  //     importKeys({
+  //       filename: '/Users/newtrocode/Downloads/dump.txt'
+  //     })
+  //   );
+  // };
 
   const scan = async () => {
     await dispatch(scanKeys());
@@ -212,26 +212,26 @@ export default function Keys() {
         <Paper elevation={3}>
 
           {/* Export */}
-          <Tooltip TransitionComponent={Zoom} title="Export">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={(event) => onExportKeys()}
-            >
-              <BackupOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          {/*<Tooltip TransitionComponent={Zoom} title="Export">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={(event) => onExportKeys()}*/}
+          {/*  >*/}
+          {/*    <BackupOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
           {/* Import */}
-          <Tooltip TransitionComponent={Zoom} title="Import">
-            <IconButton
-              variant="contained"
-              className={classes.button}
-              onClick={(event) => onImportKeys()}
-            >
-              <SystemUpdateAltOutlinedIcon color="primary" />
-            </IconButton>
-          </Tooltip>
+          {/*<Tooltip TransitionComponent={Zoom} title="Import">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={(event) => onImportKeys()}*/}
+          {/*  >*/}
+          {/*    <SystemUpdateAltOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
 
 
 
