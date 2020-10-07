@@ -22,11 +22,10 @@ import { ThemeProvider } from '@material-ui/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import {
   setShowResult,
-  startConnecting,
   stopConnecting,
   testConnection,
 } from './connectionSlice';
-import { createServer } from './serversSlice';
+import { editServer } from './serversSlice';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -80,7 +79,7 @@ export default function EditServer() {
   const servers = useSelector((state) => state.servers);
   const selectedServer = useSelector((state) => state.selected.id);
 
-  let initialState = {
+  const initialState = {
     redirect: false,
     alias: generate({ words: 2, number: true }).dashed,
     host: 'localhost',
@@ -114,7 +113,7 @@ export default function EditServer() {
   useEffect(() => {
     console.log(`EditServer useEffect open ${selectedServer}`);
     const node = servers.find((server) => server.id === selectedServer);
-    setInputs({...inputs, ...node});
+    setInputs({ ...inputs, ...node });
 
     return () => {
       console.log('EditServer useEffect close');
@@ -143,7 +142,8 @@ export default function EditServer() {
     e.preventDefault();
 
     dispatch(
-      createServer({
+      editServer({
+        id: selectedServer,
         alias,
         host,
         port,
