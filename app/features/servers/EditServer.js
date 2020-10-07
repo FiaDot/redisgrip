@@ -71,15 +71,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EditServer() {
   const classes = useStyles();
-
-  // redux
   const dispatch = useDispatch();
 
   const isConnecting = useSelector((state) => state.connections.isConnecting);
   const connectResult = useSelector((state) => state.connections.connectResult);
   const showResult = useSelector((state) => state.connections.showResult);
 
-  const initialState = {
+  const servers = useSelector((state) => state.servers);
+  const selectedServer = useSelector((state) => state.selected.id);
+
+  let initialState = {
     redirect: false,
     alias: generate({ words: 2, number: true }).dashed,
     host: 'localhost',
@@ -111,7 +112,9 @@ export default function EditServer() {
   } = inputs;
 
   useEffect(() => {
-    console.log('EditServer useEffect open');
+    console.log(`EditServer useEffect open ${selectedServer}`);
+    const node = servers.find((server) => server.id === selectedServer);
+    setInputs({...inputs, ...node});
 
     return () => {
       console.log('EditServer useEffect close');
