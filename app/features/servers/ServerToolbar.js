@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
@@ -17,6 +17,7 @@ import { clearStorage, delServer } from './serversSlice';
 import { deselectKey, deselectServer, isSelectedServer } from './selectedSlice';
 import { clearKeys } from '../keys/keysSlice';
 import { disconnected } from './connectionSlice';
+import EditServerDialog from './EditServerDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,19 +130,19 @@ export default function ServerToolbar(props) {
         </Tooltip>
 
         {/* Edit */}
-        {/*<Tooltip TransitionComponent={Zoom} title="Edit">*/}
-        {/*  <IconButton*/}
-        {/*    variant="contained"*/}
-        {/*    className={classes.button}*/}
-        {/*    onClick={isSelected ? edit : null}*/}
-        {/*    disabled={isConnecting}*/}
-        {/*  >*/}
-        {/*    <EditOutlinedIcon*/}
-        {/*      className={classes.buttonIcon}*/}
-        {/*      color={isSelected ? 'primary' : 'disabled'}*/}
-        {/*    />*/}
-        {/*  </IconButton>*/}
-        {/*</Tooltip>*/}
+        {/*<EditServerDialog />*/}
+        <Tooltip TransitionComponent={Zoom} title="Edit">
+          <IconButton
+            className={classes.button}
+            component={Link}
+            to="/EditServer"
+          >
+            <EditOutlinedIcon
+              className={classes.buttonIcon}
+              color={isSelected ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
 
         {/* Connect */}
         <Tooltip TransitionComponent={Zoom} title="Connect">
