@@ -150,7 +150,7 @@ export default function ServerToolbar(props) {
             variant="contained"
             className={classes.button}
             // onClick={isSelected ? connect : null}
-            onClick={isConnected ? null : onConnect}
+            onClick={isSelected && !isConnected ? onConnect : null}
           >
             <LinkOutlinedIcon
               className={classes.buttonIcon}
