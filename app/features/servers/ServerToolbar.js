@@ -13,11 +13,13 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
-import { clearStorage, delServer } from './serversSlice';
+import { clearStorage, createServer, delServer } from './serversSlice';
 import { deselectKey, deselectServer, isSelectedServer } from './selectedSlice';
 import { clearKeys } from '../keys/keysSlice';
 import { disconnected } from './connectionSlice';
 import EditServerDialog from './EditServerDialog';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ServerToolbar(props) {
   const classes = useStyles();
 
+  const servers = useSelector((state) => state.servers);
   const selectedId = useSelector((state) => state.selected.id);
   const isSelected = useSelector(isSelectedServer);
   const isConnected = useSelector((state) => state.connections.connectResult);
@@ -93,6 +96,16 @@ export default function ServerToolbar(props) {
   const clear = () => {
     dispatch(clearStorage());
   };
+
+  const copy = () => {
+    const node = servers.find((server) => server.id === selectedId);
+
+    let payload = {...node};
+    delete payload.id;
+    payload.alias = payload.alias + '_copied';
+
+    dispatch(createServer(payload));
+  }
 
   const EnabledToolbar = () => (
     <div className={classes.paper}>
@@ -138,6 +151,21 @@ export default function ServerToolbar(props) {
             to="/EditServer"
           >
             <EditOutlinedIcon
+              className={classes.buttonIcon}
+              color={isSelected ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
+
+        {/* Copy */}
+        <Tooltip TransitionComponent={Zoom} title="Copy">
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            onClick={isSelected ? copy : null}
+            disabled={isConnecting}
+          >
+            <FileCopyOutlinedIcon
               className={classes.buttonIcon}
               color={isSelected ? 'primary' : 'disabled'}
             />
