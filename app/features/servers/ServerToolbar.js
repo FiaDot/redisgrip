@@ -122,6 +122,39 @@ export default function ServerToolbar(props) {
     );
   };
 
+
+  const EditButtonActivated = () => (
+    <Tooltip TransitionComponent={Zoom} title="Edit">
+      <IconButton
+        className={classes.button}
+        component={Link}
+        to="/EditServer"
+      >
+        <EditOutlinedIcon
+          className={classes.buttonIcon}
+          color={'primary'}
+        />
+      </IconButton>
+    </Tooltip>
+  );
+
+  const EditButtonDisabled = () => (
+    <Tooltip TransitionComponent={Zoom} title="Edit">
+      <IconButton
+        className={classes.button}
+        onClick={null}
+        disabled={false}
+      >
+        <EditOutlinedIcon
+          className={classes.buttonIcon}
+          color={'disabled'}
+        />
+      </IconButton>
+    </Tooltip>
+  );
+
+
+
   const EnabledToolbar = () => (
     <div className={classes.paper}>
       <Paper elevation={3}>
@@ -159,18 +192,9 @@ export default function ServerToolbar(props) {
 
         {/* Edit */}
         {/*<EditServerDialog />*/}
-        <Tooltip TransitionComponent={Zoom} title="Edit">
-          <IconButton
-            className={classes.button}
-            component={Link}
-            to="/EditServer"
-          >
-            <EditOutlinedIcon
-              className={classes.buttonIcon}
-              color={isSelected ? 'primary' : 'disabled'}
-            />
-          </IconButton>
-        </Tooltip>
+        {
+          isSelected ? EditButtonActivated() : EditButtonDisabled()
+        }
 
         {/* Copy */}
         <Tooltip TransitionComponent={Zoom} title="Copy">
@@ -280,6 +304,13 @@ export default function ServerToolbar(props) {
         <Tooltip TransitionComponent={Zoom} title="Edit">
           <IconButton variant="contained" className={classes.button} disabled>
             <EditOutlinedIcon className={classes.buttonIcon} color="disabled" />
+          </IconButton>
+        </Tooltip>
+
+        {/* Copy */}
+        <Tooltip TransitionComponent={Zoom} title="Copy">
+          <IconButton variant="contained" className={classes.button} disabled>
+            <FileCopyOutlinedIcon className={classes.buttonIcon} color="disabled"/>
           </IconButton>
         </Tooltip>
 
