@@ -247,22 +247,23 @@ export default function ServerSheet() {
             </Alert>
           </Snackbar>
 
-
-          <Snackbar
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            open={showResult}
-            onClose={onAlertClose}
-            autoHideDuration={3000}
-            // message={connectResult ? 'Success' : 'Failed'}
-            key="bottom left"
-          >
-            <Alert
+          {connectResult ? '' :
+            <Snackbar
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              open={showResult}
               onClose={onAlertClose}
-              severity={connectResult ? 'success' : 'error'}
+              autoHideDuration={3000}
+              // message={connectResult ? 'Success' : 'Failed'}
+              key="bottom left"
             >
-              Connection {connectResult ? 'Success' : 'Failed'}
-            </Alert>
-          </Snackbar>
+              <Alert
+                onClose={onAlertClose}
+                severity={connectResult ? 'success' : 'error'}
+              >
+                Connection {connectResult ? 'Success' : 'Failed'}
+              </Alert>
+            </Snackbar>
+          }
 
           {isConnected && !isConnecting ? showKeys() : showKeysCard()}
           {isConnected && !isConnecting ? showValues() : ''}
