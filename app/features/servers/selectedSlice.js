@@ -52,6 +52,7 @@ const selectedSlice = createSlice({
       state.countKey = action.payload;
     },
     setMatchPattern: (state, action) => {
+      console.log(`setMatchPattern=${action.payload}`);
       state.matchPattern = action.payload;
     },
   },
