@@ -113,6 +113,7 @@ export default function ServerSheet() {
   const isConnected = useSelector((state) => state.connections.connectResult);
   const isConnecting = useSelector((state) => state.connections.isConnecting);
 
+  const isWaiting = useSelector((state) => state.connections.isWaiting);
   const isShowPopup = useSelector((state) => state.selected.isShowPopup);
   const popupMessage = useSelector((state) => state.selected.popupMessage);
   const popupSeverity = useSelector((state) => state.selected.popupSeverity);
@@ -234,6 +235,11 @@ export default function ServerSheet() {
           <Backdrop className={classes.backdrop} open={isConnecting}>
             <CircularProgress color="inherit" />
           </Backdrop>
+
+          <Backdrop className={classes.backdrop} open={isWaiting}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+
 
           <Snackbar
             anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
