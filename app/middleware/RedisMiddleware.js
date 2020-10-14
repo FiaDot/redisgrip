@@ -19,7 +19,7 @@ import {
   resetKeyCount,
 } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
-import { deselectKey, selectKey, setCountKey } from '../features/servers/selectedSlice';
+import { deselectKey, selectKey, setCountKey, setMatchPattern } from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
@@ -362,6 +362,8 @@ const RedisMiddleware = () => {
       await countKey();
 
       console.log(`scanKeys match=${match}`);
+
+      store.dispatch(setMatchPattern(match));
 
       const stream = await redis.scanStream({
         match,
