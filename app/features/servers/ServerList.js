@@ -11,11 +11,11 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import DesktopAccessDisabledOutlinedIcon from '@material-ui/icons/DesktopAccessDisabledOutlined';
 import DesktopMacOutlinedIcon from '@material-ui/icons/DesktopMacOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 import { clearServers, loadStorage } from './serversSlice';
 import { selectServer } from './selectedSlice';
 import ServersToolbar from './ServerToolbar';
 import { setShowResult } from './connectionSlice';
-import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import Typography from '@material-ui/core/Typography';
 
@@ -111,7 +111,6 @@ export default function ServerList(props) {
   const showResult = useSelector((state) => state.connections.showResult);
 
   const dispatch = useDispatch();
-  const onSelectServer = (id) => dispatch(selectServer(id));
 
   useEffect(() => {
     console.log('loaded ServerList');
@@ -126,11 +125,20 @@ export default function ServerList(props) {
   }, []);
 
   const onConnectServer = (id) => {
+    if ( isConnecting )
+      return;
+
     console.log(`called onConnectServer=${id}`);
-    // TODO : 실제 접속
-    // dispatch(connectToServer());
     props.connect();
   };
+
+  const onSelectServer = (id) => {
+    if ( isConnecting )
+      return;
+
+    dispatch(selectServer(id));
+  };
+
 
   const onAlertClose = () => {
     dispatch(setShowResult(false));
@@ -138,10 +146,6 @@ export default function ServerList(props) {
 
   return (
     <>
-      <Backdrop className={classes.backdrop} open={isConnecting}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={showResult}

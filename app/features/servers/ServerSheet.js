@@ -19,6 +19,8 @@ import { connectToServer, startConnecting } from './connectionSlice';
 import Values from '../values/Values';
 import Keys from '../keys/Keys';
 import ServerList from './ServerList';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const drawerLeftWidth = 300;
 
@@ -93,6 +95,10 @@ const useStyles = makeStyles((theme) => ({
     // width : 200,
     height: 200,
     // align: 'center',
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));
 
@@ -207,9 +213,12 @@ export default function ServerSheet() {
             <ServerList connect={connect} />
           </Drawer>
 
+          <Backdrop className={classes.backdrop} open={isConnecting}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+
           {isConnected && !isConnecting ? showKeys() : showKeysCard()}
           {isConnected && !isConnecting ? showValues() : ''}
-
         </div>
       </SnackbarProvider>
     </ThemeProvider>
