@@ -107,6 +107,21 @@ export default function ServerToolbar(props) {
     dispatch(createServer(payload));
   }
 
+
+  const alertTest = () => {
+    console.log('alertTest');
+
+    const notification = {
+      title: 'BTC Alert',
+      body: 'BTC just beat your target price!',
+    };
+
+    const myNotification = new window.Notification(
+      notification.title,
+      notification
+    );
+  };
+
   const EnabledToolbar = () => (
     <div className={classes.paper}>
       <Paper elevation={3}>
@@ -217,6 +232,21 @@ export default function ServerToolbar(props) {
             <ClearAllIcon className={classes.buttonIcon} color="secondary" />
           </IconButton>
         </Tooltip>
+
+        {/* Alert test */}
+        {/*<Tooltip TransitionComponent={Zoom} title="Alert">*/}
+        {/*  <IconButton*/}
+        {/*    variant="contained"*/}
+        {/*    className={classes.button}*/}
+        {/*    onClick={alertTest}*/}
+        {/*  >*/}
+        {/*    <EditOutlinedIcon*/}
+        {/*      className={classes.buttonIcon}*/}
+        {/*      color={'primary'}*/}
+        {/*    />*/}
+        {/*  </IconButton>*/}
+        {/*</Tooltip>*/}
+
       </Paper>
     </div>
   );
