@@ -107,8 +107,6 @@ export default function ServerList(props) {
   const connectedId = useSelector((state) => state.connections.config.id);
 
   const isConnecting = useSelector((state) => state.connections.isConnecting);
-  const connectResult = useSelector((state) => state.connections.connectResult);
-  const showResult = useSelector((state) => state.connections.showResult);
 
   const dispatch = useDispatch();
 
@@ -140,28 +138,8 @@ export default function ServerList(props) {
   };
 
 
-  const onAlertClose = () => {
-    dispatch(setShowResult(false));
-  };
-
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={showResult}
-        onClose={onAlertClose}
-        autoHideDuration={3000}
-        // message={connectResult ? 'Success' : 'Failed'}
-        key="bottom center"
-      >
-        <Alert
-          onClose={onAlertClose}
-          severity={connectResult ? 'success' : 'error'}
-        >
-          Connection {connectResult ? 'Success' : 'Failed'}
-        </Alert>
-      </Snackbar>
-
       <ServersToolbar connect={props.connect} />
 
       <List component="nav" aria-label="servers">

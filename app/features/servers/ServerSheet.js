@@ -15,12 +15,14 @@ import { ThemeProvider } from '@material-ui/styles';
 import { SnackbarProvider } from 'notistack';
 import { SplitPane } from 'react-collapse-pane';
 import cardicon_path from './cardicon.png';
-import { connectToServer, startConnecting } from './connectionSlice';
+import { connectToServer, setShowResult, startConnecting } from './connectionSlice';
 import Values from '../values/Values';
 import Keys from '../keys/Keys';
 import ServerList from './ServerList';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 const drawerLeftWidth = 300;
 
@@ -171,6 +173,13 @@ export default function ServerSheet() {
     );
   }
 
+  const connectResult = useSelector((state) => state.connections.connectResult);
+  const showResult = useSelector((state) => state.connections.showResult);
+
+  const onAlertClose = () => {
+    dispatch(setShowResult(false));
+  };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -216,6 +225,22 @@ export default function ServerSheet() {
           <Backdrop className={classes.backdrop} open={isConnecting}>
             <CircularProgress color="inherit" />
           </Backdrop>
+
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            open={showResult}
+            onClose={onAlertClose}
+            autoHideDuration={3000}
+            // message={connectResult ? 'Success' : 'Failed'}
+            key="bottom left"
+          >
+            <Alert
+              onClose={onAlertClose}
+              severity={connectResult ? 'success' : 'error'}
+            >
+              Connection {connectResult ? 'Success' : 'Failed'}
+            </Alert>
+          </Snackbar>
 
           {isConnected && !isConnecting ? showKeys() : showKeysCard()}
           {isConnected && !isConnecting ? showValues() : ''}
