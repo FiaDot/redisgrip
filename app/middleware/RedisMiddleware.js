@@ -16,10 +16,17 @@ import {
   cleanupKey,
   clearKeys,
   delKey,
-  resetKeyCount,
+  resetKeyCount, scanKeys
 } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
-import { deselectKey, selectKey, setCountKey, setMatchPattern } from '../features/servers/selectedSlice';
+import {
+  deselectKey, hideWaiting,
+  selectKey,
+  setCountKey,
+  setMatchPattern,
+  setProgress,
+  showPopup, showWaiting
+} from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
@@ -407,7 +414,9 @@ const RedisMiddleware = () => {
       // let lines = [];
 
       fs.open(filename, 'w', async (err, fd) => {
+
         stream.on('data', async function (keys) {
+          store.dispatch(showWaiting());
 
           const promises = keys.map(async (key) => {
             const data = await redis.dumpBuffer(key);
@@ -422,12 +431,21 @@ const RedisMiddleware = () => {
           });
 
           await Promise.all(promises);
+          // store.dispatch(setProgress({ isProgress: false, progress: 100 }));
           // console.log(lines);
 
           fs.close(fd, function() {
-            console.log('wrote the file successfully');
-          });
+            store.dispatch(hideWaiting());
 
+            store.dispatch(
+              showPopup({
+                popupMessage: 'export succeeded',
+                popupSeverity: 'success',
+              })
+            );
+
+            console.log('[modified] wrote the file successfully');
+          });
         });
       });
     };
@@ -437,12 +455,14 @@ const RedisMiddleware = () => {
       console.log(`RedisMiddleWare onImportKeys ${filename}`);
 
       var instream = fs.createReadStream(filename);
-      var reader = readline.createInterface(instream, process.stdout);
+      var reader = readline.createInterface(instream);
 
       var count = 0;
 
       let key = '';
       let value = '';
+
+      store.dispatch(showWaiting());
 
       // 한 줄씩 읽어들인 후에 발생하는 이벤트
       reader.on('line', async function(line) {
@@ -454,16 +474,34 @@ const RedisMiddleware = () => {
 
         try {
           await redis.restore(key, 0, value);
-        } catch ( err ) {
+        } catch (err) {
           console.log(`err=${err}`);
+
+          store.dispatch(hideWaiting());
+
+          store.dispatch(
+            showPopup({
+              popupMessage: `import error=${err}`,
+              popupSeverity: 'error',
+          }));
         }
       });
 
       // 모두 읽어들였을 때 발생하는 이벤트
       reader.on('close', function(line) {
         console.log(`read done count=${count}`);
-      });
 
+        store.dispatch(hideWaiting());
+
+        store.dispatch(
+          showPopup({
+            popupMessage: 'import succeeded',
+            popupSeverity: 'success',
+          })
+        );
+
+        store.dispatch(scanKeys());
+      });
     };
 
 

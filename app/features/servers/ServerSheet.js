@@ -23,6 +23,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
+import { hidePopup } from './selectedSlice';
 
 const drawerLeftWidth = 300;
 
@@ -112,6 +113,11 @@ export default function ServerSheet() {
   const isConnected = useSelector((state) => state.connections.connectResult);
   const isConnecting = useSelector((state) => state.connections.isConnecting);
 
+  const isWaiting = useSelector((state) => state.connections.isWaiting);
+  const isShowPopup = useSelector((state) => state.selected.isShowPopup);
+  const popupMessage = useSelector((state) => state.selected.popupMessage);
+  const popupSeverity = useSelector((state) => state.selected.popupSeverity);
+
   const dispatch = useDispatch();
 
   const connect = async () => {
@@ -180,6 +186,10 @@ export default function ServerSheet() {
     dispatch(setShowResult(false));
   };
 
+  const onPopupClose = () => {
+    dispatch(hidePopup());
+  };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -226,21 +236,40 @@ export default function ServerSheet() {
             <CircularProgress color="inherit" />
           </Backdrop>
 
+          <Backdrop className={classes.backdrop} open={isWaiting}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+
+
           <Snackbar
             anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            open={showResult}
-            onClose={onAlertClose}
+            open={isShowPopup}
+            onClose={onPopupClose}
             autoHideDuration={3000}
-            // message={connectResult ? 'Success' : 'Failed'}
-            key="bottom left"
+            key="popup"
           >
-            <Alert
-              onClose={onAlertClose}
-              severity={connectResult ? 'success' : 'error'}
-            >
-              Connection {connectResult ? 'Success' : 'Failed'}
+            <Alert onClose={onPopupClose} severity={popupSeverity}>
+              {popupMessage}
             </Alert>
           </Snackbar>
+
+          {connectResult ? '' :
+            <Snackbar
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              open={showResult}
+              onClose={onAlertClose}
+              autoHideDuration={3000}
+              // message={connectResult ? 'Success' : 'Failed'}
+              key="bottom left"
+            >
+              <Alert
+                onClose={onAlertClose}
+                severity={connectResult ? 'success' : 'error'}
+              >
+                Connection {connectResult ? 'Success' : 'Failed'}
+              </Alert>
+            </Snackbar>
+          }
 
           {isConnected && !isConnecting ? showKeys() : showKeysCard()}
           {isConnected && !isConnecting ? showValues() : ''}
