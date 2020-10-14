@@ -455,12 +455,14 @@ const RedisMiddleware = () => {
       console.log(`RedisMiddleWare onImportKeys ${filename}`);
 
       var instream = fs.createReadStream(filename);
-      var reader = readline.createInterface(instream, process.stdout);
+      var reader = readline.createInterface(instream);
 
       var count = 0;
 
       let key = '';
       let value = '';
+
+      store.dispatch(showWaiting());
 
       // 한 줄씩 읽어들인 후에 발생하는 이벤트
       reader.on('line', async function(line) {
@@ -475,6 +477,8 @@ const RedisMiddleware = () => {
         } catch (err) {
           console.log(`err=${err}`);
 
+          store.dispatch(hideWaiting());
+
           store.dispatch(
             showPopup({
               popupMessage: `import error=${err}`,
@@ -486,6 +490,8 @@ const RedisMiddleware = () => {
       // 모두 읽어들였을 때 발생하는 이벤트
       reader.on('close', function(line) {
         console.log(`read done count=${count}`);
+
+        store.dispatch(hideWaiting());
 
         store.dispatch(
           showPopup({
