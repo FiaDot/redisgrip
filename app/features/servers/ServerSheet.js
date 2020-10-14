@@ -23,6 +23,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
+import { hidePopup } from './selectedSlice';
 
 const drawerLeftWidth = 300;
 
@@ -112,6 +113,10 @@ export default function ServerSheet() {
   const isConnected = useSelector((state) => state.connections.connectResult);
   const isConnecting = useSelector((state) => state.connections.isConnecting);
 
+  const isShowPopup = useSelector((state) => state.selected.isShowPopup);
+  const popupMessage = useSelector((state) => state.selected.popupMessage);
+  const popupSeverity = useSelector((state) => state.selected.popupSeverity);
+
   const dispatch = useDispatch();
 
   const connect = async () => {
@@ -180,6 +185,10 @@ export default function ServerSheet() {
     dispatch(setShowResult(false));
   };
 
+  const onPopupClose = () => {
+    dispatch(hidePopup());
+  };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -225,6 +234,19 @@ export default function ServerSheet() {
           <Backdrop className={classes.backdrop} open={isConnecting}>
             <CircularProgress color="inherit" />
           </Backdrop>
+
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            open={isShowPopup}
+            onClose={onPopupClose}
+            autoHideDuration={3000}
+            key="popup"
+          >
+            <Alert onClose={onPopupClose} severity={popupSeverity}>
+              {popupMessage}
+            </Alert>
+          </Snackbar>
+
 
           <Snackbar
             anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}

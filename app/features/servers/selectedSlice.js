@@ -19,6 +19,10 @@ const selectedSlice = createSlice({
     // list, hash, set, zset 에서 선택한 항목
     selectSubKey: null,
     matchPattern: '*',
+    isWaiting: false,
+    isShowPopup: false,
+    popupMessage: null,
+    popupSeverity: 'success',
   },
   reducers: {
     selectServer: (state, action) => {
@@ -55,6 +59,21 @@ const selectedSlice = createSlice({
       console.log(`setMatchPattern=${action.payload}`);
       state.matchPattern = action.payload;
     },
+    showWaiting: (state, action) => {
+      state.isWaiting = true;
+    },
+    hideWaiting: (state, action) => {
+      state.isWaiting = false;
+    },
+    showPopup: (state, action) => {
+      state.isShowPopup = true;
+      state.popupMessage = action.payload.popupMessage;
+      state.popupSeverity = action.payload.popupSeverity;
+    },
+    hidePopup: (state, action) => {
+      state.isShowPopup = false;
+      state.popupMessage = '';
+    },
   },
 });
 
@@ -70,6 +89,10 @@ export const {
   editSubKey,
   setCountKey,
   setMatchPattern,
+  showWaiting,
+  hideWaiting,
+  showPopup,
+  hidePopup,
 } = selectedSlice.actions;
 export default selectedSlice.reducer;
 
