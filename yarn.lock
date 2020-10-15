@@ -1304,7 +1304,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.11.0":
   version "7.12.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.0.tgz#98bd7666186969c04be893d747cf4a6c6c8fa6b0"
   integrity sha512-lS4QLXQ2Vbw2ubfQjeQcn+BZgZ5+ROHW9f+DWjEp5Y+NHYmkRGKqHSJ1tuhbUauKu2nhZNTBIvsIQ8dXfY5Gjw==
@@ -11939,6 +11939,13 @@ react-virtualized-auto-sizer@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.2.tgz#a61dd4f756458bbf63bd895a92379f9b70f803bd"
   integrity sha512-MYXhTY1BZpdJFjUovvYHVBmkq79szK/k7V3MO+36gJkWGkrXKtyr4vCPtpphaTLRAdDNoYEYFZWE8LjN+PIHNg==
+
+react-vtree@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-vtree/-/react-vtree-2.0.3.tgz#b41f64aa74f8f765c802ed6091e8b16710457906"
+  integrity sha512-mcH9ITyZVzlKmT2ZaQUIL/1kaRVBGKaJJFOStANoedD8jMUpj4DFzCs8z5WoY+0v/Gigu9DPTX3CWUFwe+smsA==
+  dependencies:
+    "@babel/runtime" "^7.11.0"
 
 react-window@^1.8.5:
   version "1.8.5"
