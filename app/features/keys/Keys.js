@@ -206,21 +206,35 @@ export default function Keys() {
     const key = keys[index];
 
     return (
-      <ListItem
-        button
-        style={style}
-        key={key.key}
-        selected={selectedKey === key.key}
-        onClick={(event) => onSelectKey(key.key)}
-      >
-        <StyledBadge badgeContent={key.count} max={9} color="secondary">
-          <VpnKeyOutlinedIcon
-            color={key.delete ? 'secondary' : 'primary'}
-            style={{ paddingRight: 10, fontSize: 32 }}
-          />
-        </StyledBadge>
-        <ListItemText primary={`${key.key}`} />
-      </ListItem>
+      key.deleted ?
+        <ListItem
+          key={key.key}
+        >
+          <StyledBadge badgeContent={0} max={9} color="secondary">
+            <DeleteForeverOutlinedIcon
+              color={"secondary"}
+              style={{ paddingRight: 10, fontSize: 32 }}
+            />
+          </StyledBadge>
+          <ListItemText primary={`${key.key}`} />
+        </ListItem>
+        :
+        <ListItem
+          button
+          style={style}
+          key={key.key}
+          selected={selectedKey === key.key}
+          onClick={(event) => onSelectKey(key.key)}
+        >
+          <StyledBadge badgeContent={key.count} max={9} color="secondary">
+            <VpnKeyOutlinedIcon
+              color={key.delete ? 'secondary' : 'primary'}
+              style={{ paddingRight: 10, fontSize: 32 }}
+            />
+          </StyledBadge>
+          <ListItemText primary={`${key.key}`} />
+        </ListItem>
+
     );
   };
 
