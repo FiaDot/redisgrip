@@ -31,6 +31,7 @@ import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 import Box from '@material-ui/core/Box';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import VGroupKeys from './VGroupKeys';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -345,7 +346,7 @@ export default function Keys() {
       {/*}*/}
 
       { group ?
-          <GroupKeys />
+          <VGroupKeys />
           :
           keys.length <= 0 ?
             ''
