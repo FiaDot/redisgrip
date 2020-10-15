@@ -102,6 +102,9 @@ const StyledBadge = withStyles((theme) => ({
 //   </ListItem>
 // );
 
+
+
+
 const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
   return (
     <div>
@@ -200,14 +203,61 @@ export default function Keys() {
 
   function renderKeys(props) {
     const { index, style } = props;
+    const key = keys[index];
 
     return (
-      <ListItem button style={style} key={index}>
-        <ListItemText primary={`Item ${index + 1}`} />
-      </ListItem>
-    );
-  }
+      // pass #1
+      // <ListItem button style={style} key={index}>
+      //   <ListItemText primary={`${key.key}`} />
+      // </ListItem>
 
+      // pass #2
+      // <ListItem
+      //   button
+      //   style={style}
+      //   key={key.key}
+      //   selected={selectedKey === key.key}
+      //   onClick={(event) => onSelectKey(key.key)}
+      // >
+      //   <ListItemText primary={`${key.key}`} />
+      // </ListItem>
+
+
+      <ListItem
+        button
+        style={style}
+        key={key.key}
+        selected={selectedKey === key.key}
+        onClick={(event) => onSelectKey(key.key)}
+      >
+        <StyledBadge badgeContent={key.count} max={9} color="secondary">
+          <VpnKeyOutlinedIcon
+            color={key.delete ? 'secondary' : 'primary'}
+            style={{ paddingRight: 10, fontSize: 32 }}
+          />
+        </StyledBadge>
+        <ListItemText primary={`${key.key}`} />
+      </ListItem>
+
+
+      // <ListItem
+      //   button
+      //   selected={selectedKey === key.key}
+      //   key={key.key}
+      //   onClick={(event) => onSelectKey(key.key)}
+      // >
+      //   <StyledBadge badgeContent={key.count} max={9} color="secondary">
+      //     {/*<Badge color="primary" variant="dot" invisible={false}>*/}
+      //     <VpnKeyOutlinedIcon
+      //       color={key.delete ? 'secondary' : 'primary'}
+      //       style={{ paddingRight: 10, fontSize: 32 }}
+      //     />
+      //     {/*</Badge>*/}
+      //   </StyledBadge>
+      //   <ListItemText primary={key.key} />
+      // </ListItem>
+    );
+  };
 
   return (
     <div className={classes.root}>
