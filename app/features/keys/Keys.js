@@ -29,6 +29,8 @@ import MigrationToolbar from './MigrationToolbar';
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined';
 import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 import Box from '@material-ui/core/Box';
+import { FixedSizeList } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -195,6 +197,18 @@ export default function Keys() {
     await dispatch(scanKeys());
   };
 
+
+  function renderKeys(props) {
+    const { index, style } = props;
+
+    return (
+      <ListItem button style={style} key={index}>
+        <ListItemText primary={`Item ${index + 1}`} />
+      </ListItem>
+    );
+  }
+
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -287,17 +301,31 @@ export default function Keys() {
       <SearchKey />
 
       {/* Key List */}
-      {group
-        ?
-          <GroupKeys />
+      {/*{group*/}
+      {/*  ?*/}
+      {/*    <GroupKeys />*/}
+      {/*  :*/}
+      {/*    <List component="nav" aria-label="keys">*/}
+      {/*      {*/}
+      {/*        keys.length <= 0*/}
+      {/*          ? ''*/}
+      {/*          : <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />*/}
+      {/*      }*/}
+      {/*    </List>*/}
+      {/*}*/}
+
+      { keys.length <= 0
+        ? ''
         :
-          <List component="nav" aria-label="keys">
-            {
-              keys.length <= 0
-                ? ''
-                : <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />
-            }
-          </List>
+        <div style = {{height:'70vh'}}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <FixedSizeList height={height} width={width} itemSize={40} itemCount={keys.length}>
+                {renderKeys}
+              </FixedSizeList>
+            )}
+          </AutoSizer>
+        </div>
       }
 
       <MigrationToolbar />
