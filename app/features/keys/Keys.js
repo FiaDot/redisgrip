@@ -344,25 +344,30 @@ export default function Keys() {
       {/*    </List>*/}
       {/*}*/}
 
-      { keys.length <= 0
-        ? ''
-        :
-        <div style = {{height:'70vh'}}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <FixedSizeList
-                height={height}
-                width={width}
-                itemSize={40}
-                itemCount={keys.length}
-                itemData={{ wrapKeys: keys }}
-              >
-                {renderKeys}
-              </FixedSizeList>
-            )}
-          </AutoSizer>
-        </div>
+      { group ?
+          <GroupKeys />
+          :
+          keys.length <= 0 ?
+            ''
+            :
+            <div style = {{height:'70vh'}}>
+              <AutoSizer>
+                {({ height, width }) => (
+                  <FixedSizeList
+                    height={height}
+                    width={width}
+                    itemSize={40}
+                    itemCount={keys.length}
+                    itemData={{ wrapKeys: keys }}
+                  >
+                    {renderKeys}
+                  </FixedSizeList>
+                )}
+              </AutoSizer>
+            </div>
       }
+
+
 
       <MigrationToolbar />
     </div>
