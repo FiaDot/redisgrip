@@ -154,12 +154,12 @@ const RedisMiddleware = () => {
 
   return (store) => (next) => async (action) => {
     const reduceRedisOp = (args) => {
-      // console.log(`reduceRedisOp ${args}`);
+      //console.log(`reduceRedisOp ${args}`);
       // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
 
       const op = args.split(',');
 
-      switch (op[0]) {
+      switch (op[0].toUpperCase()) {
         case 'SET': // string
           // op[1] // key
           // op[2] // value
@@ -167,6 +167,7 @@ const RedisMiddleware = () => {
           break;
 
         case 'DEL': // string
+          console.log(`reduceRedisOp ${args}`);
           store.dispatch(cleanupKey({ key: op[1] }));
           return;
 
@@ -196,6 +197,7 @@ const RedisMiddleware = () => {
           return;
       }
 
+      console.log(`reduceRedisOp ${args}`);
       store.dispatch(addKeyCount({ key: op[1] }));
     };
 
