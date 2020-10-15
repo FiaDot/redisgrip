@@ -200,43 +200,44 @@ export default function Keys() {
     await dispatch(scanKeys());
   };
 
+  // const Row = memo(({ data, index, style }) => {
+  // });
 
-  function renderKeys(props) {
-    const { index, style } = props;
-    const key = keys[index];
+  const renderKeys = React.memo(({ data, index, style }) => {
+  // function renderKeys(props) {
+  // const { index, style } = props;
+    const { wrapKeys } = data;
+    const key = wrapKeys[index];
+    // const key = keys[index];
 
     return (
-      key.deleted ?
-        <ListItem
-          key={key.key}
-        >
-          <StyledBadge badgeContent={0} max={9} color="secondary">
-            <DeleteForeverOutlinedIcon
-              color={"secondary"}
-              style={{ paddingRight: 10, fontSize: 32 }}
-            />
-          </StyledBadge>
-          <ListItemText primary={`${key.key}`} />
-        </ListItem>
-        :
-        <ListItem
-          button
-          style={style}
-          key={key.key}
-          selected={selectedKey === key.key}
-          onClick={(event) => onSelectKey(key.key)}
-        >
-          <StyledBadge badgeContent={key.count} max={9} color="secondary">
-            <VpnKeyOutlinedIcon
-              color={key.delete ? 'secondary' : 'primary'}
-              style={{ paddingRight: 10, fontSize: 32 }}
-            />
-          </StyledBadge>
-          <ListItemText primary={`${key.key}`} />
-        </ListItem>
-
+      <ListItem
+        button
+        style={style}
+        key={key.key}
+        selected={key.deleted ? false : selectedKey === key.key}
+        onClick={(event) => {
+          key.deleted ? null : onSelectKey(key.key)
+        }}
+      >
+        <StyledBadge badgeContent={key.deleted ? 0 : key.count} max={9} color="secondary">
+          { key.deleted ?
+              <DeleteForeverOutlinedIcon
+                color={"secondary"}
+                style={{ paddingRight: 10, fontSize: 32 }}
+              />
+              :
+              <VpnKeyOutlinedIcon
+                color={'primary'}
+                style={{ paddingRight: 10, fontSize: 32 }}
+              />
+          }
+        </StyledBadge>
+        <ListItemText
+          primary={`${key.key}${key.deleted ? " [DELETED]" : ""}`} />
+      </ListItem>
     );
-  };
+  });
 
   return (
     <div className={classes.root}>
@@ -349,7 +350,13 @@ export default function Keys() {
         <div style = {{height:'70vh'}}>
           <AutoSizer>
             {({ height, width }) => (
-              <FixedSizeList height={height} width={width} itemSize={40} itemCount={keys.length}>
+              <FixedSizeList
+                height={height}
+                width={width}
+                itemSize={40}
+                itemCount={keys.length}
+                itemData={{ wrapKeys: keys }}
+              >
                 {renderKeys}
               </FixedSizeList>
             )}
