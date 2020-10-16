@@ -51,11 +51,15 @@ const useTreeItemStyles = makeStyles((theme) => ({
   label: {
     fontWeight: 'inherit',
     color: 'inherit',
+    // padding: 0,
+    // margin: 0,
   },
   labelRoot: {
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0.5, 0),
+    // padding: theme.spacing(0.5, 0),
+    // padding: 0,
+    // margin: 0,
   },
   labelIcon: {
     color: theme.palette.primary.main,
@@ -119,9 +123,12 @@ StyledTreeItem.propTypes = {
 
 const useStyles = makeStyles({
   root: {
-    height: 264,
-    flexGrow: 1,
-    maxWidth: 400,
+    // height: 264,
+    // flexGrow: 1,
+    // maxWidth: 400,
+    margin: 0,
+    // padding: 0,
+    // spacing: 0,
   },
   button: {
     margin: 0,
@@ -197,6 +204,7 @@ export default function VGroupKeys() {
 
   const newGroups = useMemo(() => getGroups(keys), [keys]);
 
+  const genData = useMemo(() => generate(getGroups(keys)), [keys]);
   // Tree component can work with any possible tree structure because it uses an
 // iterator function that the user provides. Structure, approach, and iterator
 // function below is just one of many possible variants.
@@ -225,8 +233,8 @@ export default function VGroupKeys() {
 
     //const data = generate(getGroups(sample));
     const data = generate(getGroups(keys));
+    // const data = genData; //generate(getGroups(keys));
 
-    console.log(data);
     // Remember all the necessary data of the first node in the stack.
     stack.push({
       nestingLevel: 0,
@@ -274,11 +282,18 @@ export default function VGroupKeys() {
 // internal openness state (`isOpen`), function to change internal openness
 // state (`toggle`) and `style` parameter that should be added to the root div.
   const Node = ({data: {isLeaf, name, id, nestingLevel}, isOpen, style, toggle}) => (
+
     <div
       style={{
+        ...style,
         alignItems: 'center',
         display: 'flex',
-        margin: 0,
+      //   spacing: 0,
+        margin: '0px 0 0 0px',
+        padding: 0,
+        border: 0,
+        marginTop: -50,
+        // marginBottom: -20,
         marginLeft: (nestingLevel-1) * 20,
       }}
     >
@@ -286,7 +301,7 @@ export default function VGroupKeys() {
     { nestingLevel != 0 && !isLeaf && (
       isOpen ?
         <IconButton
-          variant="contained"
+          variant='contained'
           className={classes.button}
           onClick={toggle}
         >
@@ -294,12 +309,12 @@ export default function VGroupKeys() {
             // className={classes.buttonIcon}
             color={'primary'}
             // style={{ fontSize: 24 }}
-            fontSize="large"
+            fontSize='large'
           />
         </IconButton>
         :
         <IconButton
-          variant="contained"
+          variant='contained'
           className={classes.button}
           onClick={toggle}
         >
@@ -307,7 +322,7 @@ export default function VGroupKeys() {
             // className={classes.buttonIcon}
             color={'primary'}
             // style={{ fontSize: 24 }}
-            fontSize="large"
+            fontSize='large'
           />
         </IconButton>
 
