@@ -31,6 +31,7 @@ import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
 import Box from '@material-ui/core/Box';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import VGroupKeys from './VGroupKeys';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -344,25 +345,30 @@ export default function Keys() {
       {/*    </List>*/}
       {/*}*/}
 
-      { keys.length <= 0
-        ? ''
-        :
-        <div style = {{height:'70vh'}}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <FixedSizeList
-                height={height}
-                width={width}
-                itemSize={40}
-                itemCount={keys.length}
-                itemData={{ wrapKeys: keys }}
-              >
-                {renderKeys}
-              </FixedSizeList>
-            )}
-          </AutoSizer>
-        </div>
+      { group ?
+          <VGroupKeys />
+          :
+          keys.length <= 0 ?
+            ''
+            :
+            <div style = {{height:'70vh'}}>
+              <AutoSizer>
+                {({ height, width }) => (
+                  <FixedSizeList
+                    height={height}
+                    width={width}
+                    itemSize={40}
+                    itemCount={keys.length}
+                    itemData={{ wrapKeys: keys }}
+                  >
+                    {renderKeys}
+                  </FixedSizeList>
+                )}
+              </AutoSizer>
+            </div>
       }
+
+
 
       <MigrationToolbar />
     </div>

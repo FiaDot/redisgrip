@@ -48,7 +48,7 @@ const zsetContentSlice = createSlice({
           ],
         });
 
-        console.log(JSON.stringify(state));
+        // console.log(JSON.stringify(state));
       }
     },
     clearZset: (state, action) => {
