@@ -124,8 +124,6 @@ const useStyles = makeStyles({
   },
 });
 
-// @ts-ignore
-// @ts-ignore
 export default function VGroupKeys() {
   const classes = useStyles();
   const dispatch = useDispatch();
