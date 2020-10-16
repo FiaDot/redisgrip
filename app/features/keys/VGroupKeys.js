@@ -14,6 +14,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import IconButton from '@material-ui/core/IconButton';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
+import TreeView from '@material-ui/lab/TreeView';
 
 const useTreeItemStyles = makeStyles((theme) => ({
   root: {
@@ -122,6 +123,14 @@ const useStyles = makeStyles({
     flexGrow: 1,
     maxWidth: 400,
   },
+  button: {
+    margin: 0,
+  },
+  // buttonIcon: {
+  //   fontSize: '64', // small, large
+  //   margin: 0,
+  //   spacing: 0,
+  // },
 });
 
 export default function VGroupKeys() {
@@ -214,7 +223,9 @@ export default function VGroupKeys() {
   function* treeWalker(refresh) {
     const stack = [];
 
-    const data = generate(getGroups(sample));
+    //const data = generate(getGroups(sample));
+    const data = generate(getGroups(keys));
+
     console.log(data);
     // Remember all the necessary data of the first node in the stack.
     stack.push({
@@ -268,7 +279,7 @@ export default function VGroupKeys() {
         alignItems: 'center',
         display: 'flex',
         margin: 0,
-        marginLeft: nestingLevel * 5 + (isLeaf ? 20 : 0),
+        marginLeft: (nestingLevel-1) * 20,
       }}
     >
 
@@ -280,7 +291,7 @@ export default function VGroupKeys() {
           onClick={toggle}
         >
           <ArrowRightIcon
-            className={classes.buttonIcon}
+            // className={classes.buttonIcon}
             color={'primary'}
             // style={{ fontSize: 24 }}
             fontSize="large"
@@ -293,7 +304,7 @@ export default function VGroupKeys() {
           onClick={toggle}
         >
           <ArrowDropDownIcon
-            className={classes.buttonIcon}
+            // className={classes.buttonIcon}
             color={'primary'}
             // style={{ fontSize: 24 }}
             fontSize="large"
@@ -306,13 +317,14 @@ export default function VGroupKeys() {
       ''
       :
         isLeaf ?
-          <StyledTreeItem
-            key={name}
-            nodeId={name}
-            labelText={name}
-            labelIcon={VpnKeyOutlinedIcon}
-            onClick={(event) => onSelectKey(name)}
-          />
+          <div onClick={(event) => onSelectKey(name)}>
+            <StyledTreeItem
+              key={name}
+              nodeId={name}
+              labelText={name}
+              labelIcon={VpnKeyOutlinedIcon}
+            />
+          </div>
           :
           <div>{name}</div>
     }
