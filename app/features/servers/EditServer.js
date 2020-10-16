@@ -22,11 +22,10 @@ import { ThemeProvider } from '@material-ui/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import {
   setShowResult,
-  startConnecting,
   stopConnecting,
   testConnection,
 } from './connectionSlice';
-import { createServer } from './serversSlice';
+import { editServer } from './serversSlice';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -73,30 +72,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddServer() {
+export default function EditServer() {
   const classes = useStyles();
-
-  // redux
   const dispatch = useDispatch();
 
   const isConnecting = useSelector((state) => state.connections.isConnecting);
   const connectResult = useSelector((state) => state.connections.connectResult);
   const showResult = useSelector((state) => state.connections.showResult);
 
-  // TODO : final!!
-  // const initialState = {
-  //   redirect: false,
-  //   alias: generate({ words: 2, number: true }).dashed,
-  //   host: 'localhost',
-  //   port: 6379,
-  //   password: '',
-  //   sshHost: '',
-  //   sshPort: '',
-  //   sshUsername: '',
-  //   : '',
-  //   pemFilePath: '',
-  //   pemPassphrase: '',
-  // };
+  const servers = useSelector((state) => state.servers);
+  const selectedServer = useSelector((state) => state.selected.id);
 
   const initialState = {
     redirect: false,
@@ -130,10 +115,12 @@ export default function AddServer() {
   } = inputs;
 
   useEffect(() => {
-    console.log('AddServer useEffect open');
+    console.log(`EditServer useEffect open ${selectedServer}`);
+    const node = servers.find((server) => server.id === selectedServer);
+    setInputs({ ...inputs, ...node });
 
     return () => {
-      console.log('AddServer useEffect close');
+      console.log('EditServer useEffect close');
       dispatch(stopConnecting());
       dispatch(setShowResult(false));
     };
@@ -159,7 +146,8 @@ export default function AddServer() {
     e.preventDefault();
 
     dispatch(
-      createServer({
+      editServer({
+        id: selectedServer,
         alias,
         host,
         port,
@@ -242,7 +230,7 @@ export default function AddServer() {
         <div className={classes.paper}>
           <form className={classes.form} noValidate>
             <Typography component="h1" variant="h6" align="center">
-              Redis
+              Redis (Edit)
             </Typography>
 
             <TextField
@@ -440,7 +428,7 @@ export default function AddServer() {
                   onClick={onSubmit}
                   disabled={isConnecting}
                 >
-                  Add
+                  Update
                 </Button>
               </Grid>
 

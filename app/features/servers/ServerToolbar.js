@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
@@ -13,10 +13,13 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
-import { clearStorage, delServer } from './serversSlice';
+import { clearStorage, createServer, delServer } from './serversSlice';
 import { deselectKey, deselectServer, isSelectedServer } from './selectedSlice';
 import { clearKeys } from '../keys/keysSlice';
 import { disconnected } from './connectionSlice';
+import EditServerDialog from './EditServerDialog';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ServerToolbar(props) {
   const classes = useStyles();
 
+  const servers = useSelector((state) => state.servers);
   const selectedId = useSelector((state) => state.selected.id);
   const isSelected = useSelector(isSelectedServer);
   const isConnected = useSelector((state) => state.connections.connectResult);
@@ -92,6 +96,64 @@ export default function ServerToolbar(props) {
   const clear = () => {
     dispatch(clearStorage());
   };
+
+  const copy = () => {
+    const node = servers.find((server) => server.id === selectedId);
+
+    let payload = {...node};
+    delete payload.id;
+    payload.alias = payload.alias + '_copied';
+
+    dispatch(createServer(payload));
+  }
+
+
+  const alertTest = () => {
+    console.log('alertTest');
+
+    const notification = {
+      title: 'BTC Alert',
+      body: 'BTC just beat your target price!',
+    };
+
+    const myNotification = new window.Notification(
+      notification.title,
+      notification
+    );
+  };
+
+
+  const EditButtonActivated = () => (
+    <Tooltip TransitionComponent={Zoom} title="Edit">
+      <IconButton
+        className={classes.button}
+        component={Link}
+        to="/EditServer"
+      >
+        <EditOutlinedIcon
+          className={classes.buttonIcon}
+          color={'primary'}
+        />
+      </IconButton>
+    </Tooltip>
+  );
+
+  const EditButtonDisabled = () => (
+    <Tooltip TransitionComponent={Zoom} title="Edit">
+      <IconButton
+        className={classes.button}
+        onClick={null}
+        disabled={false}
+      >
+        <EditOutlinedIcon
+          className={classes.buttonIcon}
+          color={'disabled'}
+        />
+      </IconButton>
+    </Tooltip>
+  );
+
+
 
   const EnabledToolbar = () => (
     <div className={classes.paper}>
@@ -129,19 +191,25 @@ export default function ServerToolbar(props) {
         </Tooltip>
 
         {/* Edit */}
-        {/*<Tooltip TransitionComponent={Zoom} title="Edit">*/}
-        {/*  <IconButton*/}
-        {/*    variant="contained"*/}
-        {/*    className={classes.button}*/}
-        {/*    onClick={isSelected ? edit : null}*/}
-        {/*    disabled={isConnecting}*/}
-        {/*  >*/}
-        {/*    <EditOutlinedIcon*/}
-        {/*      className={classes.buttonIcon}*/}
-        {/*      color={isSelected ? 'primary' : 'disabled'}*/}
-        {/*    />*/}
-        {/*  </IconButton>*/}
-        {/*</Tooltip>*/}
+        {/*<EditServerDialog />*/}
+        {
+          isSelected ? EditButtonActivated() : EditButtonDisabled()
+        }
+
+        {/* Copy */}
+        <Tooltip TransitionComponent={Zoom} title="Copy">
+          <IconButton
+            variant="contained"
+            className={classes.button}
+            onClick={isSelected ? copy : null}
+            disabled={isConnecting}
+          >
+            <FileCopyOutlinedIcon
+              className={classes.buttonIcon}
+              color={isSelected ? 'primary' : 'disabled'}
+            />
+          </IconButton>
+        </Tooltip>
 
         {/* Connect */}
         <Tooltip TransitionComponent={Zoom} title="Connect">
@@ -149,7 +217,7 @@ export default function ServerToolbar(props) {
             variant="contained"
             className={classes.button}
             // onClick={isSelected ? connect : null}
-            onClick={isConnected ? null : onConnect}
+            onClick={isSelected && !isConnected ? onConnect : null}
           >
             <LinkOutlinedIcon
               className={classes.buttonIcon}
@@ -188,6 +256,21 @@ export default function ServerToolbar(props) {
             <ClearAllIcon className={classes.buttonIcon} color="secondary" />
           </IconButton>
         </Tooltip>
+
+        {/* Alert test */}
+        {/*<Tooltip TransitionComponent={Zoom} title="Alert">*/}
+        {/*  <IconButton*/}
+        {/*    variant="contained"*/}
+        {/*    className={classes.button}*/}
+        {/*    onClick={alertTest}*/}
+        {/*  >*/}
+        {/*    <EditOutlinedIcon*/}
+        {/*      className={classes.buttonIcon}*/}
+        {/*      color={'primary'}*/}
+        {/*    />*/}
+        {/*  </IconButton>*/}
+        {/*</Tooltip>*/}
+
       </Paper>
     </div>
   );
@@ -221,6 +304,13 @@ export default function ServerToolbar(props) {
         <Tooltip TransitionComponent={Zoom} title="Edit">
           <IconButton variant="contained" className={classes.button} disabled>
             <EditOutlinedIcon className={classes.buttonIcon} color="disabled" />
+          </IconButton>
+        </Tooltip>
+
+        {/* Copy */}
+        <Tooltip TransitionComponent={Zoom} title="Copy">
+          <IconButton variant="contained" className={classes.button} disabled>
+            <FileCopyOutlinedIcon className={classes.buttonIcon} color="disabled"/>
           </IconButton>
         </Tooltip>
 

@@ -11,11 +11,18 @@ const selectedSlice = createSlice({
     // 선택한 서버 id
     id: '',
     // checked: false,
+    // dbsize 호출해서 현재 DB의 전체 키 크기 반환
+    countKey: 0,
     // 키 이름, 타입, tll 등 있어야 함!
     selectKey: null,
     selectType: null,
     // list, hash, set, zset 에서 선택한 항목
     selectSubKey: null,
+    matchPattern: '*',
+    isWaiting: false,
+    isShowPopup: false,
+    popupMessage: null,
+    popupSeverity: 'success',
   },
   reducers: {
     selectServer: (state, action) => {
@@ -45,6 +52,28 @@ const selectedSlice = createSlice({
       state.selectSubKey = null;
     },
     editSubKey: (state, action) => {},
+    setCountKey: (state, action) => {
+      state.countKey = action.payload;
+    },
+    setMatchPattern: (state, action) => {
+      console.log(`setMatchPattern=${action.payload}`);
+      state.matchPattern = action.payload;
+    },
+    showWaiting: (state, action) => {
+      state.isWaiting = true;
+    },
+    hideWaiting: (state, action) => {
+      state.isWaiting = false;
+    },
+    showPopup: (state, action) => {
+      state.isShowPopup = true;
+      state.popupMessage = action.payload.popupMessage;
+      state.popupSeverity = action.payload.popupSeverity;
+    },
+    hidePopup: (state, action) => {
+      state.isShowPopup = false;
+      state.popupMessage = '';
+    },
   },
 });
 
@@ -58,6 +87,12 @@ export const {
   addSubKey,
   delSubKey,
   editSubKey,
+  setCountKey,
+  setMatchPattern,
+  showWaiting,
+  hideWaiting,
+  showPopup,
+  hidePopup,
 } = selectedSlice.actions;
 export default selectedSlice.reducer;
 

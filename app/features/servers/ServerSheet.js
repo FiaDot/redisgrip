@@ -1,12 +1,8 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import ServerList from './ServerList';
-import Keys from '../keys/Keys';
-import Values from '../values/Values';
-import { connectToServer, startConnecting } from './connectionSlice';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,12 +10,22 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import CardMedia from '@material-ui/core/CardMedia';
-import cardicon_path from './cardicon.png';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { ThemeProvider } from '@material-ui/styles';
 import { SnackbarProvider } from 'notistack';
+import { SplitPane } from 'react-collapse-pane';
+import cardicon_path from './cardicon.png';
+import { connectToServer, setShowResult, startConnecting } from './connectionSlice';
+import Values from '../values/Values';
+import Keys from '../keys/Keys';
+import ServerList from './ServerList';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import { hidePopup } from './selectedSlice';
 
-const drawerLeftWidth = 320;
+const drawerLeftWidth = 300;
 
 const theme = createMuiTheme({
   palette: {
@@ -61,12 +67,12 @@ const useStyles = makeStyles((theme) => ({
   },
   divValues: {
     position: 'relative',
-    //width: '50%',
+    // width: '50%',
     height: '100%',
     float: 'right',
     // display: 'flex',
-    //float: 'left',
-    //backgroundColor: red,
+    // float: 'left',
+    // backgroundColor: red,
     overflowY: 'scroll',
   },
   content: {
@@ -84,14 +90,18 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     left: '60%',
     top: '50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
   },
   media: {
-    //height: '50%',
+    // height: '50%',
     // paddingTop: '56.25%', // 16:9
-    //width : 200,
+    // width : 200,
     height: 200,
     // align: 'center',
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));
 
@@ -103,10 +113,14 @@ export default function ServerSheet() {
   const isConnected = useSelector((state) => state.connections.connectResult);
   const isConnecting = useSelector((state) => state.connections.isConnecting);
 
+  const isWaiting = useSelector((state) => state.connections.isWaiting);
+  const isShowPopup = useSelector((state) => state.selected.isShowPopup);
+  const popupMessage = useSelector((state) => state.selected.popupMessage);
+  const popupSeverity = useSelector((state) => state.selected.popupSeverity);
+
   const dispatch = useDispatch();
 
   const connect = async () => {
-
     await dispatch(startConnecting());
 
     // 선택된 서버 목록의 id를 통해 실제 접속할 서버의 정보를 가져오도록!!!!
@@ -117,40 +131,38 @@ export default function ServerSheet() {
     dispatch(connectToServer(server));
   };
 
-
   function showKeys() {
-    return (
-      <Keys />
-    );
-  };
+    return <Keys />;
+  }
 
   function showKeysCard() {
     return (
       <Container fixed>
-          <Card className={classes.cardKey}>
-            <CardMedia
-              className={classes.media}
-              component="img"
-              // height="200"
-              image={cardicon_path}
-              title="notice"
-            />
-            <CardContent>
-              <Typography className={classes.title} color="textSecondary" gutterBottom>
-                  No connected server
-              </Typography>
-              <Typography variant="h5" component="h2">
-                Please double click a server in list.
-              </Typography>
-
-            </CardContent>
-            <CardActions>
-            </CardActions>
-          </Card>
+        <Card className={classes.cardKey}>
+          <CardMedia
+            className={classes.media}
+            component="img"
+            // height="200"
+            image={cardicon_path}
+            title="notice"
+          />
+          <CardContent>
+            <Typography
+              className={classes.title}
+              color="textSecondary"
+              gutterBottom
+            >
+              No connected server
+            </Typography>
+            <Typography variant="h5" component="h2">
+              Please double click a server in list.
+            </Typography>
+          </CardContent>
+          <CardActions />
+        </Card>
       </Container>
     );
   }
-
 
   function showValues() {
     return (
@@ -167,11 +179,47 @@ export default function ServerSheet() {
     );
   }
 
+  const connectResult = useSelector((state) => state.connections.connectResult);
+  const showResult = useSelector((state) => state.connections.showResult);
+
+  const onAlertClose = () => {
+    dispatch(setShowResult(false));
+  };
+
+  const onPopupClose = () => {
+    dispatch(hidePopup());
+  };
+
+
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
         <div className={classes.root}>
           <CssBaseline />
+
+          {/*<SplitPane split="vertical" initialSizes={[30, 70]}>*/}
+          {/*  <div>*/}
+          {/*    <ServerList connect={connect} />*/}
+          {/*  </div>*/}
+
+          {/*  {*/}
+          {/*    isConnected && !isConnecting*/}
+          {/*      ?*/}
+          {/*      <SplitPane split="vertical" initialSizes={[40, 60]}>*/}
+          {/*        <div>*/}
+          {/*          <Keys />*/}
+          {/*        </div>*/}
+          {/*        <div>*/}
+          {/*          <Values />*/}
+          {/*        </div>*/}
+          {/*      </SplitPane>*/}
+          {/*      :*/}
+          {/*      <div>*/}
+          {/*        { showKeysCard() }*/}
+          {/*      </div>*/}
+          {/*  }*/}
+
+          {/*</SplitPane>*/}
 
           <Drawer
             className={classes.drawerLeft}
@@ -183,6 +231,45 @@ export default function ServerSheet() {
           >
             <ServerList connect={connect} />
           </Drawer>
+
+          <Backdrop className={classes.backdrop} open={isConnecting}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+
+          <Backdrop className={classes.backdrop} open={isWaiting}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+
+
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            open={isShowPopup}
+            onClose={onPopupClose}
+            autoHideDuration={3000}
+            key="popup"
+          >
+            <Alert onClose={onPopupClose} severity={popupSeverity}>
+              {popupMessage}
+            </Alert>
+          </Snackbar>
+
+          {connectResult ? '' :
+            <Snackbar
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              open={showResult}
+              onClose={onAlertClose}
+              autoHideDuration={3000}
+              // message={connectResult ? 'Success' : 'Failed'}
+              key="bottom left"
+            >
+              <Alert
+                onClose={onAlertClose}
+                severity={connectResult ? 'success' : 'error'}
+              >
+                Connection {connectResult ? 'Success' : 'Failed'}
+              </Alert>
+            </Snackbar>
+          }
 
           {isConnected && !isConnecting ? showKeys() : showKeysCard()}
           {isConnected && !isConnecting ? showValues() : ''}

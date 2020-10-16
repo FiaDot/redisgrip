@@ -1,9 +1,10 @@
 {
   "name": "redisgrip",
   "productName": "RedisGrip",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "cross-platform Redis GUI Client",
   "main": "./main.prod.js",
+  "disableHostCheck": true,
   "author": {
     "name": "LEE GUN HO",
     "email": "fiadot@gmail.com",

@@ -12,10 +12,11 @@ import { addString, clearAllString, clearString } from './stringContentSlice';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
 import ValueDialog from './ValueDialog';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 
-export default function StringContent(props) {
+
+export default function StringContent() {
   const classes = useValueStyles();
-  const { redis } = props;
 
   const selectKey = useSelector((state) => state.selected.selectKey);
   const stringRecords = useSelector((state) => state.stringContent.records);
@@ -26,16 +27,8 @@ export default function StringContent(props) {
     dispatch(addString({ key, value }));
   };
 
-  const showValues = (key, value) => (
-    // TODO : key가 들어가야 에러가 안난다... 넣었을때 고유번호 같은걸 하나 넣어야 할듯!!
-    // <Typography
-    //   className={classes.title}
-    //   color="textSecondary"
-    //   align="center"
-    //   key={`${key}_${history.no}`}
-    // >
-    //   {history.no} {history.value} {history.time}
-    // </Typography>
+
+  const showHistoryValues = (key, value) => (
     <div className={classes.paper} key={`${key}_${value.no}`}>
       <TimeNoComponent time={value.time} no={value.no} />
 
@@ -45,12 +38,38 @@ export default function StringContent(props) {
     </div>
   );
 
+  const showValues = (key, value) => (
+    <div className={classes.paper} key={`${key}_${value.no}`}>
+      <TimeNoComponent time={value.time} no={value.no} />
+
+      <Paper elevation={3}>
+        <CodeMirror
+          value={value.value}
+          options={{
+            mode: 'jsx',
+            theme: 'darcula',
+            lint: true,
+            gutters: ['CodeMirror-lint-json'],
+            lineNumbers: true,
+            readOnly: true,
+            showCursorWhenSelecting: false,
+          }}
+          onChange={(editor, data, value) => {
+          }}
+        />
+
+      </Paper>
+    </div>
+  );
+
   return (
     <div>
       {stringRecords.map((record) =>
         record.key === selectKey
-          ? record.values.map((valueRecord) =>
-              showValues(record.key, valueRecord)
+          ? record.values.map((valueRecord, index) =>
+            index === 0
+              ? showValues(record.key, valueRecord)
+              : showHistoryValues(record.key, valueRecord)
             )
           : ''
       )}

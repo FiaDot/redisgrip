@@ -13,7 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
-import { scanKeys } from './keysSlice';
+import { exportKeys, importKeys, scanKeys } from './keysSlice';
 import { selectKey } from '../servers/selectedSlice';
 import SearchKey from './SearchKey';
 import AddKeyDialog from './AddKeyDialog';
@@ -25,6 +25,13 @@ import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import GroupKeys from './GroupKeys';
+import MigrationToolbar from './MigrationToolbar';
+import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined';
+import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
+import Box from '@material-ui/core/Box';
+import { FixedSizeList } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import VGroupKeys from './VGroupKeys';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,6 +103,9 @@ const StyledBadge = withStyles((theme) => ({
 //   </ListItem>
 // );
 
+
+
+
 const KeysMemo = React.memo(function keys({ keys, onSelectKey, selectedKey }) {
   return (
     <div>
@@ -150,6 +160,7 @@ export default function Keys() {
 
   const keys = useSelector((state) => state.keys);
   const selectedKey = useSelector((state) => state.selected.selectKey);
+  const countKey = useSelector((state) => state.selected.countKey);
 
   const initialState = {
     group: false,
@@ -169,9 +180,65 @@ export default function Keys() {
     await dispatch(selectKey({ key }));
   };
 
+  // const onExportKeysTest = async () => {
+  //   dispatch(
+  //     exportKeys({
+  //       filename: '/Users/newtrocode/Downloads/dump.txt',
+  //       match: '*',
+  //     })
+  //   );
+  // };
+  //
+  // const onImportKeysTest = async () => {
+  //   dispatch(
+  //     importKeys({
+  //       filename: '/Users/newtrocode/Downloads/dump.txt'
+  //     })
+  //   );
+  // };
+
   const scan = async () => {
     await dispatch(scanKeys());
   };
+
+  // const Row = memo(({ data, index, style }) => {
+  // });
+
+  const renderKeys = React.memo(({ data, index, style }) => {
+  // function renderKeys(props) {
+  // const { index, style } = props;
+    const { wrapKeys } = data;
+    const key = wrapKeys[index];
+    // const key = keys[index];
+
+    return (
+      <ListItem
+        button
+        style={style}
+        key={key.key}
+        selected={key.deleted ? false : selectedKey === key.key}
+        onClick={(event) => {
+          key.deleted ? null : onSelectKey(key.key)
+        }}
+      >
+        <StyledBadge badgeContent={key.deleted ? 0 : key.count} max={9} color="secondary">
+          { key.deleted ?
+              <DeleteForeverOutlinedIcon
+                color={"secondary"}
+                style={{ paddingRight: 10, fontSize: 32 }}
+              />
+              :
+              <VpnKeyOutlinedIcon
+                color={'primary'}
+                style={{ paddingRight: 10, fontSize: 32 }}
+              />
+          }
+        </StyledBadge>
+        <ListItemText
+          primary={`${key.key}${key.deleted ? " [DELETED]" : ""}`} />
+      </ListItem>
+    );
+  });
 
   return (
     <div className={classes.root}>
@@ -183,11 +250,36 @@ export default function Keys() {
         gutterBottom
         align="center"
       >
-        Keys
+        Keys ({countKey})
       </Typography>
 
       <div className={classes.paper}>
         <Paper elevation={3}>
+
+          {/* Export */}
+          {/*<Tooltip TransitionComponent={Zoom} title="Export">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={(event) => onExportKeys()}*/}
+          {/*  >*/}
+          {/*    <BackupOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
+
+          {/* Import */}
+          {/*<Tooltip TransitionComponent={Zoom} title="Import">*/}
+          {/*  <IconButton*/}
+          {/*    variant="contained"*/}
+          {/*    className={classes.button}*/}
+          {/*    onClick={(event) => onImportKeys()}*/}
+          {/*  >*/}
+          {/*    <SystemUpdateAltOutlinedIcon color="primary" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
+
+
+
           {/* Refresh */}
           <Tooltip TransitionComponent={Zoom} title="Refresh">
             <IconButton
@@ -219,31 +311,66 @@ export default function Keys() {
 
           <FormControlLabel
             control={
-              <Switch checked={group} onChange={handleChange} color="primary" name="group" />
+              <Switch
+                checked={group}
+                onChange={handleChange}
+                color="primary"
+                name="group"
+              />
             }
-            label="Group"
+            label={
+              <Box component="div" fontSize={12}>
+                Group
+              </Box>
+            }
             labelPlacement="start"
           />
         </Paper>
       </div>
 
-      {/* Search bar TODO : IMPL*/}
-      {/*<SearchKey />*/}
+      {/* Search bar */}
+      <SearchKey />
 
       {/* Key List */}
-      {group
-        ?
-          <GroupKeys />
-        :
-          <List component="nav" aria-label="keys">
-            {
-              keys.length <= 0
-                ? ''
-                : <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />
-            }
-          </List>
+      {/*{group*/}
+      {/*  ?*/}
+      {/*    <GroupKeys />*/}
+      {/*  :*/}
+      {/*    <List component="nav" aria-label="keys">*/}
+      {/*      {*/}
+      {/*        keys.length <= 0*/}
+      {/*          ? ''*/}
+      {/*          : <KeysMemo keys={keys} onSelectKey={onSelectKey} selectedKey={selectedKey} />*/}
+      {/*      }*/}
+      {/*    </List>*/}
+      {/*}*/}
+
+      { group ?
+          <VGroupKeys />
+          :
+          keys.length <= 0 ?
+            ''
+            :
+            <div style = {{height:'70vh'}}>
+              <AutoSizer>
+                {({ height, width }) => (
+                  <FixedSizeList
+                    height={height}
+                    width={width}
+                    itemSize={40}
+                    itemCount={keys.length}
+                    itemData={{ wrapKeys: keys }}
+                  >
+                    {renderKeys}
+                  </FixedSizeList>
+                )}
+              </AutoSizer>
+            </div>
       }
 
+
+
+      <MigrationToolbar />
     </div>
   );
 }

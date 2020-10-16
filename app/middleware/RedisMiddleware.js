@@ -16,21 +16,29 @@ import {
   cleanupKey,
   clearKeys,
   delKey,
-  resetKeyCount,
+  resetKeyCount, scanKeys
 } from '../features/keys/keysSlice';
 import { addString } from '../features/values/stringContentSlice';
-import { deselectKey, selectKey } from '../features/servers/selectedSlice';
+import {
+  deselectKey, hideWaiting,
+  selectKey,
+  setCountKey,
+  setMatchPattern,
+  setProgress,
+  showPopup, showWaiting
+} from '../features/servers/selectedSlice';
 import { addZset } from '../features/values/zsetContentSlice';
 import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
 import { addHash } from '../features/values/hashContentSlice';
+var readline = require('readline');
+
 
 const RedisMiddleware = () => {
   let redis = null;
-  const connectionOptions = {
-    host: '52.79.194.253',
+  let connectionOptions = {
+    host: '127.0.0.1',
     port: 6379,
-    password: 'asdf1234!',
     connectTimeout: 10000,
     maxRetriesPerRequest: null,
   };
@@ -146,12 +154,12 @@ const RedisMiddleware = () => {
 
   return (store) => (next) => async (action) => {
     const reduceRedisOp = (args) => {
-      console.log(`reduceRedisOp ${args}`);
+      //console.log(`reduceRedisOp ${args}`);
       // 모니터링 에서 받은 op중 update와 관련된 모든 항목을 타입에 맞게 redux에 저장
 
       const op = args.split(',');
 
-      switch (op[0]) {
+      switch (op[0].toUpperCase()) {
         case 'SET': // string
           // op[1] // key
           // op[2] // value
@@ -159,6 +167,7 @@ const RedisMiddleware = () => {
           break;
 
         case 'DEL': // string
+          console.log(`reduceRedisOp ${args}`);
           store.dispatch(cleanupKey({ key: op[1] }));
           return;
 
@@ -188,6 +197,7 @@ const RedisMiddleware = () => {
           return;
       }
 
+      console.log(`reduceRedisOp ${args}`);
       store.dispatch(addKeyCount({ key: op[1] }));
     };
 
@@ -351,9 +361,21 @@ const RedisMiddleware = () => {
       return type;
     };
 
-    const scanKeys = async () => {
+    const countKey = async () => {
+      const count = await redis.dbsize();
+      console.log(`count=${count}`);
+      store.dispatch(setCountKey(count));
+    };
+
+    const scanKeys = async (match='*') => {
+      await countKey();
+
+      console.log(`scanKeys match=${match}`);
+
+      store.dispatch(setMatchPattern(match));
+
       const stream = await redis.scanStream({
-        match: '*',
+        match,
         count: 10000,
       });
 
@@ -373,6 +395,118 @@ const RedisMiddleware = () => {
       }
       return false;
     };
+
+    function numHex(s)
+    {
+      var a = s.toString(16);
+      if ((a.length % 2) > 0) {
+        a = '0' + a;
+      }
+      return '0x' + a;
+    }
+
+    const onExportKeys = async (filename, match) => {
+      console.log(`RedisMiddleWare onExportKeys ${filename}`);
+
+      const stream = await redis.scanStream({
+        match,
+        count: 10000,
+      });
+
+      // let lines = [];
+
+      fs.open(filename, 'w', async (err, fd) => {
+
+        stream.on('data', async function (keys) {
+          store.dispatch(showWaiting());
+
+          const promises = keys.map(async (key) => {
+            const data = await redis.dumpBuffer(key);
+            const value = Buffer.from(data, 'binary').toString('base64');
+            const kv = { key, value };
+            // lines.push(JSON.stringify(kv) + '\n');
+
+            fs.appendFile(fd, JSON.stringify(kv) + '\n', (err) => {
+              if ( err )
+                console.log(err);
+            });
+          });
+
+          await Promise.all(promises);
+          // store.dispatch(setProgress({ isProgress: false, progress: 100 }));
+          // console.log(lines);
+
+          fs.close(fd, function() {
+            store.dispatch(hideWaiting());
+
+            store.dispatch(
+              showPopup({
+                popupMessage: 'export succeeded',
+                popupSeverity: 'success',
+              })
+            );
+
+            console.log('[modified] wrote the file successfully');
+          });
+        });
+      });
+    };
+
+
+    const onImportKeys = async (filename) => {
+      console.log(`RedisMiddleWare onImportKeys ${filename}`);
+
+      var instream = fs.createReadStream(filename);
+      var reader = readline.createInterface(instream);
+
+      var count = 0;
+
+      let key = '';
+      let value = '';
+
+      store.dispatch(showWaiting());
+
+      // 한 줄씩 읽어들인 후에 발생하는 이벤트
+      reader.on('line', async function(line) {
+        count += 1;
+
+        const kv = JSON.parse(line);
+        key = kv.key;
+        value = Buffer.from(kv.value, 'base64');
+
+        try {
+          await redis.restore(key, 0, value);
+        } catch (err) {
+          console.log(`err=${err}`);
+
+          store.dispatch(hideWaiting());
+
+          store.dispatch(
+            showPopup({
+              popupMessage: `import error=${err}`,
+              popupSeverity: 'error',
+          }));
+        }
+      });
+
+      // 모두 읽어들였을 때 발생하는 이벤트
+      reader.on('close', function(line) {
+        console.log(`read done count=${count}`);
+
+        store.dispatch(hideWaiting());
+
+        store.dispatch(
+          showPopup({
+            popupMessage: 'import succeeded',
+            popupSeverity: 'success',
+          })
+        );
+
+        store.dispatch(scanKeys());
+      });
+    };
+
+
 
     const addSubKey = async (mainKey, type, key, val) => {
       // console.log(`addSubKey ${type} / ${key} / ${val}`);
@@ -496,6 +630,7 @@ const RedisMiddleware = () => {
         isSuccess = await connect(action.payload);
 
         if (isSuccess) {
+          connectionOptions = action.payload;
           await scanKeys();
           await monitoring();
           await store.dispatch(connectSuccess());
@@ -534,17 +669,27 @@ const RedisMiddleware = () => {
           await store.dispatch(selectKey({ key: action.payload.key }));
         }
 
+        await countKey();
         next(action);
         return isSuccess;
 
       case 'keys/scanKeys':
-        await scanKeys();
+        await scanKeys(action.payload);
         break;
 
       case 'keys/delKey':
         isSuccess = await onDelKey(action.payload.key);
+        await countKey();
         next(action);
         return isSuccess;
+
+      case 'keys/exportKeys':
+        await onExportKeys(action.payload.filename, action.payload.match);
+        break;
+
+      case 'keys/importKeys':
+        await onImportKeys(action.payload.filename);
+        break;
 
       case 'selected/selectKey':
         await onResetKeyCount(action.payload.key);

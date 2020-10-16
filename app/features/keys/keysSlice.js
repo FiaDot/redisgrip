@@ -72,6 +72,12 @@ const keysSlice = createSlice({
 
       // state = state.filter((record) => record.key !== action.payload.key);
       // return state;
+    },
+    exportKeys: (state, action) => {
+      // 실제 처리는 RedisMiddleWare
+    },
+    importKeys: (state, action) => {
+      // 실제 처리는 RedisMiddleWare
     }
   },
 });
@@ -85,6 +91,8 @@ export const {
   addKeys,
   delKey,
   cleanupKey,
+  exportKeys,
+  importKeys,
 } = keysSlice.actions;
 
 export default keysSlice.reducer;

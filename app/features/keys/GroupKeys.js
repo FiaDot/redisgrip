@@ -125,8 +125,13 @@ export default function GroupKeys() {
   const keys = useSelector((state) => state.keys);
 
   const onSelectKey = async (key) => {
-    // console.log(`GroupKeys onSelectKey key=${key}`);
+    console.log(`GroupKeys onSelectKey key=${key}`);
     await dispatch(selectKey({ key }));
+  };
+
+
+  const onSelectGroupKey = async (groupKey) => {
+    console.log(`GroupKeys:onSelectGroupKey() ${groupKey}`);
   };
 
   const sample = [
@@ -197,6 +202,7 @@ export default function GroupKeys() {
             nodeId={index.toString()}
             labelText={key}
             labelIcon={Label}
+            onClick={(event) => onSelectGroupKey(key)}
           >
             {
               value.map((record) => (
