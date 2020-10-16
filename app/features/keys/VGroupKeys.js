@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +10,10 @@ import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Label from '@material-ui/icons/Label';
-
+import AutoSizer from 'react-virtualized-auto-sizer';
+import IconButton from '@material-ui/core/IconButton';
+import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useTreeItemStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +22,7 @@ const useTreeItemStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.action.hover,
     },
     '&:focus > $content, &$selected > $content': {
-      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[400]})`,
+      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.grey[600]})`,
       color: 'var(--tree-view-color)',
     },
     '&:focus > $content $label, &:hover > $content $label, &$selected > $content $label': {
@@ -54,6 +57,7 @@ const useTreeItemStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5, 0),
   },
   labelIcon: {
+    color: theme.palette.primary.main,
     marginRight: theme.spacing(1),
   },
   labelText: {
@@ -120,6 +124,8 @@ const useStyles = makeStyles({
   },
 });
 
+// @ts-ignore
+// @ts-ignore
 export default function VGroupKeys() {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -259,28 +265,74 @@ export default function VGroupKeys() {
 // internal openness state (`isOpen`), function to change internal openness
 // state (`toggle`) and `style` parameter that should be added to the root div.
   const Node = ({data: {isLeaf, name, id, nestingLevel}, isOpen, style, toggle}) => (
-    <div style={style}>
-      {!isLeaf && (
-        //isOpen ? <ArrowDropDownIcon /> : <ArrowRightIcon />
-        <button type="button" onClick={toggle}>
-          {isOpen ? '-' : '+'}
-        </button>
-      )}
-      {/*<StyledTreeItem*/}
-      {/*  key={name}*/}
-      {/*  nodeId={name}*/}
-      {/*  labelText={name}*/}
-      {/*  labelIcon={VpnKeyOutlinedIcon}*/}
-      {/*/>*/}
-      <div>{name}</div>
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        margin: 0,
+        marginLeft: nestingLevel * 5 + (isLeaf ? 20 : 0),
+      }}
+    >
+
+    { nestingLevel != 0 && !isLeaf && (
+      isOpen ?
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={toggle}
+        >
+          <ArrowRightIcon
+            className={classes.buttonIcon}
+            color={'primary'}
+            // style={{ fontSize: 24 }}
+            fontSize="large"
+          />
+        </IconButton>
+        :
+        <IconButton
+          variant="contained"
+          className={classes.button}
+          onClick={toggle}
+        >
+          <ArrowDropDownIcon
+            className={classes.buttonIcon}
+            color={'primary'}
+            // style={{ fontSize: 24 }}
+            fontSize="large"
+          />
+        </IconButton>
+
+    )}
+
+    { nestingLevel == 0 ?
+      ''
+      :
+        isLeaf ?
+          <StyledTreeItem
+            key={name}
+            nodeId={name}
+            labelText={name}
+            labelIcon={VpnKeyOutlinedIcon}
+            onClick={(event) => onSelectKey(name)}
+          />
+          :
+          <div>{name}</div>
+    }
+
     </div>
   );
 
 
   return (
-    <Tree treeWalker={treeWalker} itemSize={50} height={200} width={300}>
-      {Node}
-    </Tree>
+    <div style = {{height:'70vh'}}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <Tree treeWalker={treeWalker} itemSize={50} height={height} width={width}>
+            {Node}
+          </Tree>
+        )}
+      </AutoSizer>
+    </div>
   );
 }
 
