@@ -12,7 +12,7 @@ import { addString, clearAllString, clearString } from './stringContentSlice';
 import useValueStyles from './ValueStyle';
 import TimeNoComponent from './TimeNoComponent';
 import ValueDialog from './ValueDialog';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+// import { UnControlled as CodeMirror } from 'react-codemirror2';
 
 
 export default function StringContent() {
@@ -43,20 +43,21 @@ export default function StringContent() {
       <TimeNoComponent time={value.time} no={value.no} />
 
       <Paper elevation={3}>
-        <CodeMirror
-          value={value.value}
-          options={{
-            mode: 'jsx',
-            theme: 'darcula',
-            lint: true,
-            gutters: ['CodeMirror-lint-json'],
-            lineNumbers: true,
-            readOnly: true,
-            showCursorWhenSelecting: false,
-          }}
-          onChange={(editor, data, value) => {
-          }}
-        />
+        <Typography>{value.value}</Typography>
+        {/*<CodeMirror*/}
+        {/*  value={value.value}*/}
+        {/*  options={{*/}
+        {/*    mode: 'jsx',*/}
+        {/*    theme: 'darcula',*/}
+        {/*    lint: true,*/}
+        {/*    gutters: ['CodeMirror-lint-json'],*/}
+        {/*    lineNumbers: true,*/}
+        {/*    readOnly: true,*/}
+        {/*    showCursorWhenSelecting: false,*/}
+        {/*  }}*/}
+        {/*  onChange={(editor, data, value) => {*/}
+        {/*  }}*/}
+        {/*/>*/}
 
       </Paper>
     </div>
