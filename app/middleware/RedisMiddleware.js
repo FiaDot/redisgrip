@@ -742,6 +742,8 @@ const RedisMiddleware = () => {
         return isSuccess;
 
       case 'connections/disconnected':
+        await store.dispatch(stopConnecting());
+        await store.dispatch(setShowResult(false));
         await monitoringOff();
         redis.disconnect();
         redis = null;
