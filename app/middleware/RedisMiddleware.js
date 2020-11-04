@@ -5,10 +5,10 @@ import moment from 'moment';
 import fs from 'fs';
 import {
   connectFailed,
-  connectSuccess,
+  connectSuccess, disconnected,
   setShowResult,
   startConnecting,
-  stopConnecting,
+  stopConnecting
 } from '../features/servers/connectionSlice';
 import {
   addKeyCount,
@@ -32,18 +32,26 @@ import { addList } from '../features/values/listContentSlice';
 import { addSet } from '../features/values/setContentSlice';
 import { addHash } from '../features/values/hashContentSlice';
 var readline = require('readline');
+const {dialog} = require('electron').remote;
 
 
 const RedisMiddleware = () => {
   let redis = null;
+  let monitor = null;
+
+  const timeout = 5000;
+
   let connectionOptions = {
     host: '127.0.0.1',
     port: 6379,
-    connectTimeout: 10000,
-    maxRetriesPerRequest: null,
+    connectTimeout: timeout,
+    maxRetriesPerRequest: 0,
+    retryStrategy: null,
   };
 
   function connectToSSH(options) {
+    options.readyTimeout = timeout;
+
     return new Promise((resolve, reject) => {
       const connection = new Client();
       connection.once('ready', () => resolve(connection));
@@ -77,10 +85,16 @@ const RedisMiddleware = () => {
       ssh: {
         host: 'localhost',
         port: 22,
+        maxRetriesPerRequest: 0,
+        retryStrategy: null,
+        connectTimeout: timeout,
       },
       redis: {
         host: 'localhost',
         port: 6379,
+        maxRetriesPerRequest: 0,
+        retryStrategy: null,
+        connectTimeout: timeout,
       },
     }
   ) {
@@ -95,8 +109,9 @@ const RedisMiddleware = () => {
         host: options.redis.host,
         port: options.redis.port,
         password: options.redis.password,
-        connectTimeout: 10000,
-        maxRetriesPerRequest: null,
+        connectTimeout: timeout,
+        maxRetriesPerRequest: 0,
+        retryStrategy: null,
       });
       return redisInst;
     }
@@ -108,6 +123,9 @@ const RedisMiddleware = () => {
       username: options.ssh.username,
       privateKey: options.ssh.privateKey,
       passphrase: options.ssh.passphrase,
+      connectTimeout: timeout,
+      maxRetriesPerRequest: 0,
+      retryStrategy: null,
     });
 
     const server = await createIntermediateServer((socket) => {
@@ -130,8 +148,9 @@ const RedisMiddleware = () => {
       host: server.address().address,
       port: server.address().port,
       password: options.redis.password,
-      connectTimeout: 10000,
+      connectTimeout: timeout,
       maxRetriesPerRequest: 0,
+      retryStrategy: null,
     });
 
     return redisInst;
@@ -197,7 +216,7 @@ const RedisMiddleware = () => {
           return;
       }
 
-      console.log(`reduceRedisOp ${args}`);
+      // console.log(`reduceRedisOp ${args}`);
       store.dispatch(addKeyCount({ key: op[1] }));
     };
 
@@ -217,7 +236,16 @@ const RedisMiddleware = () => {
 
     const connect = async (config) => {
       try {
+        // console.trace("Here I am!");
+
         if (redis != null) {
+          console.log('!!! connect remove listener');
+
+          if ( monitor != null ) {
+            monitor.removeAllListeners();
+            monitor.removeListener('monitor', parseMonitorLog);
+          }
+
           redis.disconnect();
         }
 
@@ -235,13 +263,16 @@ const RedisMiddleware = () => {
             username: config.sshUsername,
             privateKey,
             passphrase: config.pemPassphrase,
+            maxRetriesPerRequest: 0,
+            retryStrategy: null,
           },
           redis: {
             host: config.host,
             port: config.port,
             password: config.password,
-            connectTimeout: 10000,
-            maxRetriesPerRequest: null,
+            connectTimeout: 3000,
+            maxRetriesPerRequest: 0,
+            retryStrategy: null,
           },
         };
 
@@ -263,9 +294,38 @@ const RedisMiddleware = () => {
     };
 
     const monitoring = async () => {
-      const monitor = await redis.monitor();
+      monitor = await redis.monitor();
       monitor.on('monitor', parseMonitorLog);
     };
+
+    const monitoringOff = async () => {
+      try {
+        if ( null == redis )
+        {
+          console.log('monitoringOff #2');
+          return;
+        }
+
+        // const monitor = await redis.monitor();
+
+        if ( null == monitor )
+        {
+          console.log('monitoringOff #3');
+          return;
+        }
+
+        console.log('monitoringOff #1');
+
+        monitor.removeAllListeners();
+        monitor.removeListener('monitor', parseMonitorLog);
+
+        monitor = null;
+        // monitor.off('monitor');
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
 
     const addKey = async (key, type) => {
       console.log(`addKey ${key} as ${type}`);
@@ -612,21 +672,46 @@ const RedisMiddleware = () => {
       return false;
     };
 
-    console.log(`RedisMiddleware type=${action.type}`);
-    let isSuccess;
+    // console.log(`RedisMiddleware type=${action.type}`);
 
-    if (redis != null) {
-      try {
-        const alive = await redis.ping();
-      } catch (err) {
-        await connect(connectionOptions);
-      }
+    switch (action.type) {
+      case 'connections/connectToServer':
+      case 'connections/testConnection':
+      case 'connections/disconnected':
+        break;
+
+      default:
+        if (redis != null) {
+          try {
+            const alive = await redis.ping();
+          } catch (err) {
+            console.log(err);
+            // TODO : 접속 종료 처리
+            await monitoringOff();
+            redis.disconnect();
+            redis = null;
+            // redis = null;
+
+            next(action);
+
+            await store.dispatch(deselectKey());
+            await store.dispatch(clearKeys());
+            await store.dispatch(connectFailed());
+
+            await dialog.showErrorBox('ERROR', 'Connection lost.');
+            return;
+          }
+        }
     }
+
+
+    let isSuccess;
 
     switch (action.type) {
       case 'connections/connectToServer':
         next(action);
 
+        await monitoringOff();
         isSuccess = await connect(action.payload);
 
         if (isSuccess) {
@@ -639,7 +724,7 @@ const RedisMiddleware = () => {
         }
 
         await store.dispatch(setShowResult(true));
-        break;
+        return;
 
       case 'connections/testConnection':
         // await store.dispatch(startConnecting());
@@ -657,9 +742,11 @@ const RedisMiddleware = () => {
         return isSuccess;
 
       case 'connections/disconnected':
+        await monitoringOff();
         redis.disconnect();
+        redis = null;
         next(action);
-        break;
+        return;
 
       case 'keys/addKey':
         isSuccess = await addKey(action.payload.key, action.payload.type);
