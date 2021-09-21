@@ -293,7 +293,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.19",
-    "ssh2": "^0.8.9"
+    "ssh2": "^1.4.0"
   },
   "devEngines": {
     "node": ">=7.x",
